@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --blood:   #c0392b;
+  --void:    #0a0a0a;
+  --steel:   #1c1c1c;
+  --iron:    #2a2a2a;
+  --smoke:   #f5f5f5;
+  --ash:     #888888;
+}
+
+body {
+  font-family: 'Barlow Condensed', sans-serif;
+  background: var(--void);
+  color: var(--smoke);
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #c0392b; }
+::selection { background: rgba(192,57,43,0.35); color: #f5f5f5; }
+
+/* ---- Sitio publico ---- */
+.section-steel   { background: #111111; }
+.section-red     { background: #c0392b; }
+
+/* Patron diagonal de fondo — estilo tatami */
+.tatami-pattern {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.015) 0px,
+      rgba(255,255,255,0.015) 1px,
+      transparent 1px,
+      transparent 10px
+    );
+}
+
+/* Cinturon decorativo */
+.belt-bar {
+  height: 6px;
+  background: linear-gradient(
+    90deg,
+    #f5f5f5 0%, #f5f5f5 14%,
+    #f5c518 14%, #f5c518 28%,
+    #e07b39 28%, #e07b39 42%,
+    #2d6a4f 42%, #2d6a4f 56%,
+    #1a5276 56%, #1a5276 70%,
+    #6b4c36 70%, #6b4c36 85%,
+    #0a0a0a 85%, #0a0a0a 100%
+  );
+}
+
+/* Linea roja */
+.blood-line { width: 40px; height: 3px; background: #c0392b; }
+
+/* Card de programa */
+.program-card {
+  background: #1c1c1c;
+  border: 1px solid rgba(192,57,43,0.15);
+  transition: all 0.3s ease;
+}
+.program-card:hover {
+  border-color: rgba(192,57,43,0.45);
+  box-shadow: 0 0 30px rgba(192,57,43,0.12);
+  transform: translateY(-4px);
+}
+
+/* Celda del horario */
+.schedule-cell {
+  transition: all 0.2s ease;
+  cursor: default;
+}
+.schedule-cell.has-class:hover {
+  background: rgba(192,57,43,0.15) !important;
+  border-color: rgba(192,57,43,0.4) !important;
+}
+
+/* Numero decorativo oversized */
+.num-deco {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(6rem, 15vw, 14rem);
+  line-height: 0.85;
+  color: rgba(192,57,43,0.04);
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.02em;
+}
+
+/* ---- Admin dark panel ---- */
+.admin-body     { font-family:'Barlow Condensed',sans-serif; background:#0a0a0a; color:#e2e8f0; min-height:100vh; }
+.admin-card     { background:#1a1a1a; border:1px solid #2a2a2a; border-radius:10px; }
+.admin-sidebar  { background:#111111; border-right:1px solid #2a2a2a; }
+.kpi-card       { background:#1a1a1a; border:1px solid #2a2a2a; border-radius:10px; transition:all 0.2s; }
+.kpi-card:hover { border-color:rgba(192,57,43,0.4); box-shadow:0 0 20px rgba(192,57,43,0.06); }
+
+.status-active    { background:rgba(74,222,128,0.12);  color:#4ade80; border:1px solid rgba(74,222,128,0.3);  }
+.status-inactive  { background:rgba(148,163,184,0.1);  color:#94a3b8; border:1px solid rgba(148,163,184,0.2); }
+.status-pending   { background:rgba(251,191,36,0.12);  color:#fbbf24; border:1px solid rgba(251,191,36,0.25); }
+.status-overdue   { background:rgba(248,113,113,0.12); color:#f87171; border:1px solid rgba(248,113,113,0.25);}
+.status-done      { background:rgba(148,163,184,0.1);  color:#64748b; border:1px solid rgba(148,163,184,0.15);}
