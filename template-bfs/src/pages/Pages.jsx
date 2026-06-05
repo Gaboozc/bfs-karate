@@ -11,14 +11,14 @@ import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
 } from "recharts"
-import { content }   from "./data/content"
-import { adminData } from "./data/adminData"
-import { Navbar, Footer, WhatsAppButton, BFSLogo, SectionHeader } from "./components/layout/Layout"
+import { content }   from "../data/content"
+import { adminData } from "../data/adminData"
+import { Navbar, Footer, WhatsAppButton, BFSLogo, SectionHeader } from "../components/layout/Layout"
 import {
   Hero, BeltProgress, ProgramsPreview, InstructorsPreview,
   ScheduleSection, Testimonials, EnrollCTA,
-} from "./components/sections/Sections"
-import { fadeInUp, fadeIn, scaleIn, stagger, staggerSlow, viewportOnce, pageTransition } from "./styles/animations"
+} from "../components/sections/Sections"
+import { fadeInUp, fadeIn, scaleIn, stagger, staggerSlow, viewportOnce, pageTransition } from "../styles/animations"
 
 const ADMIN_PW     = "admin123"
 const CHART_COLORS = ["#c0392b","#f5c518","#1a5276","#6b4c36","#2d6a4f","#888888","#f5f5f5"]
