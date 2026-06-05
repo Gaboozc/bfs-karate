@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd template-bfs && npm run build",
+  "outputDirectory": "template-bfs/dist",
+  "installCommand": "cd template-bfs && npm install"
+}
