@@ -5,42 +5,44 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, Phone, MapPin, Mail, Clock, Instagram, Facebook, Youtube } from "lucide-react"
 import { content } from "../../data/content"
 
-// Logo — usa la imagen subida, con fallback SVG de cinturon negro
+// Logo — carga /logo.png desde public/; fallback al SVG de karateka si no existe
 export const BFSLogo = ({ className="", size="md", light=false }) => {
   const s = { sm:{h:36}, md:{h:44}, lg:{h:56} }[size] || {h:44}
+  const [imgErr, setImgErr] = useState(false)
   return (
     <motion.div className={`inline-flex items-center gap-2.5 cursor-default select-none ${className}`}
       whileHover={{ opacity:0.9 }} transition={{ duration:0.2 }}
     >
-      {/* Logo SVG basado en la imagen BFS — circulo con letras */}
-      <svg width={s.h} height={s.h} viewBox="0 0 80 80" fill="none">
-        {/* Circulo exterior de pincelada */}
-        <circle cx="40" cy="40" r="36" stroke="#c0392b" strokeWidth="3.5" fill="none" strokeDasharray="4 2" opacity="0.85"/>
-        <circle cx="40" cy="40" r="36" stroke="#1a1a1a" strokeWidth="2" fill={light?"transparent":"#0a0a0a"} strokeDasharray="200 30" strokeLinecap="round" opacity="0.6"/>
-        {/* Silueta del karateka — simplificada */}
-        <line x1="40" y1="14" x2="40" y2="52" stroke={light?"#ffffff":"#1c1c1c"} strokeWidth="2.5" strokeLinecap="round" opacity="0.7"/>
-        {/* Cabeza */}
-        <circle cx="40" cy="12" r="4" fill={light?"rgba(255,255,255,0.8)":"rgba(28,28,28,0.9)"}/>
-        {/* Patada alta */}
-        <line x1="40" y1="28" x2="54" y2="18" stroke={light?"#ffffff":"#1c1c1c"} strokeWidth="2.5" strokeLinecap="round" opacity="0.7"/>
-        <line x1="54" y1="18" x2="62" y2="14" stroke={light?"#ffffff":"#1c1c1c"} strokeWidth="2" strokeLinecap="round" opacity="0.5"/>
-        {/* Brazo */}
-        <line x1="40" y1="26" x2="30" y2="20" stroke={light?"#ffffff":"#1c1c1c"} strokeWidth="2" strokeLinecap="round" opacity="0.7"/>
-        {/* B F S letras */}
-        <text x="18" y="44" fontFamily="'Bebas Neue', Impact, sans-serif" fontSize="22" fill="#c0392b" fontWeight="bold" letterSpacing="2" opacity="0.95">BFS</text>
-        {/* Linea inferior */}
-        <line x1="14" y1="54" x2="66" y2="54" stroke="#c0392b" strokeWidth="1" opacity="0.3"/>
-      </svg>
-
-      {/* Texto */}
-      <div className="flex flex-col leading-none gap-0.5">
-        <span className="font-display tracking-[0.12em] text-base"
-          style={{ color:light?"#f5f5f5":"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize: s.h < 40 ? "16px":"20px" }}
-        >BFS Martial Arts</span>
-        <span className="text-[9px] tracking-[0.2em] uppercase font-semibold"
-          style={{ color:"#c0392b" }}
-        >Better · Stronger · Faster</span>
-      </div>
+      {imgErr ? (
+        <>
+          <svg width={s.h} height={s.h} viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="36" stroke="#c0392b" strokeWidth="3.5" fill="none" strokeDasharray="4 2" opacity="0.85"/>
+            <circle cx="40" cy="40" r="36" stroke="#1a1a1a" strokeWidth="2" fill={light?"transparent":"#0a0a0a"} strokeDasharray="200 30" strokeLinecap="round" opacity="0.6"/>
+            <line x1="40" y1="14" x2="40" y2="52" stroke={light?"#ffffff":"#1c1c1c"} strokeWidth="2.5" strokeLinecap="round" opacity="0.7"/>
+            <circle cx="40" cy="12" r="4" fill={light?"rgba(255,255,255,0.8)":"rgba(28,28,28,0.9)"}/>
+            <line x1="40" y1="28" x2="54" y2="18" stroke={light?"#ffffff":"#1c1c1c"} strokeWidth="2.5" strokeLinecap="round" opacity="0.7"/>
+            <line x1="54" y1="18" x2="62" y2="14" stroke={light?"#ffffff":"#1c1c1c"} strokeWidth="2" strokeLinecap="round" opacity="0.5"/>
+            <line x1="40" y1="26" x2="30" y2="20" stroke={light?"#ffffff":"#1c1c1c"} strokeWidth="2" strokeLinecap="round" opacity="0.7"/>
+            <text x="18" y="44" fontFamily="'Bebas Neue', Impact, sans-serif" fontSize="22" fill="#c0392b" fontWeight="bold" letterSpacing="2" opacity="0.95">BFS</text>
+            <line x1="14" y1="54" x2="66" y2="54" stroke="#c0392b" strokeWidth="1" opacity="0.3"/>
+          </svg>
+          <div className="flex flex-col leading-none gap-0.5">
+            <span className="font-display tracking-[0.12em]"
+              style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize: s.h < 40 ? "16px":"20px" }}
+            >{content.business.name}</span>
+            <span className="text-[9px] tracking-[0.2em] uppercase font-semibold" style={{ color:"#c0392b" }}>
+              {content.business.tagline}
+            </span>
+          </div>
+        </>
+      ) : (
+        <img
+          src="/logo.png"
+          alt={content.business.name}
+          onError={() => setImgErr(true)}
+          style={{ height:s.h, width:"auto", objectFit:"contain" }}
+        />
+      )}
     </motion.div>
   )
 }

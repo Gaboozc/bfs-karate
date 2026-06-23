@@ -16,7 +16,7 @@ import { adminData } from "../data/adminData"
 import { Navbar, Footer, WhatsAppButton, BFSLogo, SectionHeader } from "../components/layout/Layout"
 import {
   Hero, BeltProgress, ProgramsPreview, InstructorsPreview,
-  ScheduleSection, Testimonials, EnrollCTA,
+  ScheduleSection, Testimonials, EnrollCTA, MerchPreview, EventosPreview,
 } from "../components/sections/Sections"
 import { fadeInUp, fadeIn, scaleIn, stagger, staggerSlow, viewportOnce, pageTransition } from "../styles/animations"
 
@@ -50,7 +50,9 @@ export const Home = () => (
     <ProgramsPreview />
     <InstructorsPreview />
     <ScheduleSection />
+    <EventosPreview />
     <Testimonials />
+    <MerchPreview />
     <EnrollCTA />
   </motion.main>
 )
@@ -229,6 +231,271 @@ export const ContactoPage = () => {
           </div>
         </div>
       </section>
+    </motion.div>
+  )
+}
+
+export const MerchPage = () => {
+  const [activeFilter, setActiveFilter] = useState("Todos")
+  const categories = ["Todos", "Ropa", "Equipo", "Accesorios"]
+  const filtered = activeFilter === "Todos"
+    ? content.merch
+    : content.merch.filter(p => p.category === activeFilter)
+
+  return (
+    <motion.div initial="initial" animate="animate" exit="exit" variants={pageTransition}>
+      <PageBanner eyebrow="Tienda Oficial" title="BFS Merch" />
+      <section className="py-16 md:py-20" style={{ background:"#0a0a0a" }}>
+        <div className="max-w-7xl mx-auto px-5 md:px-10">
+
+          {/* Filtros */}
+          <div className="flex flex-wrap items-center gap-2 mb-8">
+            {categories.map(cat => (
+              <button key={cat} onClick={() => setActiveFilter(cat)}
+                className="px-4 py-2 text-xs font-bold tracking-wider transition-all duration-200"
+                style={{
+                  background: activeFilter === cat ? "#c0392b" : "#1a1a1a",
+                  color:      activeFilter === cat ? "#f5f5f5" : "#888888",
+                  border:     `1px solid ${activeFilter === cat ? "#c0392b" : "rgba(245,245,245,0.08)"}`,
+                  fontFamily: "'Bebas Neue',Impact,sans-serif", fontSize:"14px",
+                }}
+              >{cat}</button>
+            ))}
+            <span className="ml-auto text-xs" style={{ color:"#888888" }}>
+              {filtered.length} producto{filtered.length !== 1 ? "s" : ""}
+            </span>
+          </div>
+
+          {/* Grid de productos */}
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+            initial="hidden" animate="visible" variants={stagger}
+          >
+            {filtered.map(product => {
+              const waUrl = `https://wa.me/${content.business.whatsapp}?text=${encodeURIComponent(`Hola, me interesa: ${product.name}. Me pueden dar mas informacion y precio final?`)}`
+              return (
+                <motion.div key={product.id} variants={scaleIn}
+                  className="overflow-hidden"
+                  style={{ background:"#111111", border:"1px solid rgba(245,245,245,0.06)" }}
+                  whileHover={{ borderColor:"rgba(192,57,43,0.3)" }}
+                >
+                  <div className="relative h-52 overflow-hidden">
+                    <motion.img src={product.image} alt={product.name}
+                      className="w-full h-full object-cover"
+                      style={{ filter:"grayscale(30%)" }}
+                      whileHover={{ scale:1.05, filter:"grayscale(0%)" }}
+                      transition={{ duration:0.4 }}
+                    />
+                    {product.badge && (
+                      <div className="absolute top-3 left-3 px-2 py-0.5 text-[10px] font-bold tracking-wider"
+                        style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                      >{product.badge}</div>
+                    )}
+                    <div className="absolute top-3 right-3 px-2 py-0.5 text-[10px]"
+                      style={{ background:"rgba(10,10,10,0.75)", color:"rgba(245,245,245,0.5)" }}
+                    >{product.category}</div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-display text-lg mb-1" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{product.name}</h3>
+                    <p className="text-xs leading-relaxed mb-4" style={{ color:"#888888" }}>{product.desc}</p>
+                    <div className="flex items-center justify-between pt-3" style={{ borderTop:"1px solid rgba(245,245,245,0.05)" }}>
+                      <span className="font-display text-xl" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{product.price}</span>
+                      <motion.a href={waUrl} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold"
+                        style={{ background:"#25D366", color:"#ffffff", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
+                        whileHover={{ opacity:0.9 }} whileTap={{ scale:0.97 }}
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                        Consultar
+                      </motion.a>
+                    </div>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </motion.div>
+
+          <p className="text-xs mt-8 text-center" style={{ color:"rgba(245,245,245,0.2)" }}>
+            Precios en MXN. Disponibilidad de tallas sujeta a inventario. Consulta por WhatsApp.
+          </p>
+        </div>
+      </section>
+    </motion.div>
+  )
+}
+
+export const EventosPage = () => {
+  const today = new Date()
+  const [curMonth, setCurMonth] = useState({ y: today.getFullYear(), m: today.getMonth() })
+  const [selDay, setSelDay]     = useState(null)
+
+  const { y, m } = curMonth
+  const MONTHS   = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
+  const DAYS     = ["Lun","Mar","Mie","Jue","Vie","Sab","Dom"]
+  const TYPE_COL = { Torneo:"#c0392b", Seminario:"#1a5276", Competencia:"#c0392b", Formacion:"#6b4c36", Exhibicion:"#2d6a4f" }
+
+  const daysInMonth  = new Date(y, m + 1, 0).getDate()
+  const firstDow     = new Date(y, m, 1).getDay()
+  const offset       = firstDow === 0 ? 6 : firstDow - 1
+  const totalCells   = Math.ceil((offset + daysInMonth) / 7) * 7
+
+  const cleanDate = str => str.replace(/\{\{|\}\}/g, "")
+
+  const eventsByDay = {}
+  content.eventos.forEach(e => {
+    const d = new Date(cleanDate(e.date))
+    if (d.getFullYear() === y && d.getMonth() === m) {
+      const day = d.getDate()
+      if (!eventsByDay[day]) eventsByDay[day] = []
+      eventsByDay[day].push(e)
+    }
+  })
+
+  const allFuture = content.eventos
+    .filter(e => new Date(cleanDate(e.date)) >= new Date(today.getFullYear(), today.getMonth(), today.getDate()))
+    .sort((a, b) => new Date(cleanDate(a.date)) - new Date(cleanDate(b.date)))
+
+  const displayEvents = selDay
+    ? (eventsByDay[selDay] || [])
+    : Object.values(eventsByDay).flat().length > 0
+      ? Object.values(eventsByDay).flat().sort((a,b) => new Date(cleanDate(a.date)) - new Date(cleanDate(b.date)))
+      : allFuture.slice(0, 6)
+
+  const prevMonth = () => { const d = new Date(y, m - 1, 1); setCurMonth({ y:d.getFullYear(), m:d.getMonth() }); setSelDay(null) }
+  const nextMonth = () => { const d = new Date(y, m + 1, 1); setCurMonth({ y:d.getFullYear(), m:d.getMonth() }); setSelDay(null) }
+
+  return (
+    <motion.div initial="initial" animate="animate" exit="exit" variants={pageTransition}>
+      <PageBanner eyebrow="Agenda" title="Eventos & Torneos" />
+      <section className="py-16 md:py-20" style={{ background:"#0a0a0a" }}>
+        <div className="max-w-6xl mx-auto px-5 md:px-10">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
+
+            {/* Calendario */}
+            <div className="lg:col-span-3">
+              {/* Navegacion de mes */}
+              <div className="flex items-center justify-between mb-6">
+                <button onClick={prevMonth}
+                  className="w-9 h-9 flex items-center justify-center text-lg transition-all"
+                  style={{ border:"1px solid rgba(192,57,43,0.3)", color:"#c0392b" }}
+                  onMouseEnter={e=>e.currentTarget.style.background="rgba(192,57,43,0.1)"}
+                  onMouseLeave={e=>e.currentTarget.style.background="transparent"}
+                >‹</button>
+                <h2 className="font-display text-2xl tracking-wider"
+                  style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                >{MONTHS[m]} {y}</h2>
+                <button onClick={nextMonth}
+                  className="w-9 h-9 flex items-center justify-center text-lg transition-all"
+                  style={{ border:"1px solid rgba(192,57,43,0.3)", color:"#c0392b" }}
+                  onMouseEnter={e=>e.currentTarget.style.background="rgba(192,57,43,0.1)"}
+                  onMouseLeave={e=>e.currentTarget.style.background="transparent"}
+                >›</button>
+              </div>
+
+              {/* Nombres de dias */}
+              <div className="grid grid-cols-7 mb-1">
+                {DAYS.map(d => (
+                  <div key={d} className="text-center py-2 text-[11px] font-bold tracking-widest"
+                    style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                  >{d}</div>
+                ))}
+              </div>
+
+              {/* Celdas */}
+              <div className="grid grid-cols-7 gap-0.5">
+                {Array.from({ length: totalCells }, (_, i) => {
+                  const dayNum   = i - offset + 1
+                  const valid    = dayNum >= 1 && dayNum <= daysInMonth
+                  const dayEvts  = valid ? (eventsByDay[dayNum] || []) : []
+                  const isToday  = valid && y === today.getFullYear() && m === today.getMonth() && dayNum === today.getDate()
+                  const isSel    = valid && dayNum === selDay
+                  const isPast   = valid && new Date(y, m, dayNum) < new Date(today.getFullYear(), today.getMonth(), today.getDate())
+                  const hasEvt   = dayEvts.length > 0
+
+                  return (
+                    <div key={i}
+                      onClick={() => valid && hasEvt && setSelDay(isSel ? null : dayNum)}
+                      className="aspect-square flex flex-col items-center justify-start pt-1.5 relative rounded-sm transition-all duration-150"
+                      style={{
+                        background: isSel ? "rgba(192,57,43,0.2)" : isToday ? "rgba(192,57,43,0.08)" : "transparent",
+                        border: isSel ? "1px solid #c0392b" : isToday ? "1px solid rgba(192,57,43,0.35)" : "1px solid transparent",
+                        cursor: valid && hasEvt ? "pointer" : "default",
+                        opacity: !valid ? 0 : isPast && !hasEvt ? 0.3 : 1,
+                      }}
+                    >
+                      {valid && (
+                        <>
+                          <span className="text-[11px] font-bold leading-none mb-1"
+                            style={{ color: isToday || isSel ? "#c0392b" : "#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                          >{dayNum}</span>
+                          <div className="flex gap-0.5 flex-wrap justify-center px-0.5">
+                            {dayEvts.slice(0, 3).map((e, ei) => (
+                              <div key={ei} className="w-1.5 h-1.5 rounded-full" style={{ background: e.color || "#c0392b" }}/>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Leyenda */}
+              <div className="flex flex-wrap gap-4 mt-4 pt-4" style={{ borderTop:"1px solid rgba(245,245,245,0.06)" }}>
+                {Object.entries(TYPE_COL).map(([type, color]) => (
+                  <div key={type} className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ background:color }}/>
+                    <span className="text-[11px]" style={{ color:"rgba(245,245,245,0.45)" }}>{type}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Lista de eventos */}
+            <div className="lg:col-span-2">
+              <h3 className="font-display text-xl mb-5"
+                style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.08em" }}
+              >
+                {selDay ? `${selDay} de ${MONTHS[m]}` : "Proximos Eventos"}
+              </h3>
+              <div className="space-y-3">
+                {displayEvents.length === 0 ? (
+                  <p className="text-sm" style={{ color:"#888888" }}>Sin eventos este mes.</p>
+                ) : (
+                  displayEvents.map(evt => {
+                    const evtDate = new Date(cleanDate(evt.date))
+                    const waLink  = evt.link || `https://wa.me/${content.business.whatsapp}?text=${encodeURIComponent(`Hola, me interesa inscribirme al evento: ${evt.title}`)}`
+                    return (
+                      <motion.div key={evt.id}
+                        initial={{ opacity:0, x:10 }} animate={{ opacity:1, x:0 }}
+                        className="p-4"
+                        style={{ background:"#111111", borderLeft:`3px solid ${evt.color || "#c0392b"}`, border:`1px solid ${evt.color || "#c0392b"}20`, borderLeftWidth:"3px" }}
+                      >
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5"
+                            style={{ background:`${evt.color || "#c0392b"}18`, color: evt.color || "#c0392b" }}
+                          >{evt.type}</span>
+                          <span className="text-[11px] font-bold shrink-0"
+                            style={{ color:"rgba(245,245,245,0.3)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                          >{evtDate.toLocaleDateString("es-MX",{ day:"numeric", month:"short", year:"numeric" })}</span>
+                        </div>
+                        <h4 className="font-display text-base mb-0.5" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{evt.title}</h4>
+                        <p className="text-xs mb-1" style={{ color:"#888888" }}>{evt.location}</p>
+                        <p className="text-xs leading-relaxed mb-3" style={{ color:"rgba(245,245,245,0.4)" }}>{evt.desc}</p>
+                        <a href={waLink} target="_blank" rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs font-bold"
+                          style={{ background: evt.color || "#c0392b", color:"#f5f5f5", padding:"5px 12px", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"12px" }}
+                        >Inscribirse / Info →</a>
+                      </motion.div>
+                    )
+                  })
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <EnrollCTA />
     </motion.div>
   )
 }
@@ -817,6 +1084,8 @@ const App = () => {
           <Route path="/programas"   element={<ProgramasPage/>}/>
           <Route path="/instructores"element={<InstructoresPage/>}/>
           <Route path="/horarios"    element={<HorariosPage/>}/>
+          <Route path="/eventos"     element={<EventosPage/>}/>
+          <Route path="/merch"       element={<MerchPage/>}/>
           <Route path="/contacto"    element={<ContactoPage/>}/>
         </Routes>
       </AnimatePresence>
