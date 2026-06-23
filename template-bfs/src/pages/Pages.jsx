@@ -108,7 +108,7 @@ export const ProgramasPage = () => (
 
 export const InstructoresPage = () => (
   <motion.div initial="initial" animate="animate" exit="exit" variants={pageTransition}>
-    <PageBanner eyebrow="El Equipo" title="Instructores" />
+    <PageBanner eyebrow="El Equipo" title="Instructor" />
     <InstructorsPreview />
     <EnrollCTA />
   </motion.div>

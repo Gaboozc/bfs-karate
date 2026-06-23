@@ -187,7 +187,7 @@ export const ProgramsPreview = () => {
 export const InstructorsPreview = () => (
   <section className="py-24 md:py-28 section-steel">
     <div className="max-w-6xl mx-auto px-5 md:px-10">
-      <SectionHeader eyebrow="El Equipo" title="Nuestros Instructores"
+      <SectionHeader eyebrow="El Equipo" title="Nuestro Instructor"
         subtitle="Maestros certificados con trayectoria en competencia nacional e internacional."
       />
       <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-5"

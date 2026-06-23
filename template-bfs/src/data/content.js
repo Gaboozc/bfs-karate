@@ -219,7 +219,7 @@ export const content = {
     links: [
       { label:"Inicio",       href:"/"            },
       { label:"Programas",    href:"/programas"   },
-      { label:"Instructores", href:"/instructores"},
+      { label:"Instructor",   href:"/instructores"},
       { label:"Horarios",     href:"/horarios"    },
       { label:"Eventos",      href:"/eventos"     },
       { label:"Merch",        href:"/merch"       },
