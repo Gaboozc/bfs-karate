@@ -272,49 +272,104 @@ export const ProgramsPreview = () => {
   )
 }
 
-// ── Instructores preview ──────────────────────────────────────────────────
-export const InstructorsPreview = () => (
-  <section className="py-24 md:py-28 section-steel">
-    <div className="max-w-6xl mx-auto px-5 md:px-10">
-      <SectionHeader eyebrow="El Equipo" title="Nuestro Instructor"
-        subtitle="Maestros certificados con trayectoria en competencia nacional e internacional."
-      />
-      <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-5"
-        initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
-      >
-        {content.instructors.map(inst => (
-          <motion.div key={inst.id} variants={scaleIn}
-            className="program-card overflow-hidden group"
-            style={{ background:"#0a0a0a" }}
-          >
-            {/* Foto */}
-            <div className="relative h-64 overflow-hidden">
-              <motion.img src={inst.photo} alt={inst.name}
-                className="w-full h-full object-cover" style={{ filter:"grayscale(80%)" }}
-                whileHover={{ scale:1.05, filter:"grayscale(0%)" }} transition={{ duration:0.5 }}
+// ── Instructor biográfico ─────────────────────────────────────────────────
+export const InstructorsPreview = () => {
+  const inst = content.instructors[0]
+  if (!inst) return null
+  const igUrl = `https://instagram.com/${inst.instagram.replace("@","")}`
+  return (
+    <section className="py-24 md:py-28 section-steel">
+      <div className="max-w-6xl mx-auto px-5 md:px-10">
+        <SectionHeader eyebrow="El Equipo" title="Nuestro Instructor" align="left" className="mb-10"/>
+
+        <motion.div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start"
+          initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
+        >
+          {/* Foto */}
+          <motion.div variants={fadeInLeft} className="lg:col-span-2 relative">
+            <div className="relative overflow-hidden" style={{ aspectRatio:"3/4" }}>
+              <img src={inst.photo} alt={inst.name}
+                className="w-full h-full object-cover"
+                style={{ filter:"grayscale(70%)" }}
               />
-              {/* Cinta de color en la parte inferior */}
-              <div className="absolute bottom-0 left-0 right-0 h-2" style={{ background:inst.beltColor }}/>
+              {/* Overlay degradado */}
+              <div className="absolute inset-0" style={{ background:"linear-gradient(to top, rgba(10,10,10,0.85) 0%, transparent 50%)" }}/>
+              {/* Cinta negra en la base */}
+              <div className="absolute bottom-0 left-0 right-0 h-1.5" style={{ background:inst.beltColor }}/>
+              {/* Rank badge sobre la foto */}
+              <div className="absolute bottom-4 left-4">
+                <div className="text-[10px] font-bold tracking-widest uppercase px-3 py-1"
+                  style={{ background:"#c0392b", color:"#fff", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                >{inst.rank}</div>
+              </div>
             </div>
-            <div className="p-5">
-              <div className="text-[10px] tracking-widest uppercase font-bold mb-1" style={{ color:"#c0392b" }}>{inst.rank}</div>
-              <h3 className="font-display text-xl mb-0.5" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{inst.name}</h3>
-              <p className="text-xs font-medium mb-3" style={{ color:"#888888" }}>{inst.title}</p>
-              <p className="text-sm leading-relaxed mb-4" style={{ color:"#888888" }}>{inst.bio}</p>
-              <div className="flex flex-wrap gap-1.5">
-                {inst.specialties.map((s,i)=>(
-                  <span key={i} className="text-[10px] px-2 py-0.5 font-semibold tracking-wider"
-                    style={{ background:"rgba(192,57,43,0.12)", color:"rgba(245,245,245,0.6)", border:"1px solid rgba(192,57,43,0.2)" }}
+            {/* Instagram */}
+            <a href={igUrl} target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-2 mt-4 text-xs font-semibold transition-colors"
+              style={{ color:"rgba(245,245,245,0.35)" }}
+              onMouseEnter={e=>e.currentTarget.style.color="#c0392b"}
+              onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.35)"}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+              {inst.instagram}
+            </a>
+          </motion.div>
+
+          {/* Contenido biográfico */}
+          <motion.div variants={fadeInRight} className="lg:col-span-3 flex flex-col gap-6">
+            {/* Nombre y título */}
+            <div>
+              <h2 className="font-display leading-none mb-1"
+                style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.03em" }}
+              >{inst.name}</h2>
+              <p className="text-sm font-semibold tracking-wider uppercase" style={{ color:"#c0392b" }}>{inst.title}</p>
+              <div className="blood-line mt-3"/>
+            </div>
+
+            {/* Bio */}
+            <p className="text-base leading-relaxed" style={{ color:"rgba(245,245,245,0.6)" }}>{inst.bio}</p>
+
+            {/* Cita */}
+            {inst.quote && (
+              <blockquote className="border-l-2 pl-5 italic text-sm leading-relaxed"
+                style={{ borderColor:"#c0392b", color:"rgba(245,245,245,0.4)" }}
+              >"{inst.quote}"</blockquote>
+            )}
+
+            {/* Logros */}
+            {inst.achievements && (
+              <div>
+                <p className="text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color:"#c0392b" }}>Trayectoria</p>
+                <ul className="space-y-2">
+                  {inst.achievements.map((a, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color:"rgba(245,245,245,0.55)" }}>
+                      <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background:"#c0392b" }}/>
+                      {a}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Especialidades */}
+            <div>
+              <p className="text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color:"#c0392b" }}>Especialidades</p>
+              <div className="flex flex-wrap gap-2">
+                {inst.specialties.map((s, i) => (
+                  <span key={i} className="text-[11px] px-3 py-1 font-semibold tracking-wider"
+                    style={{ background:"rgba(192,57,43,0.12)", color:"rgba(245,245,245,0.65)", border:"1px solid rgba(192,57,43,0.25)" }}
                   >{s}</span>
                 ))}
               </div>
             </div>
           </motion.div>
-        ))}
-      </motion.div>
-    </div>
-  </section>
-)
+        </motion.div>
+      </div>
+    </section>
+  )
+}
 
 // ── Horario ───────────────────────────────────────────────────────────────
 export const ScheduleSection = () => {
