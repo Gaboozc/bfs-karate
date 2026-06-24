@@ -99,14 +99,74 @@ export const Hero = () => {
             >{content.hero.cta.secondary}</Link>
           </motion.div>
 
-          {/* Stats */}
-          <motion.div variants={heroCTA} className="flex flex-wrap gap-10 pt-8" style={{ borderTop:"1px solid rgba(245,245,245,0.07)" }}>
-            {content.business.stats.map((s,i)=>(
-              <div key={i}>
-                <div className="font-display text-3xl" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{s.value}</div>
-                <div className="text-[11px] tracking-wider uppercase mt-0.5" style={{ color:"rgba(245,245,245,0.35)" }}>{s.label}</div>
+          {/* Google Reviews */}
+          <motion.div variants={heroCTA} className="pt-8" style={{ borderTop:"1px solid rgba(245,245,245,0.07)" }}>
+            {/* Cabecera */}
+            <div className="flex items-center gap-3 mb-4 flex-wrap">
+              <div className="flex items-center gap-1.5">
+                {/* Google G */}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                <span className="text-xs font-semibold" style={{ color:"rgba(245,245,245,0.5)" }}>Google Reviews</span>
               </div>
-            ))}
+              <div className="flex gap-0.5">
+                {[1,2,3,4,5].map(s => <span key={s} style={{ color:"#f5c518", fontSize:"13px" }}>★</span>)}
+              </div>
+              <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background:"rgba(245,193,24,0.1)", color:"#f5c518", border:"1px solid rgba(245,193,24,0.2)" }}>
+                Solo 5 estrellas
+              </span>
+              {content.business.googleMapsUrl && !content.business.googleMapsUrl.includes("{{") && (
+                <a href={content.business.googleMapsUrl} target="_blank" rel="noopener noreferrer"
+                  className="ml-auto text-[10px] tracking-widest uppercase transition-colors"
+                  style={{ color:"rgba(245,245,245,0.25)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                  onMouseEnter={e=>e.currentTarget.style.color="#c0392b"}
+                  onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.25)"}
+                >Ver todas →</a>
+              )}
+            </div>
+
+            {/* Cards con scroll horizontal */}
+            <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth:"none" }}>
+              {content.reviews
+                .filter(r => r.rating === 5)
+                .sort((a, b) => new Date(b.date.replace(/\{\{|\}\}/g,"")) - new Date(a.date.replace(/\{\{|\}\}/g,"")))
+                .map(review => {
+                  const cleanName = review.name.replace(/\{\{|\}\}/g,"").trim()
+                  const cleanText = review.text.replace(/\{\{|\}\}/g,"").trim()
+                  const cleanDate = review.date.replace(/\{\{|\}\}/g,"").trim()
+                  const initial   = cleanName[0] || "?"
+                  const dateLabel = (() => {
+                    const d = new Date(cleanDate)
+                    return isNaN(d) ? cleanDate : d.toLocaleDateString("es-MX",{ month:"short", year:"numeric" })
+                  })()
+                  return (
+                    <div key={review.id} className="shrink-0 w-60 p-4"
+                      style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(245,245,245,0.08)" }}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                          style={{ background:"#c0392b", color:"#fff", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                        >{initial}</div>
+                        <div className="min-w-0">
+                          <div className="text-xs font-semibold truncate" style={{ color:"#f5f5f5" }}>{cleanName}</div>
+                          <div className="text-[10px]" style={{ color:"rgba(245,245,245,0.3)" }}>{dateLabel}</div>
+                        </div>
+                      </div>
+                      <div className="flex gap-0.5 mb-2">
+                        {[1,2,3,4,5].map(s => <span key={s} style={{ color:"#f5c518", fontSize:"11px" }}>★</span>)}
+                      </div>
+                      <p className="text-xs leading-relaxed" style={{ color:"rgba(245,245,245,0.5)" }}>
+                        {cleanText.length > 110 ? cleanText.slice(0,110) + "…" : cleanText}
+                      </p>
+                    </div>
+                  )
+                })
+              }
+            </div>
           </motion.div>
         </motion.div>
       </div>
@@ -212,49 +272,104 @@ export const ProgramsPreview = () => {
   )
 }
 
-// ── Instructores preview ──────────────────────────────────────────────────
-export const InstructorsPreview = () => (
-  <section className="py-24 md:py-28 section-steel">
-    <div className="max-w-6xl mx-auto px-5 md:px-10">
-      <SectionHeader eyebrow="El Equipo" title="Nuestro Instructor"
-        subtitle="Maestros certificados con trayectoria en competencia nacional e internacional."
-      />
-      <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-5"
-        initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
-      >
-        {content.instructors.map(inst => (
-          <motion.div key={inst.id} variants={scaleIn}
-            className="program-card overflow-hidden group"
-            style={{ background:"#0a0a0a" }}
-          >
-            {/* Foto */}
-            <div className="relative h-64 overflow-hidden">
-              <motion.img src={inst.photo} alt={inst.name}
-                className="w-full h-full object-cover" style={{ filter:"grayscale(80%)" }}
-                whileHover={{ scale:1.05, filter:"grayscale(0%)" }} transition={{ duration:0.5 }}
+// ── Instructor biográfico ─────────────────────────────────────────────────
+export const InstructorsPreview = () => {
+  const inst = content.instructors[0]
+  if (!inst) return null
+  const igUrl = `https://instagram.com/${inst.instagram.replace("@","")}`
+  return (
+    <section className="py-24 md:py-28 section-steel">
+      <div className="max-w-6xl mx-auto px-5 md:px-10">
+        <SectionHeader eyebrow="El Equipo" title="Nuestro Instructor" align="left" className="mb-10"/>
+
+        <motion.div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start"
+          initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
+        >
+          {/* Foto */}
+          <motion.div variants={fadeInLeft} className="lg:col-span-2 relative">
+            <div className="relative overflow-hidden" style={{ aspectRatio:"3/4" }}>
+              <img src={inst.photo} alt={inst.name}
+                className="w-full h-full object-cover"
+                style={{ filter:"grayscale(70%)" }}
               />
-              {/* Cinta de color en la parte inferior */}
-              <div className="absolute bottom-0 left-0 right-0 h-2" style={{ background:inst.beltColor }}/>
+              {/* Overlay degradado */}
+              <div className="absolute inset-0" style={{ background:"linear-gradient(to top, rgba(10,10,10,0.85) 0%, transparent 50%)" }}/>
+              {/* Cinta negra en la base */}
+              <div className="absolute bottom-0 left-0 right-0 h-1.5" style={{ background:inst.beltColor }}/>
+              {/* Rank badge sobre la foto */}
+              <div className="absolute bottom-4 left-4">
+                <div className="text-[10px] font-bold tracking-widest uppercase px-3 py-1"
+                  style={{ background:"#c0392b", color:"#fff", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                >{inst.rank}</div>
+              </div>
             </div>
-            <div className="p-5">
-              <div className="text-[10px] tracking-widest uppercase font-bold mb-1" style={{ color:"#c0392b" }}>{inst.rank}</div>
-              <h3 className="font-display text-xl mb-0.5" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{inst.name}</h3>
-              <p className="text-xs font-medium mb-3" style={{ color:"#888888" }}>{inst.title}</p>
-              <p className="text-sm leading-relaxed mb-4" style={{ color:"#888888" }}>{inst.bio}</p>
-              <div className="flex flex-wrap gap-1.5">
-                {inst.specialties.map((s,i)=>(
-                  <span key={i} className="text-[10px] px-2 py-0.5 font-semibold tracking-wider"
-                    style={{ background:"rgba(192,57,43,0.12)", color:"rgba(245,245,245,0.6)", border:"1px solid rgba(192,57,43,0.2)" }}
+            {/* Instagram */}
+            <a href={igUrl} target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-2 mt-4 text-xs font-semibold transition-colors"
+              style={{ color:"rgba(245,245,245,0.35)" }}
+              onMouseEnter={e=>e.currentTarget.style.color="#c0392b"}
+              onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.35)"}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+              {inst.instagram}
+            </a>
+          </motion.div>
+
+          {/* Contenido biográfico */}
+          <motion.div variants={fadeInRight} className="lg:col-span-3 flex flex-col gap-6">
+            {/* Nombre y título */}
+            <div>
+              <h2 className="font-display leading-none mb-1"
+                style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.03em" }}
+              >{inst.name}</h2>
+              <p className="text-sm font-semibold tracking-wider uppercase" style={{ color:"#c0392b" }}>{inst.title}</p>
+              <div className="blood-line mt-3"/>
+            </div>
+
+            {/* Bio */}
+            <p className="text-base leading-relaxed" style={{ color:"rgba(245,245,245,0.6)" }}>{inst.bio}</p>
+
+            {/* Cita */}
+            {inst.quote && (
+              <blockquote className="border-l-2 pl-5 italic text-sm leading-relaxed"
+                style={{ borderColor:"#c0392b", color:"rgba(245,245,245,0.4)" }}
+              >"{inst.quote}"</blockquote>
+            )}
+
+            {/* Logros */}
+            {inst.achievements && (
+              <div>
+                <p className="text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color:"#c0392b" }}>Trayectoria</p>
+                <ul className="space-y-2">
+                  {inst.achievements.map((a, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color:"rgba(245,245,245,0.55)" }}>
+                      <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background:"#c0392b" }}/>
+                      {a}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Especialidades */}
+            <div>
+              <p className="text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color:"#c0392b" }}>Especialidades</p>
+              <div className="flex flex-wrap gap-2">
+                {inst.specialties.map((s, i) => (
+                  <span key={i} className="text-[11px] px-3 py-1 font-semibold tracking-wider"
+                    style={{ background:"rgba(192,57,43,0.12)", color:"rgba(245,245,245,0.65)", border:"1px solid rgba(192,57,43,0.25)" }}
                   >{s}</span>
                 ))}
               </div>
             </div>
           </motion.div>
-        ))}
-      </motion.div>
-    </div>
-  </section>
-)
+        </motion.div>
+      </div>
+    </section>
+  )
+}
 
 // ── Horario ───────────────────────────────────────────────────────────────
 export const ScheduleSection = () => {
