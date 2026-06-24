@@ -7,7 +7,25 @@ import { content } from "../../data/content"
 import { heroTitle, heroSub, heroCTA, fadeIn, fadeInUp, fadeInLeft, fadeInRight, scaleIn, stagger, staggerSlow, viewportOnce } from "../../styles/animations"
 
 const progIcons = { trophy:Trophy, star:Star, shield:Shield, zap:Zap, "user-shield":Shield, "user-check":UserCheck }
-const beltColors = { Blanco:"#f5f5f5", Amarillo:"#f5c518", Naranja:"#e07b39", Verde:"#2d6a4f", Azul:"#1a5276", Cafe:"#6b4c36", Negro:"#0a0a0a" }
+const beltColors = {
+  "Blanco":"#f5f5f5", "Blanco raya Morada":"#f5f5f5",
+  "Morada":"#8b3fa8", "Morada raya Amarilla":"#8b3fa8",
+  "Amarilla":"#f5c518", "Naranja":"#e07b39",
+  "Azul":"#2e75b6", "Azul raya Marron":"#2e75b6",
+  "Marron":"#6b4c36", "Negro":"#0a0a0a",
+}
+const BELTS = [
+  { name:"Blanco",              primary:"#f5f5f5", stripe:null        },
+  { name:"Blanco raya Morada",  primary:"#f5f5f5", stripe:"#8b3fa8"  },
+  { name:"Morada",              primary:"#8b3fa8", stripe:null        },
+  { name:"Morada raya Amarilla",primary:"#8b3fa8", stripe:"#f5c518"  },
+  { name:"Amarilla",            primary:"#f5c518", stripe:null        },
+  { name:"Naranja",             primary:"#e07b39", stripe:null        },
+  { name:"Azul",                primary:"#2e75b6", stripe:null        },
+  { name:"Azul raya Marron",    primary:"#2e75b6", stripe:"#6b4c36"  },
+  { name:"Marron",              primary:"#6b4c36", stripe:null        },
+  { name:"Negro",               primary:"#0a0a0a", stripe:null        },
+]
 const scheduleColors = {
   "Karate Kids":"#f5c518", "Karate Competitivo":"#c0392b",
   "Adultos":"#1a5276", "High Perf.":"#6b4c36",
@@ -101,16 +119,27 @@ export const BeltProgress = () => (
   <section style={{ background:"#111111" }}>
     <div className="belt-bar"/>
     <div className="max-w-7xl mx-auto px-5 md:px-10 py-10">
-      <motion.div className="flex flex-wrap items-center justify-center gap-3 md:gap-5"
+      <motion.div className="flex flex-wrap items-center justify-center gap-3 md:gap-4"
         initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
       >
-        {["Blanco","Amarillo","Naranja","Verde","Azul","Cafe","Negro"].map((belt,i)=>(
-          <motion.div key={belt} variants={scaleIn} className="flex flex-col items-center gap-2">
-            <div className="w-10 h-2.5 rounded-sm" style={{ background:beltColors[belt], boxShadow:`0 0 8px ${beltColors[belt]}50` }}/>
-            <span className="text-[10px] tracking-wider uppercase" style={{ color:"rgba(245,245,245,0.4)" }}>{belt}</span>
+        {BELTS.map((belt, i) => (
+          <motion.div key={belt.name} variants={scaleIn} className="flex flex-col items-center gap-2">
+            {/* Barra de cinta — con raya central si aplica */}
+            <div className="relative w-10 h-2.5 rounded-sm overflow-hidden"
+              style={{ background:belt.primary, boxShadow:`0 0 8px ${belt.primary}50` }}
+            >
+              {belt.stripe && (
+                <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-1.5"
+                  style={{ background:belt.stripe }}
+                />
+              )}
+            </div>
+            <span className="text-[9px] tracking-wider uppercase text-center max-w-[52px] leading-tight"
+              style={{ color:"rgba(245,245,245,0.4)" }}
+            >{belt.name}</span>
           </motion.div>
         ))}
-        <motion.div variants={scaleIn} className="text-xs tracking-widest uppercase ml-4" style={{ color:"rgba(245,245,245,0.25)" }}>
+        <motion.div variants={scaleIn} className="text-xs tracking-widest uppercase ml-2" style={{ color:"rgba(245,245,245,0.2)" }}>
           → Tu trayectoria
         </motion.div>
       </motion.div>
@@ -187,7 +216,7 @@ export const ProgramsPreview = () => {
 export const InstructorsPreview = () => (
   <section className="py-24 md:py-28 section-steel">
     <div className="max-w-6xl mx-auto px-5 md:px-10">
-      <SectionHeader eyebrow="El Equipo" title="Nuestros Instructores"
+      <SectionHeader eyebrow="El Equipo" title="Nuestro Instructor"
         subtitle="Maestros certificados con trayectoria en competencia nacional e internacional."
       />
       <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-5"
@@ -322,6 +351,136 @@ export const Testimonials = () => (
     </div>
   </section>
 )
+
+// ── Preview Eventos ───────────────────────────────────────────────────────
+export const EventosPreview = () => {
+  const today = new Date()
+  const upcoming = content.eventos
+    .filter(e => {
+      const raw = e.date.replace(/\{\{|\}\}/g, "")
+      return new Date(raw) >= new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    })
+    .sort((a, b) => new Date(a.date.replace(/\{\{|\}\}/g,"")) - new Date(b.date.replace(/\{\{|\}\}/g,"")))
+    .slice(0, 3)
+  return (
+    <section className="py-24 md:py-28 section-steel">
+      <div className="max-w-7xl mx-auto px-5 md:px-10">
+        <div className="flex items-end justify-between mb-12">
+          <SectionHeader eyebrow="Agenda" title="Proximos Eventos" align="left" className="mb-0"/>
+          <Link to="/eventos" className="hidden md:inline-flex items-center gap-2 text-xs tracking-widest uppercase font-semibold transition-colors duration-200"
+            style={{ color:"rgba(245,245,245,0.4)", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
+            onMouseEnter={e=>e.currentTarget.style.color="#c0392b"} onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.4)"}
+          >Ver agenda <ArrowRight size={12}/></Link>
+        </div>
+        {upcoming.length === 0 ? (
+          <p className="text-sm" style={{ color:"#888888" }}>Proximos eventos disponibles pronto.</p>
+        ) : (
+          <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-5"
+            initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
+          >
+            {upcoming.map(evt => {
+              const evtDate = new Date(evt.date.replace(/\{\{|\}\}/g,""))
+              const waUrl = evt.link || `https://wa.me/${content.business.whatsapp}?text=${encodeURIComponent(`Hola, me interesa el evento: ${evt.title}`)}`
+              return (
+                <motion.div key={evt.id} variants={fadeInUp}
+                  className="p-6 relative overflow-hidden"
+                  style={{ background:"#0a0a0a", border:`1px solid ${evt.color}20`, borderLeft:`3px solid ${evt.color}` }}
+                >
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="text-center px-3 py-2 shrink-0" style={{ background:`${evt.color}15` }}>
+                      <div className="font-display text-2xl leading-none" style={{ color:evt.color, fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
+                        {evtDate.getDate()}
+                      </div>
+                      <div className="text-[10px] font-bold tracking-wider uppercase" style={{ color:"rgba(245,245,245,0.4)" }}>
+                        {evtDate.toLocaleDateString("es-MX",{month:"short"}).replace(".","").toUpperCase()}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 mb-2 inline-block"
+                        style={{ background:`${evt.color}18`, color:evt.color }}
+                      >{evt.type}</span>
+                      <h3 className="font-display text-xl leading-none" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{evt.title}</h3>
+                    </div>
+                  </div>
+                  <p className="text-xs mb-1 flex items-center gap-1.5" style={{ color:"#888888" }}>
+                    <Clock size={10} style={{ color:`${evt.color}90` }}/>{evt.location}
+                  </p>
+                  <p className="text-xs leading-relaxed mb-4" style={{ color:"rgba(245,245,245,0.4)" }}>{evt.desc}</p>
+                  <a href={waUrl} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold transition-opacity"
+                    style={{ color:evt.color, fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
+                    onMouseEnter={e=>e.currentTarget.style.opacity="0.7"} onMouseLeave={e=>e.currentTarget.style.opacity="1"}
+                  >Mas info / Inscripcion <ArrowRight size={12}/></a>
+                </motion.div>
+              )
+            })}
+          </motion.div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+// ── Preview Merch ─────────────────────────────────────────────────────────
+export const MerchPreview = () => {
+  const featured = content.merch.filter(p => p.featured).slice(0, 3)
+  return (
+    <section className="py-24 md:py-28" style={{ background:"#111111" }}>
+      <div className="max-w-7xl mx-auto px-5 md:px-10">
+        <div className="flex items-end justify-between mb-12">
+          <SectionHeader eyebrow="Tienda Oficial" title="BFS Merch" align="left" className="mb-0"/>
+          <Link to="/merch" className="hidden md:inline-flex items-center gap-2 text-xs tracking-widest uppercase font-semibold transition-colors duration-200"
+            style={{ color:"rgba(245,245,245,0.4)", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
+            onMouseEnter={e=>e.currentTarget.style.color="#c0392b"} onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.4)"}
+          >Ver todo <ArrowRight size={12}/></Link>
+        </div>
+        <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-5"
+          initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
+        >
+          {featured.map(product => {
+            const waUrl = `https://wa.me/${content.business.whatsapp}?text=${encodeURIComponent(`Hola, me interesa: ${product.name}. Me pueden dar mas informacion?`)}`
+            return (
+              <motion.div key={product.id} variants={scaleIn}
+                className="overflow-hidden"
+                style={{ background:"#0a0a0a", border:"1px solid rgba(245,245,245,0.06)" }}
+                whileHover={{ borderColor:"rgba(192,57,43,0.3)" }}
+              >
+                <div className="relative h-52 overflow-hidden">
+                  <motion.img src={product.image} alt={product.name}
+                    className="w-full h-full object-cover"
+                    style={{ filter:"grayscale(40%)" }}
+                    whileHover={{ scale:1.05, filter:"grayscale(0%)" }}
+                    transition={{ duration:0.4 }}
+                  />
+                  {product.badge && (
+                    <div className="absolute top-3 left-3 px-2 py-0.5 text-[10px] font-bold tracking-wider"
+                      style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                    >{product.badge}</div>
+                  )}
+                  <div className="absolute top-3 right-3 px-2 py-0.5 text-[10px] tracking-wider"
+                    style={{ background:"rgba(10,10,10,0.75)", color:"rgba(245,245,245,0.5)" }}
+                  >{product.category}</div>
+                </div>
+                <div className="p-4">
+                  <h3 className="font-display text-xl mb-1" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{product.name}</h3>
+                  <p className="text-xs leading-relaxed mb-4" style={{ color:"#888888" }}>{product.desc}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="font-display text-xl" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{product.price}</span>
+                    <motion.a href={waUrl} target="_blank" rel="noopener noreferrer"
+                      className="px-4 py-2 text-xs font-bold"
+                      style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
+                      whileHover={{ opacity:0.85 }} whileTap={{ scale:0.97 }}
+                    >Consultar</motion.a>
+                  </div>
+                </div>
+              </motion.div>
+            )
+          })}
+        </motion.div>
+      </div>
+    </section>
+  )
+}
 
 // ── CTA de inscripcion ────────────────────────────────────────────────────
 export const EnrollCTA = () => {
