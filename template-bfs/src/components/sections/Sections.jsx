@@ -7,7 +7,25 @@ import { content } from "../../data/content"
 import { heroTitle, heroSub, heroCTA, fadeIn, fadeInUp, fadeInLeft, fadeInRight, scaleIn, stagger, staggerSlow, viewportOnce } from "../../styles/animations"
 
 const progIcons = { trophy:Trophy, star:Star, shield:Shield, zap:Zap, "user-shield":Shield, "user-check":UserCheck }
-const beltColors = { Blanco:"#f5f5f5", Amarillo:"#f5c518", Naranja:"#e07b39", Verde:"#2d6a4f", Azul:"#1a5276", Cafe:"#6b4c36", Negro:"#0a0a0a" }
+const beltColors = {
+  "Blanco":"#f5f5f5", "Blanco raya Morada":"#f5f5f5",
+  "Morada":"#8b3fa8", "Morada raya Amarilla":"#8b3fa8",
+  "Amarilla":"#f5c518", "Naranja":"#e07b39",
+  "Azul":"#2e75b6", "Azul raya Marron":"#2e75b6",
+  "Marron":"#6b4c36", "Negro":"#0a0a0a",
+}
+const BELTS = [
+  { name:"Blanco",              primary:"#f5f5f5", stripe:null        },
+  { name:"Blanco raya Morada",  primary:"#f5f5f5", stripe:"#8b3fa8"  },
+  { name:"Morada",              primary:"#8b3fa8", stripe:null        },
+  { name:"Morada raya Amarilla",primary:"#8b3fa8", stripe:"#f5c518"  },
+  { name:"Amarilla",            primary:"#f5c518", stripe:null        },
+  { name:"Naranja",             primary:"#e07b39", stripe:null        },
+  { name:"Azul",                primary:"#2e75b6", stripe:null        },
+  { name:"Azul raya Marron",    primary:"#2e75b6", stripe:"#6b4c36"  },
+  { name:"Marron",              primary:"#6b4c36", stripe:null        },
+  { name:"Negro",               primary:"#0a0a0a", stripe:null        },
+]
 const scheduleColors = {
   "Karate Kids":"#f5c518", "Karate Competitivo":"#c0392b",
   "Adultos":"#1a5276", "High Perf.":"#6b4c36",
@@ -101,16 +119,27 @@ export const BeltProgress = () => (
   <section style={{ background:"#111111" }}>
     <div className="belt-bar"/>
     <div className="max-w-7xl mx-auto px-5 md:px-10 py-10">
-      <motion.div className="flex flex-wrap items-center justify-center gap-3 md:gap-5"
+      <motion.div className="flex flex-wrap items-center justify-center gap-3 md:gap-4"
         initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
       >
-        {["Blanco","Amarillo","Naranja","Verde","Azul","Cafe","Negro"].map((belt,i)=>(
-          <motion.div key={belt} variants={scaleIn} className="flex flex-col items-center gap-2">
-            <div className="w-10 h-2.5 rounded-sm" style={{ background:beltColors[belt], boxShadow:`0 0 8px ${beltColors[belt]}50` }}/>
-            <span className="text-[10px] tracking-wider uppercase" style={{ color:"rgba(245,245,245,0.4)" }}>{belt}</span>
+        {BELTS.map((belt, i) => (
+          <motion.div key={belt.name} variants={scaleIn} className="flex flex-col items-center gap-2">
+            {/* Barra de cinta — con raya central si aplica */}
+            <div className="relative w-10 h-2.5 rounded-sm overflow-hidden"
+              style={{ background:belt.primary, boxShadow:`0 0 8px ${belt.primary}50` }}
+            >
+              {belt.stripe && (
+                <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-1.5"
+                  style={{ background:belt.stripe }}
+                />
+              )}
+            </div>
+            <span className="text-[9px] tracking-wider uppercase text-center max-w-[52px] leading-tight"
+              style={{ color:"rgba(245,245,245,0.4)" }}
+            >{belt.name}</span>
           </motion.div>
         ))}
-        <motion.div variants={scaleIn} className="text-xs tracking-widest uppercase ml-4" style={{ color:"rgba(245,245,245,0.25)" }}>
+        <motion.div variants={scaleIn} className="text-xs tracking-widest uppercase ml-2" style={{ color:"rgba(245,245,245,0.2)" }}>
           → Tu trayectoria
         </motion.div>
       </motion.div>
