@@ -13,7 +13,7 @@ export const content = {
     email:    "{{info@bfsmartialarts.com}}",
     address:  "Calle Yutes 07-planta alta, Villa de las Flores",
     city:     "San Francisco Coacalco, Estado de Mexico, 55710",
-    googleMapsUrl: "{{https://g.page/bfsmartialarts/review}}",
+    googleMapsUrl: "https://maps.app.goo.gl/QJrgy1DTuhbAYHrE8",
     hours: {
       weekdays: "Lunes a Viernes: 7:00 - 22:00",
       saturday: "Sabado: 8:00 - 14:00",
