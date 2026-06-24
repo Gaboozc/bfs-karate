@@ -8,20 +8,20 @@ export const content = {
     sub:      "Martial Arts & High Performance",
     description: "Academia de artes marciales y alto rendimiento. Formamos atletas completos: disciplina mental, tecnica depurada y condicionamiento fisico de elite. Para ninos, jovenes y adultos.",
     founded:  "{{2010}}",
-    phone:    "{{+52 55 0000 0000}}",
-    whatsapp: "{{5215500000000}}",
+    phone:    "+52 56 3406 4647",
+    whatsapp: "525563406647",
     email:    "{{info@bfsmartialarts.com}}",
-    address:  "{{Calle y numero, Colonia}}",
-    city:     "{{Ciudad, Estado}}",
+    address:  "Calle Yutes 07-planta alta, Villa de las Flores",
+    city:     "San Francisco Coacalco, Estado de Mexico, 55710",
     googleMapsUrl: "{{https://g.page/bfsmartialarts/review}}",
     hours: {
       weekdays: "Lunes a Viernes: 7:00 - 22:00",
-      saturday: "Sabado: 8:00 - 18:00",
-      sunday:   "Domingo: 9:00 - 13:00",
+      saturday: "Sabado: 8:00 - 14:00",
+      sunday:   "Domingo: Cerrado",
     },
     social: {
       instagram: "{{https://instagram.com/bfsmartialarts}}",
-      facebook:  "{{https://facebook.com/bfsmartialarts}}",
+      facebook:  "https://facebook.com/bfsmartialarts",
       youtube:   "{{https://youtube.com/@bfsmartialarts}}",
     },
     certifications: [
@@ -49,7 +49,7 @@ export const content = {
   ],
 
   hero: {
-    eyebrow:    "{{Ciudad}} · Est. {{2010}}",
+    eyebrow:    "San Francisco Coacalco · Est. {{2010}}",
     headline:   "BETTER.\nSTRONGER.\nFASTER.",
     subheadline:"Formamos atletas completos. No solo luchadores — personas con disciplina, enfoque y caracter. Clases para todas las edades y niveles.",
     cta:        { primary:"Inscribete Ahora", secondary:"Ver Programas" },
