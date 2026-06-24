@@ -13,6 +13,7 @@ export const content = {
     email:    "{{info@bfsmartialarts.com}}",
     address:  "{{Calle y numero, Colonia}}",
     city:     "{{Ciudad, Estado}}",
+    googleMapsUrl: "{{https://g.page/bfsmartialarts/review}}",
     hours: {
       weekdays: "Lunes a Viernes: 7:00 - 22:00",
       saturday: "Sabado: 8:00 - 18:00",
@@ -36,6 +37,16 @@ export const content = {
       { value: "{{8}}",    label: "Instructores certificados" },
     ],
   },
+
+  reviews: [
+    { id:1, name:"{{Roberto H.}}",  rating:5, date:"{{2026-06-10}}", text:"{{Excelente academia. El Sensei Zain es un instructor increible, muy dedicado y profesional. Mi hijo ha mejorado muchisimo en disciplina y tecnica.}}" },
+    { id:2, name:"{{Sofia M.}}",    rating:5, date:"{{2026-05-28}}", text:"{{Muy buen ambiente y excelentes instructores. Se nota la pasion por las artes marciales. Totalmente recomendado para ninos y adultos.}}" },
+    { id:3, name:"{{Marco T.}}",    rating:5, date:"{{2026-04-15}}", text:"{{BFS es de lo mejor que hay en la zona. Los entrenamientos son intensos y bien estructurados. Gran comunidad y ambiente familiar.}}" },
+    { id:4, name:"{{Ana L.}}",      rating:5, date:"{{2026-03-20}}", text:"{{Llevo 6 meses entrenando aqui y no me arrepiento. Las instalaciones son excelentes y el trato es inmejorable.}}" },
+    { id:5, name:"{{Carlos R.}}",   rating:4, date:"{{2026-02-14}}", text:"{{Buen lugar para aprender karate. Los instructores son pacientes y se adaptan a cada alumno. Recomendado.}}" },
+    { id:6, name:"{{Laura S.}}",    rating:5, date:"{{2026-01-30}}", text:"{{Mi hija esta encantada con las clases. Ha ganado confianza y disciplina desde que empezo. Los mejores instructores.}}" },
+    { id:7, name:"{{Diego P.}}",    rating:5, date:"{{2025-12-18}}", text:"{{Increible experiencia. El nivel de ensenanza es de competencia real. Aprendi mas en 3 meses aqui que en anos en otros lugares.}}" },
+  ],
 
   hero: {
     eyebrow:    "{{Ciudad}} · Est. {{2010}}",
