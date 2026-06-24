@@ -1,5 +1,5 @@
 // Pages + Admin + App — BFS Martial Arts
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Routes, Route, useLocation, useNavigate, Link, Navigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import {
@@ -1052,6 +1052,12 @@ const AdminPagos = () => {
 // ─────────────────────────────────────────────────────────────────────────────
 // ROUTER PRINCIPAL
 // ─────────────────────────────────────────────────────────────────────────────
+const ScrollToTop = () => {
+  const { pathname } = useLocation()
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }) }, [pathname])
+  return null
+}
+
 const App = () => {
   const location = useLocation()
   const [isAuth, setIsAuth] = useState(()=>sessionStorage.getItem("bfs_admin_auth")==="1")
@@ -1077,6 +1083,7 @@ const App = () => {
 
   return (
     <div style={{ background:"#0a0a0a" }}>
+      <ScrollToTop/>
       <Navbar/>
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
