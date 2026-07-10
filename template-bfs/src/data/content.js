@@ -148,7 +148,7 @@ export const content = {
       title:   "Fundador & Director Tecnico",
       bio:     "Fundador de BFS Martial Arts y cabeza tecnica de la academia. Cinturon Negro 4° Dan con trayectoria en competencia nacional e internacional. Atleta Top Ten Mexico en kickboxing y pointfighting bajo la organizacion NASKA, con participacion en torneos de alto nivel a lo largo de su carrera. Su metodologia combina la disciplina tradicional del karate con el dinamismo del alto rendimiento moderno, formando atletas completos — no solo en tecnica, sino en caracter y enfoque mental.",
       quote:   "El karate no es solo una tecnica de combate. Es una forma de vida.",
-      photo:   "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=800&q=85",
+      photo:   "/instructor-zain.jpg",
       specialties: ["Karate", "Kickboxing", "Pointfighting", "Alto Rendimiento"],
       achievements: [
         "Atleta Top Ten Mexico — Kickboxing & Pointfighting",
