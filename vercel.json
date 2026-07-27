@@ -1,5 +1,6 @@
 {
   "buildCommand": "cd template-bfs && npm run build",
   "outputDirectory": "template-bfs/dist",
-  "installCommand": "cd template-bfs && npm install"
+  "installCommand": "cd template-bfs && npm install",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

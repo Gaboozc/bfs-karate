@@ -6,6 +6,7 @@ import {
   LayoutDashboard, Users, Calendar, CreditCard, LogOut, Eye,
   TrendingUp, TrendingDown, Search, Bell, Menu, X, AlertTriangle,
   Trophy, Star, Shield, Zap, UserCheck, Clock, CheckCircle, MapPin, Phone, Mail,
+  ChevronDown, Award, Flame, Ruler,
 } from "lucide-react"
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
@@ -15,8 +16,7 @@ import { content }   from "../data/content"
 import { adminData } from "../data/adminData"
 import { Navbar, Footer, WhatsAppButton, BFSLogo, SectionHeader } from "../components/layout/Layout"
 import {
-  Hero, BeltProgress, ProgramsPreview, InstructorsPreview,
-  ScheduleSection, Testimonials, EnrollCTA, MerchPreview, EventosPreview,
+  Hero, BeltProgress, Testimonials, EnrollCTA, MetodologiaBFS, SponsorSection,
 } from "../components/sections/Sections"
 import { fadeInUp, fadeIn, scaleIn, stagger, staggerSlow, viewportOnce, pageTransition } from "../styles/animations"
 
@@ -43,25 +43,64 @@ const PageBanner = ({ eyebrow, title }) => (
 // ─────────────────────────────────────────────────────────────────────────────
 // PAGINAS PUBLICAS
 // ─────────────────────────────────────────────────────────────────────────────
+// El inicio NO repite el contenido de las secciones del navbar. Solo lleva
+// material que le es exclusivo: hero, progresion de cintas, metodologia,
+// testimonios y patrocinios.
 export const Home = () => (
   <motion.main initial="initial" animate="animate" exit="exit" variants={pageTransition}>
     <Hero />
     <BeltProgress />
-    <ProgramsPreview />
-    <InstructorsPreview />
-    <ScheduleSection />
-    <EventosPreview />
+    <MetodologiaBFS />
     <Testimonials />
-    <MerchPreview />
     <EnrollCTA />
   </motion.main>
 )
+
+export const SponsorsPage = () => (
+  <motion.div initial="initial" animate="animate" exit="exit" variants={pageTransition}>
+    <PageBanner eyebrow={content.sponsor.eyebrow} title={content.sponsor.title} />
+    <SponsorSection hideHeader />
+  </motion.div>
+)
+
+// Acordeon de preguntas frecuentes — solo se usa en Programas
+const FaqItem = ({ q, a }) => {
+  const [open, setOpen] = useState(false)
+  return (
+    <div style={{ borderBottom:"1px solid rgba(245,245,245,0.07)" }}>
+      <button onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between gap-4 py-5 text-left transition-colors"
+        style={{ color: open ? "#c0392b" : "#f5f5f5" }}
+        onMouseEnter={e=>e.currentTarget.style.color="#c0392b"}
+        onMouseLeave={e=>e.currentTarget.style.color = open ? "#c0392b" : "#f5f5f5"}
+      >
+        <span className="font-display text-lg md:text-xl" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{q}</span>
+        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration:0.2 }} className="shrink-0">
+          <ChevronDown size={18} style={{ color:"#c0392b" }}/>
+        </motion.span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height:0, opacity:0 }} animate={{ height:"auto", opacity:1 }} exit={{ height:0, opacity:0 }}
+            transition={{ duration:0.25 }} style={{ overflow:"hidden" }}
+          >
+            <p className="text-sm leading-relaxed pb-5 pr-8" style={{ color:"#888888" }}>{a}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
 
 export const ProgramasPage = () => (
   <motion.div initial="initial" animate="animate" exit="exit" variants={pageTransition}>
     <PageBanner eyebrow="Disciplinas" title="Nuestros Programas" />
     <section className="py-16 md:py-20" style={{ background:"#0a0a0a" }}>
       <div className="max-w-7xl mx-auto px-5 md:px-10">
+        <p className="text-base leading-relaxed max-w-2xl mb-12" style={{ color:"#888888" }}>
+          {content.programasPage.intro}
+        </p>
         <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
           initial="hidden" animate="visible" variants={stagger}
         >
@@ -102,17 +141,173 @@ export const ProgramasPage = () => (
         </motion.div>
       </div>
     </section>
-    <EnrollCTA />
+
+    {/* Como empezar */}
+    <section className="py-16 md:py-20 section-steel">
+      <div className="max-w-7xl mx-auto px-5 md:px-10">
+        <SectionHeader eyebrow="Primer paso" title={content.programasPage.pasos.title} align="left" className="mb-10"/>
+        <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-5"
+          initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
+        >
+          {content.programasPage.pasos.items.map(step => (
+            <motion.div key={step.n} variants={fadeInUp} className="p-7 relative overflow-hidden"
+              style={{ background:"#0a0a0a", borderLeft:"3px solid #c0392b" }}
+            >
+              <div className="absolute top-3 right-4 font-display leading-none select-none pointer-events-none"
+                style={{ fontSize:"4.5rem", color:"#c0392b", opacity:0.09, fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+              >{step.n}</div>
+              <div className="relative z-10">
+                <div className="font-display text-sm tracking-[0.2em] mb-3" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>PASO {step.n}</div>
+                <h3 className="font-display text-2xl mb-2" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{step.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color:"#888888" }}>{step.desc}</p>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+
+    {/* Preguntas frecuentes */}
+    <section className="py-16 md:py-20" style={{ background:"#0a0a0a" }}>
+      <div className="max-w-3xl mx-auto px-5 md:px-10">
+        <SectionHeader eyebrow="Dudas" title="Preguntas Frecuentes" align="left" className="mb-8"/>
+        <div>
+          {content.programasPage.faq.map(item => <FaqItem key={item.q} q={item.q} a={item.a}/>)}
+        </div>
+      </div>
+    </section>
+
+    <EnrollCTA variant="programas" />
   </motion.div>
 )
 
-export const InstructoresPage = () => (
-  <motion.div initial="initial" animate="animate" exit="exit" variants={pageTransition}>
-    <PageBanner eyebrow="El Equipo" title="Instructor" />
-    <InstructorsPreview />
-    <EnrollCTA />
-  </motion.div>
-)
+export const InstructoresPage = () => {
+  const inst = content.instructors[0]
+  if (!inst) return null
+  const igUrl = `https://instagram.com/${inst.instagram.replace("@","")}`
+  const { trayectoria, filosofia } = content.instructorPage
+
+  return (
+    <motion.div initial="initial" animate="animate" exit="exit" variants={pageTransition}>
+      <PageBanner eyebrow="El Equipo" title="Instructor" />
+
+      {/* Perfil */}
+      <section className="py-16 md:py-20" style={{ background:"#0a0a0a" }}>
+        <div className="max-w-6xl mx-auto px-5 md:px-10">
+          <motion.div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start"
+            initial="hidden" animate="visible" variants={stagger}
+          >
+            <motion.div variants={fadeInUp} className="lg:col-span-2">
+              <div className="relative overflow-hidden" style={{ aspectRatio:"3/4" }}>
+                <img src={inst.photo} alt={inst.name} className="w-full h-full object-cover" style={{ filter:"grayscale(70%)" }}/>
+                <div className="absolute inset-0" style={{ background:"linear-gradient(to top, rgba(10,10,10,0.85) 0%, transparent 50%)" }}/>
+                <div className="absolute bottom-0 left-0 right-0 h-1.5" style={{ background:inst.beltColor }}/>
+                <div className="absolute bottom-4 left-4">
+                  <div className="text-[10px] font-bold tracking-widest uppercase px-3 py-1"
+                    style={{ background:"#c0392b", color:"#fff", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                  >{inst.rank}</div>
+                </div>
+              </div>
+              <a href={igUrl} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-2 mt-4 text-xs font-semibold transition-colors"
+                style={{ color:"rgba(245,245,245,0.35)" }}
+                onMouseEnter={e=>e.currentTarget.style.color="#c0392b"}
+                onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.35)"}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+                {inst.instagram}
+              </a>
+
+              {/* Especialidades */}
+              <div className="mt-6">
+                <p className="text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color:"#c0392b" }}>Especialidades</p>
+                <div className="flex flex-wrap gap-2">
+                  {inst.specialties.map((s,i) => (
+                    <span key={i} className="text-[11px] px-3 py-1 font-semibold tracking-wider"
+                      style={{ background:"rgba(192,57,43,0.12)", color:"rgba(245,245,245,0.65)", border:"1px solid rgba(192,57,43,0.25)" }}
+                    >{s}</span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div variants={fadeInUp} className="lg:col-span-3 flex flex-col gap-6">
+              <div>
+                <h2 className="font-display leading-none mb-1"
+                  style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.03em" }}
+                >{inst.name}</h2>
+                <p className="text-sm font-semibold tracking-wider uppercase" style={{ color:"#c0392b" }}>{inst.title}</p>
+                <div className="blood-line mt-3"/>
+              </div>
+              <p className="text-base leading-relaxed" style={{ color:"rgba(245,245,245,0.6)" }}>{inst.bio}</p>
+              {inst.quote && (
+                <blockquote className="border-l-2 pl-5 italic text-base leading-relaxed"
+                  style={{ borderColor:"#c0392b", color:"rgba(245,245,245,0.45)" }}
+                >"{inst.quote}"</blockquote>
+              )}
+              {inst.achievements && (
+                <div>
+                  <p className="text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color:"#c0392b" }}>Logros destacados</p>
+                  <ul className="space-y-2">
+                    {inst.achievements.map((a,i) => (
+                      <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color:"rgba(245,245,245,0.55)" }}>
+                        <Award size={13} style={{ color:"#c0392b" }} className="mt-0.5 shrink-0"/>{a}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Linea de tiempo */}
+      <section className="py-16 md:py-20 section-steel">
+        <div className="max-w-4xl mx-auto px-5 md:px-10">
+          <SectionHeader eyebrow="Carrera" title="Trayectoria" align="left" className="mb-10"/>
+          <motion.div className="relative" initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}>
+            {/* Linea vertical */}
+            <div className="absolute left-[7px] top-2 bottom-2 w-px" style={{ background:"rgba(192,57,43,0.25)" }}/>
+            {trayectoria.map(t => (
+              <motion.div key={t.year} variants={fadeInUp} className="relative pl-10 pb-9 last:pb-0">
+                <div className="absolute left-0 top-1.5 w-[15px] h-[15px] rounded-full"
+                  style={{ background:"#0a0a0a", border:"2px solid #c0392b" }}
+                />
+                <div className="font-display text-xl mb-1" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{t.year}</div>
+                <h3 className="font-display text-2xl mb-1.5" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{t.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color:"#888888" }}>{t.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Filosofia de entrenamiento */}
+      <section className="py-16 md:py-20" style={{ background:"#0a0a0a" }}>
+        <div className="max-w-7xl mx-auto px-5 md:px-10">
+          <SectionHeader eyebrow="Metodo" title={filosofia.title} align="left" className="mb-10"/>
+          <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-5"
+            initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
+          >
+            {filosofia.items.map(item => (
+              <motion.div key={item.title} variants={scaleIn} className="p-7"
+                style={{ background:"#111111", borderLeft:"3px solid #c0392b" }}
+              >
+                <h3 className="font-display text-2xl mb-2" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{item.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color:"#888888" }}>{item.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      <EnrollCTA variant="instructor" />
+    </motion.div>
+  )
+}
 
 export const HorariosPage = () => {
   const { schedule } = content
@@ -122,6 +317,9 @@ export const HorariosPage = () => {
       <PageBanner eyebrow="Disponibilidad" title="Horario Completo" />
       <section className="py-16 md:py-20" style={{ background:"#0a0a0a" }}>
         <div className="max-w-7xl mx-auto px-5 md:px-10">
+          <p className="text-base leading-relaxed max-w-2xl mb-10" style={{ color:"#888888" }}>
+            {content.horariosPage.intro}
+          </p>
           <motion.div className="overflow-x-auto" initial="hidden" animate="visible" variants={fadeInUp}>
             <table className="w-full text-sm min-w-[900px]">
               <thead>
@@ -156,12 +354,57 @@ export const HorariosPage = () => {
               </tbody>
             </table>
           </motion.div>
-          <p className="text-xs mt-6 text-center" style={{ color:"rgba(245,245,245,0.25)" }}>
+          <p className="text-xs mt-6" style={{ color:"rgba(245,245,245,0.25)" }}>
             Horarios sujetos a cambio. Consulta disponibilidad de clases privadas directamente con tu instructor.
           </p>
         </div>
       </section>
-      <EnrollCTA />
+
+      {/* Como funciona cada clase */}
+      <section className="py-16 md:py-20 section-steel">
+        <div className="max-w-7xl mx-auto px-5 md:px-10">
+          <SectionHeader eyebrow="Que esperar" title="Como es cada Clase" align="left" className="mb-10"/>
+          <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+            initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
+          >
+            {content.horariosPage.tiposClase.map(t => (
+              <motion.div key={t.name} variants={scaleIn} className="p-6"
+                style={{ background:"#0a0a0a", border:`1px solid ${t.color}25`, borderTop:`3px solid ${t.color}` }}
+              >
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <h3 className="font-display text-2xl" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{t.full}</h3>
+                  <span className="text-[10px] font-bold px-2 py-0.5 tracking-wider uppercase shrink-0"
+                    style={{ background:`${t.color}18`, color:t.color }}
+                  >{t.name}</span>
+                </div>
+                <p className="text-sm leading-relaxed mb-4" style={{ color:"#888888" }}>{t.desc}</p>
+                <div className="flex items-center gap-2 pt-3" style={{ borderTop:"1px solid rgba(245,245,245,0.06)" }}>
+                  <Flame size={12} style={{ color:t.color }}/>
+                  <span className="text-[11px] font-semibold tracking-wider uppercase" style={{ color:"rgba(245,245,245,0.45)" }}>
+                    Intensidad: {t.intensidad}
+                  </span>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Notas */}
+          <motion.div className="mt-12 p-7" style={{ background:"#0a0a0a", border:"1px solid rgba(192,57,43,0.15)" }}
+            initial="hidden" whileInView="visible" viewport={viewportOnce} variants={fadeInUp}
+          >
+            <h3 className="font-display text-xl mb-4" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Antes de venir</h3>
+            <ul className="space-y-2.5">
+              {content.horariosPage.notas.map((n,i) => (
+                <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color:"rgba(245,245,245,0.55)" }}>
+                  <CheckCircle size={13} style={{ color:"#c0392b" }} className="mt-0.5 shrink-0"/>{n}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        </div>
+      </section>
+
+      <EnrollCTA variant="horarios" />
     </motion.div>
   )
 }
@@ -247,6 +490,9 @@ export const MerchPage = () => {
       <PageBanner eyebrow="Tienda Oficial" title="BFS Merch" />
       <section className="py-16 md:py-20" style={{ background:"#0a0a0a" }}>
         <div className="max-w-7xl mx-auto px-5 md:px-10">
+          <p className="text-base leading-relaxed max-w-2xl mb-10" style={{ color:"#888888" }}>
+            {content.merchPage.intro}
+          </p>
 
           {/* Filtros */}
           <div className="flex flex-wrap items-center gap-2 mb-8">
@@ -315,9 +561,64 @@ export const MerchPage = () => {
             })}
           </motion.div>
 
-          <p className="text-xs mt-8 text-center" style={{ color:"rgba(245,245,245,0.2)" }}>
+          <p className="text-xs mt-8" style={{ color:"rgba(245,245,245,0.2)" }}>
             Precios en MXN. Disponibilidad de tallas sujeta a inventario. Consulta por WhatsApp.
           </p>
+        </div>
+      </section>
+
+      {/* Como comprar + guia de tallas */}
+      <section className="py-16 md:py-20 section-steel">
+        <div className="max-w-7xl mx-auto px-5 md:px-10">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
+
+            <div className="lg:col-span-3">
+              <SectionHeader eyebrow="Proceso" title={content.merchPage.comoComprar.title} align="left" className="mb-8"/>
+              <motion.div className="space-y-4" initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}>
+                {content.merchPage.comoComprar.items.map(step => (
+                  <motion.div key={step.n} variants={fadeInUp} className="flex items-start gap-5 p-5"
+                    style={{ background:"#0a0a0a", border:"1px solid rgba(245,245,245,0.06)" }}
+                  >
+                    <div className="font-display text-3xl leading-none shrink-0"
+                      style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                    >{step.n}</div>
+                    <div>
+                      <h3 className="font-display text-xl mb-1" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{step.title}</h3>
+                      <p className="text-sm leading-relaxed" style={{ color:"#888888" }}>{step.desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+
+            <motion.div className="lg:col-span-2 p-6" style={{ background:"#0a0a0a", border:"1px solid rgba(192,57,43,0.15)" }}
+              initial="hidden" whileInView="visible" viewport={viewportOnce} variants={fadeInUp}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <Ruler size={15} style={{ color:"#c0392b" }}/>
+                <h3 className="font-display text-xl" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
+                  {content.merchPage.tallas.title}
+                </h3>
+              </div>
+              <table className="w-full text-sm mb-4">
+                <thead>
+                  <tr style={{ borderBottom:"1px solid rgba(192,57,43,0.25)" }}>
+                    <th className="py-2 text-left" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"14px" }}>Talla</th>
+                    <th className="py-2 text-right" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"14px" }}>Estatura</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {content.merchPage.tallas.rows.map(r => (
+                    <tr key={r.talla} style={{ borderBottom:"1px solid rgba(245,245,245,0.04)" }}>
+                      <td className="py-2 font-bold" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{r.talla}</td>
+                      <td className="py-2 text-right text-xs" style={{ color:"#888888" }}>{r.estatura}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="text-xs leading-relaxed" style={{ color:"rgba(245,245,245,0.35)" }}>{content.merchPage.tallas.note}</p>
+            </motion.div>
+          </div>
         </div>
       </section>
     </motion.div>
@@ -495,7 +796,42 @@ export const EventosPage = () => {
           </div>
         </div>
       </section>
-      <EnrollCTA />
+
+      {/* Historial — lo que ya paso */}
+      <section className="py-16 md:py-20 section-steel">
+        <div className="max-w-6xl mx-auto px-5 md:px-10">
+          <SectionHeader eyebrow="Historial" title="Eventos Anteriores" align="left" className="mb-10"/>
+          <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-5"
+            initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
+          >
+            {content.eventosPasados.map(evt => {
+              const d = new Date(cleanDate(evt.date))
+              return (
+                <motion.div key={evt.id} variants={fadeInUp} className="p-6"
+                  style={{ background:"#0a0a0a", border:"1px solid rgba(245,245,245,0.06)", borderLeft:`3px solid ${evt.color}` }}
+                >
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5"
+                      style={{ background:`${evt.color}18`, color:evt.color }}
+                    >{evt.type}</span>
+                    <span className="text-[11px] font-bold shrink-0"
+                      style={{ color:"rgba(245,245,245,0.3)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                    >{d.toLocaleDateString("es-MX",{ day:"numeric", month:"long", year:"numeric" })}</span>
+                  </div>
+                  <h3 className="font-display text-2xl mb-1" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{evt.title}</h3>
+                  <p className="text-xs mb-3" style={{ color:"#888888" }}>{evt.location}</p>
+                  <div className="flex items-start gap-2 pt-3" style={{ borderTop:"1px solid rgba(245,245,245,0.06)" }}>
+                    <Trophy size={13} style={{ color:evt.color }} className="mt-0.5 shrink-0"/>
+                    <span className="text-sm" style={{ color:"rgba(245,245,245,0.6)" }}>{evt.resultado}</span>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </motion.div>
+        </div>
+      </section>
+
+      <EnrollCTA variant="eventos" />
     </motion.div>
   )
 }
@@ -1093,6 +1429,7 @@ const App = () => {
           <Route path="/horarios"    element={<HorariosPage/>}/>
           <Route path="/eventos"     element={<EventosPage/>}/>
           <Route path="/merch"       element={<MerchPage/>}/>
+          <Route path="/sponsors"    element={<SponsorsPage/>}/>
           <Route path="/contacto"    element={<ContactoPage/>}/>
         </Routes>
       </AnimatePresence>

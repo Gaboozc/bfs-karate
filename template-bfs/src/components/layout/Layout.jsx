@@ -95,8 +95,9 @@ export const Navbar = () => {
         <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-16 md:h-18">
           <Link to="/"><BFSLogo size="sm"/></Link>
 
-          <div className="hidden md:flex items-center gap-8">
-            {content.nav.links.map(l => (
+          {/* Con 8 enlaces el menu no cabe en tablet — pasa a hamburguesa hasta lg */}
+          <div className="hidden lg:flex items-center gap-6">
+            {content.nav.links.filter(l => !l.button).map(l => (
               <Link key={l.href} to={l.href}
                 className="text-xs tracking-[0.15em] uppercase font-semibold transition-colors duration-200 relative"
                 style={{ color:location.pathname===l.href?"#c0392b":"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"14px" }}
@@ -108,13 +109,21 @@ export const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {content.nav.links.filter(l => l.button).map(l => (
+              <Link key={l.href} to={l.href}
+                className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold transition-all duration-200"
+                style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
+                onMouseEnter={e=>e.currentTarget.style.background="#a93226"}
+                onMouseLeave={e=>e.currentTarget.style.background="#c0392b"}
+              >{l.label}</Link>
+            ))}
             <Link to="/contacto"
-              className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold transition-all duration-200"
+              className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold transition-all duration-200"
               style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
               onMouseEnter={e=>e.currentTarget.style.background="#a93226"}
               onMouseLeave={e=>e.currentTarget.style.background="#c0392b"}
             >{content.nav.ctaText}</Link>
-            <button className="md:hidden" onClick={()=>setOpen(!open)} style={{ color:"#f5f5f5" }}>
+            <button className="lg:hidden" onClick={()=>setOpen(!open)} style={{ color:"#f5f5f5" }}>
               {open?<X size={22}/>:<Menu size={22}/>}
             </button>
           </div>
