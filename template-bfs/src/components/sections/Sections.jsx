@@ -321,6 +321,91 @@ export const MetodologiaBFS = () => {
   )
 }
 
+// ── Banner de patrocinadores actuales ─────────────────────────────────────
+// A partir de MIN_LOOP marcas la pista se duplica y se desplaza en bucle; con
+// menos, los logos se muestran fijos y centrados (un loop de 1 logo se ve roto).
+const MIN_LOOP = 4
+
+const SponsorLogo = ({ marca }) => {
+  const inner = marca.logo
+    ? <img src={marca.logo} alt={marca.name} className="max-h-11 w-auto object-contain"
+        style={{ filter:"grayscale(100%) brightness(1.7)", opacity:0.65 }}
+        onMouseEnter={e=>{ e.currentTarget.style.filter="grayscale(0%)"; e.currentTarget.style.opacity="1" }}
+        onMouseLeave={e=>{ e.currentTarget.style.filter="grayscale(100%) brightness(1.7)"; e.currentTarget.style.opacity="0.65" }}
+      />
+    : <span className="font-display text-2xl whitespace-nowrap transition-colors duration-200"
+        style={{ color:"rgba(245,245,245,0.45)", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.06em" }}
+        onMouseEnter={e=>e.currentTarget.style.color="#f5c518"}
+        onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.45)"}
+      >{marca.name}</span>
+
+  const content = (
+    <div className="flex items-center justify-center h-16 px-9 shrink-0">{inner}</div>
+  )
+
+  return marca.url
+    ? <a href={marca.url} target="_blank" rel="noopener noreferrer" title={marca.name}>{content}</a>
+    : content
+}
+
+export const SponsorsBanner = () => {
+  const s = content.sponsorsActuales
+  const marcas = s?.marcas || []
+  if (!marcas.length) return null
+
+  const enLoop = marcas.length >= MIN_LOOP
+  // La pista se duplica para que el corte del bucle sea invisible
+  const pista = enLoop ? [...marcas, ...marcas] : marcas
+
+  return (
+    <section className="py-16 md:py-20" style={{ background:"#0a0a0a", borderTop:"1px solid rgba(245,245,245,0.05)" }}>
+      <div className="max-w-7xl mx-auto px-5 md:px-10">
+        <motion.div className="text-center mb-9"
+          initial="hidden" whileInView="visible" viewport={viewportOnce} variants={fadeInUp}
+        >
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <div className="h-px w-8" style={{ background:"#f5c518" }}/>
+            <span className="text-[11px] tracking-[0.28em] uppercase font-semibold"
+              style={{ color:"#f5c518", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+            >{s.eyebrow}</span>
+            <div className="h-px w-8" style={{ background:"#f5c518" }}/>
+          </div>
+          <h2 className="font-display text-3xl md:text-4xl" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{s.title}</h2>
+          {s.desc && <p className="text-sm mt-2" style={{ color:"#888888" }}>{s.desc}</p>}
+        </motion.div>
+
+        {enLoop ? (
+          <div className="sponsor-marquee overflow-hidden"
+            style={{ "--sponsor-speed": `${marcas.length * 7}s` }}
+          >
+            {/* aria-hidden en la copia: el lector de pantalla no debe leer los logos dos veces */}
+            <div className="sponsor-track">
+              {pista.map((m, i) => (
+                <div key={`${m.name}-${i}`} aria-hidden={i >= marcas.length}>
+                  <SponsorLogo marca={m}/>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            {marcas.map(m => <SponsorLogo key={m.name} marca={m}/>)}
+          </div>
+        )}
+
+        <div className="text-center mt-9">
+          <Link to="/sponsors"
+            className="inline-flex items-center gap-2 text-xs tracking-widest uppercase font-semibold transition-colors duration-200"
+            style={{ color:"rgba(245,245,245,0.35)", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
+            onMouseEnter={e=>e.currentTarget.style.color="#f5c518"}
+            onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.35)"}
+          >Vuelvete sponsor <ArrowRight size={12}/></Link>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ── Patrocinios ───────────────────────────────────────────────────────────
 // `hideHeader` se usa en la pagina /sponsors, donde el PageBanner ya trae el titulo.
 export const SponsorSection = ({ hideHeader = false }) => {

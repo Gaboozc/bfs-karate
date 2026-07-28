@@ -381,6 +381,20 @@ export const content = {
     ],
   },
 
+  // Patrocinadores actuales — banner de logos en el inicio.
+  // Con menos de MIN_LOOP marcas se muestran fijas y centradas; a partir de ahi
+  // el banner arranca el desplazamiento en loop automaticamente.
+  // `logo`: ruta a un archivo en /public (ej. "/sponsors/alphadev.svg").
+  // Si es null se muestra el nombre en tipografia display como respaldo.
+  sponsorsActuales: {
+    eyebrow: "Con el apoyo de",
+    title:   "Nuestros Sponsors",
+    desc:    "Marcas que hacen posible que nuestros atletas compitan.",
+    marcas: [
+      { name:"AlphaDev Studios", url:"https://alphadevstudios.com", logo:null, tier:"Oro" },
+    ],
+  },
+
   // Bloque exclusivo del inicio — metodologia BFS
   metodologia: {
     eyebrow: "Por que BFS",
