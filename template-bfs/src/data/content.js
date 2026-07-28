@@ -381,6 +381,30 @@ export const content = {
     ],
   },
 
+  // Multimedia — bloque del inicio. Cada sub-bloque se oculta solo si no tiene
+  // datos, asi la seccion se va llenando conforme lleguen los materiales.
+  multimedia: {
+    eyebrow: "Multimedia",
+    title:   "Miranos en Accion",
+    desc:    "Videos de entrenamientos, torneos y la vida diaria del dojo.",
+
+    // Playlist de YouTube incrustada. Se necesita SOLO el ID de la playlist,
+    // no una API key: es el codigo que sigue a "list=" en la URL de YouTube.
+    // Ejemplo: youtube.com/playlist?list=PLxxxxxxxx  ->  "PLxxxxxxxx"
+    // Mientras este vacio, el bloque de video no se muestra.
+    youtubePlaylistId: "",
+
+    // Galeria. Cada foto: { src, alt }. src apunta a /public.
+    // Mientras el arreglo este vacio, la galeria no se muestra.
+    // OJO: si aparecen menores de edad hace falta autorizacion de los padres.
+    galeria: [],
+
+    // Feed automatico de Instagram: pendiente para la etapa con backend.
+    // No se puede hacer en un sitio estatico porque el token de la API de Meta
+    // quedaria expuesto en el navegador, y ademas caduca cada 60 dias.
+    instagramFeed: { habilitado: false },
+  },
+
   // Patrocinadores actuales — banner de logos en el inicio.
   // Con menos de MIN_LOOP marcas se muestran fijas y centradas; a partir de ahi
   // el banner arranca el desplazamiento en loop automaticamente.

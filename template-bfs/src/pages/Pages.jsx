@@ -16,7 +16,8 @@ import { content }   from "../data/content"
 import { adminData } from "../data/adminData"
 import { Navbar, Footer, WhatsAppButton, BFSLogo, SectionHeader } from "../components/layout/Layout"
 import {
-  Hero, BeltProgress, Testimonials, EnrollCTA, MetodologiaBFS, SponsorSection, SponsorsBanner,
+  Hero, BeltProgress, Testimonials, EnrollCTA, MetodologiaBFS, SponsorSection,
+  SponsorsBanner, MultimediaSection,
 } from "../components/sections/Sections"
 import { fadeInUp, fadeIn, scaleIn, stagger, staggerSlow, viewportOnce, pageTransition } from "../styles/animations"
 
@@ -51,6 +52,7 @@ export const Home = () => (
     <Hero />
     <BeltProgress />
     <MetodologiaBFS />
+    <MultimediaSection />
     <Testimonials />
     <SponsorsBanner />
     <EnrollCTA />

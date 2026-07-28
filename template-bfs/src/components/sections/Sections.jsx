@@ -1,5 +1,6 @@
 // Secciones publicas — BFS Martial Arts
-import { motion } from "framer-motion"
+import { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Link } from "react-router-dom"
 import { ArrowRight, Trophy, Star, Shield, Zap, UserCheck, Users, CheckCircle, Clock, Award } from "lucide-react"
 import { SectionHeader } from "../layout/Layout"
@@ -317,6 +318,162 @@ export const MetodologiaBFS = () => {
           ))}
         </motion.div>
       </div>
+    </section>
+  )
+}
+
+// ── Multimedia ────────────────────────────────────────────────────────────
+// Logos de marca: lucide-react ya no incluye iconos de marcas, van inline.
+const IconInstagram = p => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...p}>
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+  </svg>
+)
+const IconYouTube = p => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...p}>
+    <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/>
+  </svg>
+)
+const IconFacebook = p => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...p}>
+    <path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/>
+  </svg>
+)
+
+const REDES = [
+  { key:"instagram", label:"Instagram", handle:"@bfsmartialarts", Icon:IconInstagram, color:"#E1306C", desc:"Fotos y clips del dia a dia" },
+  { key:"youtube",   label:"YouTube",   handle:"BFS Martial Arts", Icon:IconYouTube, color:"#FF0000", desc:"Entrenamientos y torneos completos" },
+  { key:"facebook",  label:"Facebook",  handle:"BFS Martial Arts", Icon:IconFacebook, color:"#1877F2", desc:"Avisos y eventos de la academia" },
+]
+
+export const MultimediaSection = () => {
+  const m = content.multimedia
+  const [lightbox, setLightbox] = useState(null)
+
+  // Cerrar el visor con Escape
+  useEffect(() => {
+    if (lightbox === null) return
+    const onKey = e => { if (e.key === "Escape") setLightbox(null) }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [lightbox])
+
+  // Solo se muestran las redes con URL real (las pendientes van entre llaves)
+  const redes = REDES
+    .map(r => ({ ...r, url: content.business.social?.[r.key] }))
+    .filter(r => r.url && !r.url.includes("{{"))
+
+  const galeria  = m?.galeria || []
+  const playlist = m?.youtubePlaylistId
+
+  // Si no hay nada que mostrar, la seccion no se renderiza
+  if (!playlist && !galeria.length && !redes.length) return null
+
+  return (
+    <section className="py-24 md:py-28" style={{ background:"#111111" }}>
+      <div className="max-w-7xl mx-auto px-5 md:px-10">
+        <SectionHeader eyebrow={m.eyebrow} title={m.title} align="left" className="mb-4"/>
+        {m.desc && <p className="text-base leading-relaxed max-w-2xl mb-12" style={{ color:"#888888" }}>{m.desc}</p>}
+
+        {/* Playlist de YouTube */}
+        {playlist && (
+          <motion.div className="mb-14" initial="hidden" whileInView="visible" viewport={viewportOnce} variants={fadeInUp}>
+            <div className="relative w-full overflow-hidden" style={{ aspectRatio:"16/9", background:"#0a0a0a", border:"1px solid rgba(245,245,245,0.08)" }}>
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/videoseries?list=${playlist}`}
+                title="Videos de BFS Martial Arts"
+                className="absolute inset-0 w-full h-full"
+                style={{ border:0 }}
+                loading="lazy"
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </motion.div>
+        )}
+
+        {/* Galeria */}
+        {galeria.length > 0 && (
+          <motion.div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-14"
+            initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
+          >
+            {galeria.map((foto, i) => (
+              <motion.button key={foto.src} variants={scaleIn}
+                onClick={() => setLightbox(i)}
+                className="relative overflow-hidden group"
+                style={{ aspectRatio:"1/1", background:"#0a0a0a", border:"1px solid rgba(245,245,245,0.06)", cursor:"zoom-in" }}
+                aria-label={`Ver foto: ${foto.alt}`}
+              >
+                <img src={foto.src} alt={foto.alt} loading="lazy"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  style={{ filter:"grayscale(45%)" }}
+                />
+                <div className="absolute inset-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+                  style={{ background:"linear-gradient(to top, rgba(192,57,43,0.35), transparent 60%)" }}
+                />
+              </motion.button>
+            ))}
+          </motion.div>
+        )}
+
+        {/* Redes sociales */}
+        {redes.length > 0 && (
+          <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
+          >
+            {redes.map(({ key, label, handle, desc, Icon, color, url }) => (
+              <motion.a key={key} variants={fadeInUp}
+                href={url} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-4 p-6 transition-all duration-200"
+                style={{ background:"#0a0a0a", border:"1px solid rgba(245,245,245,0.07)" }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = `${color}70`}
+                onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(245,245,245,0.07)"}
+                whileHover={{ y:-3 }}
+              >
+                <div className="w-12 h-12 flex items-center justify-center shrink-0 rounded-lg" style={{ background:`${color}18` }}>
+                  <Icon width="22" height="22" style={{ color }}/>
+                </div>
+                <div className="min-w-0">
+                  <div className="font-display text-xl leading-none mb-1" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{label}</div>
+                  <div className="text-xs truncate" style={{ color:"#888888" }}>{desc}</div>
+                </div>
+                <ArrowRight size={15} className="ml-auto shrink-0" style={{ color:"rgba(245,245,245,0.25)" }}/>
+              </motion.a>
+            ))}
+          </motion.div>
+        )}
+      </div>
+
+      {/* Visor de fotos */}
+      <AnimatePresence>
+        {lightbox !== null && galeria[lightbox] && (
+          <motion.div
+            initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
+            onClick={() => setLightbox(null)}
+            className="fixed inset-0 z-[60] flex items-center justify-center p-5"
+            style={{ background:"rgba(10,10,10,0.94)", cursor:"zoom-out" }}
+            role="dialog" aria-modal="true" aria-label="Visor de fotos"
+          >
+            <button onClick={() => setLightbox(null)}
+              className="absolute top-5 right-6 text-3xl leading-none"
+              style={{ color:"rgba(245,245,245,0.6)" }}
+              aria-label="Cerrar"
+            >×</button>
+            <motion.img
+              key={lightbox}
+              initial={{ scale:0.94, opacity:0 }} animate={{ scale:1, opacity:1 }} exit={{ scale:0.94, opacity:0 }}
+              src={galeria[lightbox].src} alt={galeria[lightbox].alt}
+              className="max-w-full max-h-full object-contain"
+              onClick={e => e.stopPropagation()}
+            />
+            <p className="absolute bottom-5 left-0 right-0 text-center text-sm px-5" style={{ color:"rgba(245,245,245,0.5)" }}>
+              {galeria[lightbox].alt}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   )
 }
