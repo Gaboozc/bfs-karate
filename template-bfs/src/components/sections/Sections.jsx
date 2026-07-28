@@ -42,7 +42,9 @@ export const Hero = () => {
       <motion.div className="absolute inset-0 z-0"
         initial={{ scale:1.08 }} animate={{ scale:1 }} transition={{ duration:2, ease:"easeOut" }}
       >
-        <img src={content.hero.image} alt="BFS Martial Arts" className="w-full h-full object-cover opacity-30"/>
+        <img src={content.hero.image} alt="" aria-hidden="true"
+          width="1600" height="900" fetchpriority="high"
+          className="w-full h-full object-cover opacity-30"/>
         <div className="absolute inset-0" style={{ background:"linear-gradient(to top, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0.6) 50%, rgba(10,10,10,0.2) 100%)" }}/>
       </motion.div>
       <div className="absolute inset-0 z-0 tatami-pattern"/>
@@ -87,19 +89,19 @@ export const Hero = () => {
           {/* CTAs */}
           <motion.div variants={heroCTA} className="flex flex-col sm:flex-row gap-4 mb-14">
             <Link to="/contacto"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-bold transition-all duration-200"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-bold transition-colors duration-200"
               style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"16px" }}
               onMouseEnter={e=>e.currentTarget.style.background="#a93226"}
               onMouseLeave={e=>e.currentTarget.style.background="#c0392b"}
             >{content.hero.cta.primary} <ArrowRight size={16}/></Link>
             <Link to="/programas"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-bold transition-all duration-200"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-bold transition-colors duration-200"
               style={{ border:"1px solid rgba(245,245,245,0.2)", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"16px" }}
               onMouseEnter={e=>{ e.currentTarget.style.borderColor="#c0392b"; e.currentTarget.style.color="#c0392b" }}
               onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(245,245,245,0.2)"; e.currentTarget.style.color="#f5f5f5" }}
             >{content.hero.cta.secondary}</Link>
             <Link to="/sponsors"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-bold transition-all duration-200"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-bold transition-colors duration-200"
               style={{ background:"#f5c518", color:"#0a0a0a", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"16px" }}
               onMouseEnter={e=>e.currentTarget.style.background="#d4a916"}
               onMouseLeave={e=>e.currentTarget.style.background="#f5c518"}
@@ -406,7 +408,7 @@ export const MultimediaSection = () => {
                 style={{ aspectRatio:"1/1", background:"#0a0a0a", border:"1px solid rgba(245,245,245,0.06)", cursor:"zoom-in" }}
                 aria-label={`Ver foto: ${foto.alt}`}
               >
-                <img src={foto.src} alt={foto.alt} loading="lazy"
+                <img src={foto.src} alt={foto.alt} loading="lazy" width="400" height="400"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   style={{ filter:"grayscale(45%)" }}
                 />
@@ -426,7 +428,7 @@ export const MultimediaSection = () => {
             {redes.map(({ key, label, handle, desc, Icon, color, url }) => (
               <motion.a key={key} variants={fadeInUp}
                 href={url} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-4 p-6 transition-all duration-200"
+                className="flex items-center gap-4 p-6 transition-colors duration-200"
                 style={{ background:"#0a0a0a", border:"1px solid rgba(245,245,245,0.07)" }}
                 onMouseEnter={e => e.currentTarget.style.borderColor = `${color}70`}
                 onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(245,245,245,0.07)"}

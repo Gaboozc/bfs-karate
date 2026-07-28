@@ -133,7 +133,7 @@ export const ProgramasPage = () => (
                 </div>
                 <div className="flex items-center justify-between pt-4" style={{ borderTop:"1px solid rgba(245,245,245,0.06)" }}>
                   <div className="font-display text-2xl" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{prog.price}</div>
-                  <Link to="/contacto" className="px-4 py-2 text-xs font-bold transition-all duration-200"
+                  <Link to="/contacto" className="px-4 py-2 text-xs font-bold transition-colors duration-200"
                     style={{ background:prog.color, color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
                     onMouseEnter={e=>e.currentTarget.style.opacity="0.85"} onMouseLeave={e=>e.currentTarget.style.opacity="1"}
                   >Inscribirse</Link>
@@ -202,7 +202,8 @@ export const InstructoresPage = () => {
           >
             <motion.div variants={fadeInUp} className="lg:col-span-2">
               <div className="relative overflow-hidden" style={{ aspectRatio:"3/4" }}>
-                <img src={inst.photo} alt={inst.name} className="w-full h-full object-cover" style={{ filter:"grayscale(70%)" }}/>
+                <img src={inst.photo} alt={`Retrato de ${inst.name}`} width="900" height="1200"
+                  className="w-full h-full object-cover" style={{ filter:"grayscale(70%)" }}/>
                 <div className="absolute inset-0" style={{ background:"linear-gradient(to top, rgba(10,10,10,0.85) 0%, transparent 50%)" }}/>
                 <div className="absolute bottom-0 left-0 right-0 h-1.5" style={{ background:inst.beltColor }}/>
                 <div className="absolute bottom-4 left-4">
@@ -501,7 +502,7 @@ export const MerchPage = () => {
           <div className="flex flex-wrap items-center gap-2 mb-8">
             {categories.map(cat => (
               <button key={cat} onClick={() => setActiveFilter(cat)}
-                className="px-4 py-2 text-xs font-bold tracking-wider transition-all duration-200"
+                className="px-4 py-2 text-xs font-bold tracking-wider transition-colors duration-200"
                 style={{
                   background: activeFilter === cat ? "#c0392b" : "#1a1a1a",
                   color:      activeFilter === cat ? "#f5f5f5" : "#888888",
@@ -530,6 +531,7 @@ export const MerchPage = () => {
                 >
                   <div className="relative h-52 overflow-hidden">
                     <motion.img src={product.image} alt={product.name}
+                      width="500" height="500" loading="lazy"
                       className="w-full h-full object-cover"
                       style={{ filter:"grayscale(30%)" }}
                       whileHover={{ scale:1.05, filter:"grayscale(0%)" }}
@@ -679,21 +681,21 @@ export const EventosPage = () => {
             <div className="lg:col-span-3">
               {/* Navegacion de mes */}
               <div className="flex items-center justify-between mb-6">
-                <button onClick={prevMonth}
-                  className="w-9 h-9 flex items-center justify-center text-lg transition-all"
+                <button onClick={prevMonth} aria-label="Mes anterior"
+                  className="w-9 h-9 flex items-center justify-center text-lg transition-colors"
                   style={{ border:"1px solid rgba(192,57,43,0.3)", color:"#c0392b" }}
                   onMouseEnter={e=>e.currentTarget.style.background="rgba(192,57,43,0.1)"}
                   onMouseLeave={e=>e.currentTarget.style.background="transparent"}
-                >‹</button>
+                ><span aria-hidden="true">‹</span></button>
                 <h2 className="font-display text-2xl tracking-wider"
                   style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                 >{MONTHS[m]} {y}</h2>
-                <button onClick={nextMonth}
-                  className="w-9 h-9 flex items-center justify-center text-lg transition-all"
+                <button onClick={nextMonth} aria-label="Mes siguiente"
+                  className="w-9 h-9 flex items-center justify-center text-lg transition-colors"
                   style={{ border:"1px solid rgba(192,57,43,0.3)", color:"#c0392b" }}
                   onMouseEnter={e=>e.currentTarget.style.background="rgba(192,57,43,0.1)"}
                   onMouseLeave={e=>e.currentTarget.style.background="transparent"}
-                >›</button>
+                ><span aria-hidden="true">›</span></button>
               </div>
 
               {/* Nombres de dias */}
@@ -716,14 +718,27 @@ export const EventosPage = () => {
                   const isPast   = valid && new Date(y, m, dayNum) < new Date(today.getFullYear(), today.getMonth(), today.getDate())
                   const hasEvt   = dayEvts.length > 0
 
+                  // Los dias con evento son botones: se pueden enfocar y activar
+                  // con teclado. Los vacios quedan como celdas inertes.
+                  const clickable = valid && hasEvt
+                  const Celda = clickable ? "button" : "div"
+                  const etiqueta = clickable
+                    ? `${dayNum} de ${MONTHS[m]}: ${dayEvts.length} evento${dayEvts.length !== 1 ? "s" : ""}`
+                    : undefined
+
                   return (
-                    <div key={i}
-                      onClick={() => valid && hasEvt && setSelDay(isSel ? null : dayNum)}
-                      className="aspect-square flex flex-col items-center justify-start pt-1.5 relative rounded-sm transition-all duration-150"
+                    <Celda key={i}
+                      {...(clickable ? {
+                        type: "button",
+                        onClick: () => setSelDay(isSel ? null : dayNum),
+                        "aria-label": etiqueta,
+                        "aria-pressed": isSel,
+                      } : { "aria-hidden": !valid })}
+                      className="aspect-square flex flex-col items-center justify-start pt-1.5 relative rounded-sm transition-colors duration-150"
                       style={{
                         background: isSel ? "rgba(192,57,43,0.2)" : isToday ? "rgba(192,57,43,0.08)" : "transparent",
                         border: isSel ? "1px solid #c0392b" : isToday ? "1px solid rgba(192,57,43,0.35)" : "1px solid transparent",
-                        cursor: valid && hasEvt ? "pointer" : "default",
+                        cursor: clickable ? "pointer" : "default",
                         opacity: !valid ? 0 : isPast && !hasEvt ? 0.3 : 1,
                       }}
                     >
@@ -739,7 +754,7 @@ export const EventosPage = () => {
                           </div>
                         </>
                       )}
-                    </div>
+                    </Celda>
                   )
                 })}
               </div>
@@ -868,21 +883,21 @@ const AdminLogin = ({ onLogin }) => {
         <div className="admin-card p-7">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs font-semibold mb-2 uppercase tracking-wider" style={{ color:"#94a3b8" }}>Contrasena</label>
-              <input type="password" value={pw} onChange={e=>{ setPw(e.target.value); setErr(false) }}
+              <label htmlFor="admin-pw" className="block text-xs font-semibold mb-2 uppercase tracking-wider" style={{ color:"#94a3b8" }}>Contrasena</label>
+              <input id="admin-pw" name="password" type="password" autoComplete="current-password"
+                value={pw} onChange={e=>{ setPw(e.target.value); setErr(false) }}
                 placeholder="••••••••" autoFocus
-                className="w-full px-4 py-3 rounded-lg text-sm text-white outline-none"
+                aria-invalid={err} aria-describedby={err ? "admin-pw-error" : undefined}
+                className="w-full px-4 py-3 rounded-lg text-sm text-white"
                 style={{ background:"#0a0a0a", border:err?"1px solid #f87171":"1px solid #2a2a2a" }}
-                onFocus={e=>!err&&(e.target.style.borderColor="#c0392b")}
-                onBlur={e=>!err&&(e.target.style.borderColor="#2a2a2a")}
               />
-              {err && <p className="text-xs mt-2" style={{ color:"#f87171" }}>Contrasena incorrecta.</p>}
+              {err && <p id="admin-pw-error" role="alert" className="text-xs mt-2" style={{ color:"#f87171" }}>Contrasena incorrecta. Verifica e intenta de nuevo.</p>}
             </div>
             <motion.button type="submit" disabled={loading||!pw}
               className="w-full py-3 rounded-lg text-sm font-bold text-white"
               style={{ background:pw?"#c0392b":"#2a2a2a", cursor:pw?"pointer":"not-allowed", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"16px" }}
               whileHover={pw?{ scale:1.02 }:{}} whileTap={pw?{ scale:0.98 }:{}}
-            >{loading?"Verificando...":"INGRESAR"}</motion.button>
+            >{loading?"Verificando…":"INGRESAR"}</motion.button>
           </form>
         </div>
         <div className="text-center mt-6">
@@ -921,7 +936,7 @@ const AdminSidebar = ({ onLogout, onClose }) => {
           const active = location.pathname === href
           return (
             <Link key={href} to={href} onClick={onClose}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"
               style={{ background:active?"rgba(192,57,43,0.15)":"transparent", color:active?"#c0392b":"#64748b",
                 border:active?"1px solid rgba(192,57,43,0.3)":"1px solid transparent" }}
               onMouseEnter={e=>!active&&(e.currentTarget.style.color="#94a3b8")}
@@ -974,21 +989,24 @@ const AdminLayout = ({ children, onLogout }) => {
           style={{ background:"rgba(10,10,10,0.97)", borderColor:"#2a2a2a", backdropFilter:"blur(10px)" }}
         >
           <div className="flex items-center gap-3">
-            <button className="md:hidden text-gray-400" onClick={()=>setSidebarOpen(true)}><Menu size={20}/></button>
+            <button className="md:hidden text-gray-400" onClick={()=>setSidebarOpen(true)} aria-label="Abrir menu lateral"><Menu size={20} aria-hidden="true"/></button>
             <h2 className="font-display text-base text-white" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.08em" }}>
               {pageTitles[location.pathname]||"Panel"}
             </h2>
           </div>
           <div className="flex items-center gap-3">
             <div className="relative hidden sm:block">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"/>
-              <input placeholder="Buscar alumno..." className="pl-8 pr-4 py-2 rounded-lg text-xs outline-none"
+              <Search size={14} aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"/>
+              <input type="search" name="buscar-alumno" aria-label="Buscar alumno"
+                spellCheck={false} autoComplete="off"
+                placeholder="Buscar alumno…" className="pl-8 pr-4 py-2 rounded-lg text-xs"
                 style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", color:"#e2e8f0", width:"180px" }}
               />
             </div>
             <div className="relative">
-              <button className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background:"#1a1a1a" }}>
-                <Bell size={14} className="text-gray-400"/>
+              <button className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background:"#1a1a1a" }}
+                aria-label={overdue > 0 ? `Notificaciones: ${overdue} pagos vencidos` : "Notificaciones"}>
+                <Bell size={14} className="text-gray-400" aria-hidden="true"/>
               </button>
               {overdue > 0 && (
                 <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center"
@@ -1155,15 +1173,17 @@ const AdminAlumnos = () => {
 
       <div className="flex flex-wrap gap-2 items-center">
         <div className="relative flex-1 min-w-48">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"/>
-          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Buscar alumno..."
-            className="w-full pl-9 pr-4 py-2.5 rounded-lg text-sm outline-none text-white"
+          <Search size={14} aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"/>
+          <input type="search" name="buscar-alumno" aria-label="Buscar alumno"
+            spellCheck={false} autoComplete="off"
+            value={search} onChange={e=>setSearch(e.target.value)} placeholder="Buscar alumno…"
+            className="w-full pl-9 pr-4 py-2.5 rounded-lg text-sm text-white"
             style={{ background:"#1a1a1a", border:"1px solid #2a2a2a" }}
           />
         </div>
         {programas.map(prog=>(
           <button key={prog} onClick={()=>setFilterProg(prog)}
-            className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200"
+            className="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors duration-200"
             style={{ background:filterProg===prog?"#c0392b":"#1a1a1a", color:filterProg===prog?"#ffffff":"#64748b",
               border:`1px solid ${filterProg===prog?"#c0392b":"#2a2a2a"}` }}
           >{prog}</button>
@@ -1344,7 +1364,7 @@ const AdminPagos = () => {
       <div className="flex gap-2">
         {Object.entries(counts).map(([key,count])=>(
           <button key={key} onClick={()=>setFilter(key)}
-            className="px-3 py-1.5 rounded-full text-xs font-semibold capitalize transition-all duration-200"
+            className="px-3 py-1.5 rounded-full text-xs font-semibold capitalize transition-colors duration-200"
             style={{ background:filter===key?"#c0392b":"#1a1a1a", color:filter===key?"#ffffff":"#64748b",
               border:`1px solid ${filter===key?"#c0392b":"#2a2a2a"}` }}
           >{key} ({count})</button>
@@ -1422,20 +1442,24 @@ const App = () => {
 
   return (
     <div style={{ background:"#0a0a0a" }}>
+      {/* Primer elemento tabulable: permite saltarse el menu con teclado */}
+      <a href="#contenido" className="skip-link">Saltar al contenido</a>
       <ScrollToTop/>
       <Navbar/>
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route path="/"            element={<Home/>}/>
-          <Route path="/programas"   element={<ProgramasPage/>}/>
-          <Route path="/instructores"element={<InstructoresPage/>}/>
-          <Route path="/horarios"    element={<HorariosPage/>}/>
-          <Route path="/eventos"     element={<EventosPage/>}/>
-          <Route path="/merch"       element={<MerchPage/>}/>
-          <Route path="/sponsors"    element={<SponsorsPage/>}/>
-          <Route path="/contacto"    element={<ContactoPage/>}/>
-        </Routes>
-      </AnimatePresence>
+      <div id="contenido" tabIndex={-1}>
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route path="/"            element={<Home/>}/>
+            <Route path="/programas"   element={<ProgramasPage/>}/>
+            <Route path="/instructores"element={<InstructoresPage/>}/>
+            <Route path="/horarios"    element={<HorariosPage/>}/>
+            <Route path="/eventos"     element={<EventosPage/>}/>
+            <Route path="/merch"       element={<MerchPage/>}/>
+            <Route path="/sponsors"    element={<SponsorsPage/>}/>
+            <Route path="/contacto"    element={<ContactoPage/>}/>
+          </Routes>
+        </AnimatePresence>
+      </div>
       <Footer/>
       <WhatsAppButton/>
     </div>

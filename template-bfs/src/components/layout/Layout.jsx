@@ -84,10 +84,23 @@ export const Navbar = () => {
   }, [])
   useEffect(() => { setOpen(false) }, [location.pathname])
 
+  // Menu abierto: cerrar con Escape y bloquear el scroll del fondo
+  useEffect(() => {
+    if (!open) return
+    const onKey = e => { if (e.key === "Escape") setOpen(false) }
+    const prev = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    window.addEventListener("keydown", onKey)
+    return () => {
+      window.removeEventListener("keydown", onKey)
+      document.body.style.overflow = prev
+    }
+  }, [open])
+
   return (
     <>
       <motion.nav initial={{ y:-64,opacity:0 }} animate={{ y:0,opacity:1 }} transition={{ duration:0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        className="fixed top-0 left-0 right-0 z-50 transition-colors duration-300"
         style={{ background:scrolled?"rgba(10,10,10,0.97)":"transparent",
           backdropFilter:scrolled?"blur(12px)":"none",
           borderBottom:scrolled?"1px solid rgba(192,57,43,0.2)":"none" }}
@@ -111,20 +124,24 @@ export const Navbar = () => {
           <div className="flex items-center gap-3">
             {content.nav.links.filter(l => l.button).map(l => (
               <Link key={l.href} to={l.href}
-                className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold transition-all duration-200"
+                className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold transition-colors duration-200"
                 style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
                 onMouseEnter={e=>e.currentTarget.style.background="#a93226"}
                 onMouseLeave={e=>e.currentTarget.style.background="#c0392b"}
               >{l.label}</Link>
             ))}
             <Link to="/contacto"
-              className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold transition-all duration-200"
+              className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold transition-colors duration-200"
               style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
               onMouseEnter={e=>e.currentTarget.style.background="#a93226"}
               onMouseLeave={e=>e.currentTarget.style.background="#c0392b"}
             >{content.nav.ctaText}</Link>
-            <button className="lg:hidden" onClick={()=>setOpen(!open)} style={{ color:"#f5f5f5" }}>
-              {open?<X size={22}/>:<Menu size={22}/>}
+            <button className="lg:hidden" onClick={()=>setOpen(!open)} style={{ color:"#f5f5f5" }}
+              aria-label={open ? "Cerrar menu" : "Abrir menu"}
+              aria-expanded={open}
+              aria-controls="menu-movil"
+            >
+              {open?<X size={22} aria-hidden="true"/>:<Menu size={22} aria-hidden="true"/>}
             </button>
           </div>
         </div>
@@ -133,8 +150,10 @@ export const Navbar = () => {
       <AnimatePresence>
         {open && (
           <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
+            id="menu-movil"
+            role="dialog" aria-modal="true" aria-label="Menu de navegacion"
             className="fixed inset-0 z-40 flex flex-col justify-center items-start px-10"
-            style={{ background:"#0a0a0a" }}
+            style={{ background:"#0a0a0a", overscrollBehavior:"contain" }}
           >
             {content.nav.links.map((l,i)=>(
               <motion.div key={l.href} initial={{ opacity:0,x:-30 }} animate={{ opacity:1,x:0 }} transition={{ delay:i*0.07 }}>
@@ -179,7 +198,7 @@ export const Footer = () => (
           <ul className="space-y-2.5">
             {content.nav.links.map(l=>(
               <li key={l.href}><Link to={l.href} className="text-sm transition-colors duration-200" style={{ color:"rgba(245,245,245,0.35)" }}
-                onMouseEnter={e=>e.target.style.color="#c0392b"} onMouseLeave={e=>e.target.style.color="rgba(245,245,245,0.35)"}
+                onMouseEnter={e=>e.currentTarget.style.color="#c0392b"} onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.35)"}
               >{l.label}</Link></li>
             ))}
           </ul>
@@ -204,7 +223,7 @@ export const Footer = () => (
           <div className="flex gap-3 mt-5">
             {[{href:content.business.social.instagram,label:"IG"},{href:content.business.social.facebook,label:"FB"},{href:content.business.social.youtube,label:"YT"}].filter(s=>s.href).map(({href,label})=>(
               <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-                className="w-8 h-8 flex items-center justify-center text-xs font-bold transition-all duration-200 font-display"
+                className="w-8 h-8 flex items-center justify-center text-xs font-bold transition-colors duration-200 font-display"
                 style={{ border:"1px solid rgba(192,57,43,0.3)", color:"rgba(245,245,245,0.3)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                 onMouseEnter={e=>{e.currentTarget.style.borderColor="#c0392b";e.currentTarget.style.color="#c0392b"}}
                 onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(192,57,43,0.3)";e.currentTarget.style.color="rgba(245,245,245,0.3)"}}
