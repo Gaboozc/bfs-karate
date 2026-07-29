@@ -5,6 +5,7 @@ import { Link } from "react-router-dom"
 import { ArrowRight, Trophy, Star, Shield, Zap, UserCheck, Users, CheckCircle, Clock, Award } from "lucide-react"
 import { SectionHeader } from "../layout/Layout"
 import { content } from "../../data/content"
+import { soloReales, sinPendientes } from "../../data/pendientes"
 import { heroTitle, heroSub, heroCTA, fadeIn, fadeInUp, fadeInLeft, fadeInRight, scaleIn, stagger, staggerSlow, viewportOnce } from "../../styles/animations"
 
 const progIcons = { trophy:Trophy, star:Star, shield:Shield, zap:Zap, "user-shield":Shield, "user-check":UserCheck }
@@ -36,6 +37,10 @@ const scheduleColors = {
 // ── Hero ──────────────────────────────────────────────────────────────────
 export const Hero = () => {
   const waUrl = `https://wa.me/${content.business.whatsapp}?text=${encodeURIComponent(content.enroll.whatsappMessage)}`
+  // Solo resenas confirmadas, de 5 estrellas, mas recientes primero
+  const resenasReales = soloReales(content.reviews, "name", "text", "date")
+    .filter(r => r.rating === 5)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
   return (
     <section className="relative min-h-screen flex items-end overflow-hidden" style={{ background:"#0a0a0a" }}>
       {/* Imagen de fondo */}
@@ -60,7 +65,7 @@ export const Hero = () => {
           <motion.div variants={fadeIn} className="flex items-center gap-3 mb-5">
             <div className="h-0.5 w-10" style={{ background:"#c0392b" }}/>
             <span className="text-[11px] tracking-[0.28em] uppercase font-semibold" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
-              {content.hero.eyebrow}
+              {sinPendientes(content.hero.eyebrow)}
             </span>
           </motion.div>
 
@@ -108,7 +113,9 @@ export const Hero = () => {
             ><Award size={16}/> {content.hero.cta.sponsor}</Link>
           </motion.div>
 
-          {/* Google Reviews */}
+          {/* Google Reviews — solo si son resenas reales. Las de relleno no se
+              publican: aparentarian opiniones de personas que no existen. */}
+          {resenasReales.length > 0 && (
           <motion.div variants={heroCTA} className="pt-8" style={{ borderTop:"1px solid rgba(245,245,245,0.07)" }}>
             {/* Cabecera */}
             <div className="flex items-center gap-3 mb-4 flex-wrap">
@@ -140,13 +147,11 @@ export const Hero = () => {
 
             {/* Cards con scroll horizontal */}
             <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth:"none" }}>
-              {content.reviews
-                .filter(r => r.rating === 5)
-                .sort((a, b) => new Date(b.date.replace(/\{\{|\}\}/g,"")) - new Date(a.date.replace(/\{\{|\}\}/g,"")))
+              {resenasReales
                 .map(review => {
-                  const cleanName = review.name.replace(/\{\{|\}\}/g,"").trim()
-                  const cleanText = review.text.replace(/\{\{|\}\}/g,"").trim()
-                  const cleanDate = review.date.replace(/\{\{|\}\}/g,"").trim()
+                  const cleanName = review.name.trim()
+                  const cleanText = review.text.trim()
+                  const cleanDate = review.date.trim()
                   const initial   = cleanName[0] || "?"
                   const dateLabel = (() => {
                     const d = new Date(cleanDate)
@@ -177,6 +182,7 @@ export const Hero = () => {
               }
             </div>
           </motion.div>
+          )}
         </motion.div>
       </div>
     </section>
@@ -217,14 +223,20 @@ export const BeltProgress = () => (
 )
 
 // ── Testimonios ───────────────────────────────────────────────────────────
-export const Testimonials = () => (
+// Los testimonios de relleno no se publican: llevan nombre y opinion de
+// alumnos que no existen. Sin testimonios reales, la seccion no aparece.
+export const Testimonials = () => {
+  const reales = soloReales(content.testimonials, "name", "text")
+  if (!reales.length) return null
+
+  return (
   <section className="py-24 md:py-28 section-steel">
     <div className="max-w-5xl mx-auto px-5 md:px-10">
       <SectionHeader eyebrow="Familia BFS" title="Lo que Dicen Nuestros Atletas"/>
       <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-5"
         initial="hidden" whileInView="visible" viewport={viewportOnce} variants={staggerSlow}
       >
-        {content.testimonials.map(item=>(
+        {reales.map(item=>(
           <motion.div key={item.id} variants={fadeInUp}
             className="p-7 relative" style={{ background:"#0a0a0a", border:"1px solid rgba(192,57,43,0.12)" }}
           >
@@ -244,7 +256,8 @@ export const Testimonials = () => (
       </motion.div>
     </div>
   </section>
-)
+  )
+}
 
 // ── CTA de inscripcion ────────────────────────────────────────────────────
 // `variant` toma el mensaje contextual de content.enroll.variants (programas,

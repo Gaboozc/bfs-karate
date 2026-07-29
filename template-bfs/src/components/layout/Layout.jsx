@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, Phone, MapPin, Mail, Clock, Instagram, Facebook, Youtube } from "lucide-react"
 import { content } from "../../data/content"
+import { real } from "../../data/pendientes"
 
 // Logo — carga /logo.png desde public/; fallback al SVG de karateka si no existe
 export const BFSLogo = ({ className="", size="md", light=false }) => {
@@ -216,12 +217,12 @@ export const Footer = () => (
         <div>
           <h4 className="font-display text-sm tracking-widest mb-5" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Contacto</h4>
           <ul className="space-y-3">
-            {[{Icon:MapPin,val:`${content.business.address}, ${content.business.city}`},{Icon:Phone,val:content.business.phone},{Icon:Mail,val:content.business.email}].map(({Icon,val},i)=>(
+            {[{Icon:MapPin,val:`${content.business.address}, ${content.business.city}`},{Icon:Phone,val:content.business.phone},{Icon:Mail,val:real(content.business.email)}].filter(({val})=>val).map(({Icon,val},i)=>(
               <li key={i} className="flex items-start gap-2"><Icon size={13} className="mt-0.5 shrink-0" style={{ color:"#c0392b" }}/><span className="text-sm" style={{ color:"rgba(245,245,245,0.35)" }}>{val}</span></li>
             ))}
           </ul>
           <div className="flex gap-3 mt-5">
-            {[{href:content.business.social.instagram,label:"IG"},{href:content.business.social.facebook,label:"FB"},{href:content.business.social.youtube,label:"YT"}].filter(s=>s.href).map(({href,label})=>(
+            {[{href:real(content.business.social.instagram),label:"IG"},{href:real(content.business.social.facebook),label:"FB"},{href:real(content.business.social.youtube),label:"YT"}].filter(s=>s.href).map(({href,label})=>(
               <a key={label} href={href} target="_blank" rel="noopener noreferrer"
                 className="w-8 h-8 flex items-center justify-center text-xs font-bold transition-colors duration-200 font-display"
                 style={{ border:"1px solid rgba(192,57,43,0.3)", color:"rgba(245,245,245,0.3)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}

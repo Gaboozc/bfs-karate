@@ -8,6 +8,7 @@ import {
   ChevronDown, Award, Flame, Ruler,
 } from "lucide-react"
 import { content } from "../data/content"
+import { precio, real, soloReales } from "../data/pendientes"
 import { Navbar, Footer, WhatsAppButton, SectionHeader } from "../components/layout/Layout"
 import {
   Hero, BeltProgress, Testimonials, EnrollCTA, MetodologiaBFS, SponsorSection,
@@ -126,7 +127,7 @@ export const ProgramasPage = () => (
                   ))}
                 </div>
                 <div className="flex items-center justify-between pt-4" style={{ borderTop:"1px solid rgba(245,245,245,0.06)" }}>
-                  <div className="font-display text-2xl" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{prog.price}</div>
+                  <div className="font-display text-2xl" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{precio(prog.price)}</div>
                   <Link to="/contacto" className="px-4 py-2 text-xs font-bold transition-colors duration-200"
                     style={{ background:prog.color, color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
                     onMouseEnter={e=>e.currentTarget.style.opacity="0.85"} onMouseLeave={e=>e.currentTarget.style.opacity="1"}
@@ -439,13 +440,14 @@ export const ContactoPage = () => {
             <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="space-y-4">
               <div className="p-7" style={{ background:"#111111", border:"1px solid rgba(192,57,43,0.15)" }}>
                 <h3 className="font-display text-xl mb-5" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>El Dojo</h3>
+                {/* Los datos que siguen pendientes no se listan */}
                 {[{Icon:MapPin,label:"Direccion",val:`${content.business.address}, ${content.business.city}`},
                   {Icon:Phone, label:"Telefono",  val:content.business.phone},
-                  {Icon:Mail,  label:"Email",     val:content.business.email},
+                  {Icon:Mail,  label:"Email",     val:real(content.business.email)},
                   {Icon:Clock, label:"Lun-Vie",   val:content.business.hours.weekdays},
                   {Icon:Clock, label:"Sabado",    val:content.business.hours.saturday},
                   {Icon:Clock, label:"Domingo",   val:content.business.hours.sunday},
-                ].map(({Icon,label,val})=>(
+                ].filter(({val}) => val).map(({Icon,label,val})=>(
                   <div key={label} className="flex items-start gap-3 py-3" style={{ borderBottom:"1px solid rgba(245,245,245,0.05)" }}>
                     <div className="w-7 h-7 flex items-center justify-center rounded shrink-0" style={{ background:"rgba(192,57,43,0.12)" }}>
                       <Icon size={13} style={{ color:"#c0392b" }}/>
@@ -544,7 +546,7 @@ export const MerchPage = () => {
                     <h3 className="font-display text-lg mb-1" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{product.name}</h3>
                     <p className="text-xs leading-relaxed mb-4" style={{ color:"#888888" }}>{product.desc}</p>
                     <div className="flex items-center justify-between pt-3" style={{ borderTop:"1px solid rgba(245,245,245,0.05)" }}>
-                      <span className="font-display text-xl" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{product.price}</span>
+                      <span className="font-display text-xl" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{precio(product.price)}</span>
                       <motion.a href={waUrl} target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold"
                         style={{ background:"#25D366", color:"#ffffff", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
@@ -640,6 +642,10 @@ export const EventosPage = () => {
   const totalCells   = Math.ceil((offset + daysInMonth) / 7) * 7
 
   const cleanDate = str => str.replace(/\{\{|\}\}/g, "")
+
+  // Los eventos pasados afirman resultados concretos (medallas, promociones).
+  // Solo se muestran los que tienen titulo, sede y resultado confirmados.
+  const pasadosReales = soloReales(content.eventosPasados, "title", "location", "resultado", "date")
 
   const eventsByDay = {}
   content.eventos.forEach(e => {
@@ -809,15 +815,17 @@ export const EventosPage = () => {
         </div>
       </section>
 
-      {/* Historial — lo que ya paso */}
+      {/* Historial — solo eventos confirmados. Los de relleno afirman
+          resultados y medallas que nadie ha verificado. */}
+      {pasadosReales.length > 0 && (
       <section className="py-16 md:py-20 section-steel">
         <div className="max-w-6xl mx-auto px-5 md:px-10">
           <SectionHeader eyebrow="Historial" title="Eventos Anteriores" align="left" className="mb-10"/>
           <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-5"
             initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
           >
-            {content.eventosPasados.map(evt => {
-              const d = new Date(cleanDate(evt.date))
+            {pasadosReales.map(evt => {
+              const d = new Date(evt.date)
               return (
                 <motion.div key={evt.id} variants={fadeInUp} className="p-6"
                   style={{ background:"#0a0a0a", border:"1px solid rgba(245,245,245,0.06)", borderLeft:`3px solid ${evt.color}` }}
@@ -842,6 +850,7 @@ export const EventosPage = () => {
           </motion.div>
         </div>
       </section>
+      )}
 
       <EnrollCTA variant="eventos" />
     </motion.div>
