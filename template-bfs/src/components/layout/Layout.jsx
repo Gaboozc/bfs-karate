@@ -123,12 +123,13 @@ export const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Secundario: delineado, para que Inscribirse gane la mirada */}
             {content.nav.links.filter(l => l.button).map(l => (
               <Link key={l.href} to={l.href}
                 className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold transition-colors duration-200"
-                style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
-                onMouseEnter={e=>e.currentTarget.style.background="#a93226"}
-                onMouseLeave={e=>e.currentTarget.style.background="#c0392b"}
+                style={{ background:"transparent", color:"#c0392b", border:"1px solid #c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
+                onMouseEnter={e=>{ e.currentTarget.style.background="#c0392b"; e.currentTarget.style.color="#f5f5f5" }}
+                onMouseLeave={e=>{ e.currentTarget.style.background="transparent"; e.currentTarget.style.color="#c0392b" }}
               >{l.label}</Link>
             ))}
             <Link to="/contacto"
@@ -170,10 +171,12 @@ export const Navbar = () => {
             <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.35 }}
               className="flex flex-col gap-3 mt-7 w-full max-w-[280px]"
             >
+              {/* Secundario: mismo rojo pero delineado, para que Inscribirse
+                  se lea como la accion principal */}
               {content.nav.links.filter(l => l.button).map(l => (
                 <Link key={l.href} to={l.href}
                   className="inline-flex items-center justify-center px-8 py-3.5 font-bold tracking-[0.12em]"
-                  style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"22px" }}
+                  style={{ background:"transparent", color:"#c0392b", border:"2px solid #c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"22px" }}
                 >{l.label}</Link>
               ))}
               <Link to="/contacto"
