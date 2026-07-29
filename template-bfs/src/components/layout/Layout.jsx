@@ -156,17 +156,30 @@ export const Navbar = () => {
             className="fixed inset-0 z-40 flex flex-col justify-center items-start px-10"
             style={{ background:"#0a0a0a", overscrollBehavior:"contain" }}
           >
-            {content.nav.links.map((l,i)=>(
+            {/* Enlaces de navegacion. Sponsors sale de aqui: baja con los
+                botones para quedar junto a Inscribirse. */}
+            {content.nav.links.filter(l => !l.button).map((l,i)=>(
               <motion.div key={l.href} initial={{ opacity:0,x:-30 }} animate={{ opacity:1,x:0 }} transition={{ delay:i*0.07 }}>
                 <Link to={l.href} className="block font-display text-5xl mb-4 tracking-wider"
                   style={{ color:location.pathname===l.href?"#c0392b":"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                 >{l.label}</Link>
               </motion.div>
             ))}
-            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.35 }} className="mt-6">
-              <Link to="/contacto" className="inline-flex px-8 py-3 text-sm font-bold" style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
-                {content.nav.ctaText}
-              </Link>
+
+            {/* Botones de accion */}
+            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.35 }}
+              className="flex flex-col gap-3 mt-7 w-full max-w-[280px]"
+            >
+              {content.nav.links.filter(l => l.button).map(l => (
+                <Link key={l.href} to={l.href}
+                  className="inline-flex items-center justify-center px-8 py-3.5 font-bold tracking-[0.12em]"
+                  style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"22px" }}
+                >{l.label}</Link>
+              ))}
+              <Link to="/contacto"
+                className="inline-flex items-center justify-center px-8 py-3.5 font-bold tracking-[0.12em]"
+                style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"22px" }}
+              >{content.nav.ctaText}</Link>
             </motion.div>
           </motion.div>
         )}
