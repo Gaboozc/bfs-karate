@@ -10,8 +10,95 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <title>BFS Martial Arts & High Performance</title>
-    <meta name="description" content="Better. Stronger. Faster. Academia de artes marciales y alto rendimiento. Clases de karate, MMA y entrenamiento funcional para todas las edades." />
+
+    <title>Clases de Karate en San Francisco Coacalco | BFS Martial Arts</title>
+    <meta name="description" content="Academia de karate y alto rendimiento en San Francisco Coacalco. Clases para ninos desde 4 anos, jovenes y adultos: karate, competencia, defensa personal y acondicionamiento. Primera semana gratis." />
+
+    <!-- AL COMPRAR EL DOMINIO PROPIO: reemplazar la URL en los 3 lugares de
+         abajo (canonical, og:url, y el JSON-LD) y en public/sitemap.xml -->
+    <link rel="canonical" href="https://bfs-murex.vercel.app/" />
+
+    <!-- Vista previa al compartir en WhatsApp, Facebook, Instagram y Telegram.
+         Sin esto el enlace llega pelado, sin imagen ni texto. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:site_name" content="BFS Martial Arts" />
+    <meta property="og:title" content="Clases de Karate en San Francisco Coacalco | BFS Martial Arts" />
+    <meta property="og:description" content="Karate para ninos, jovenes y adultos en Villa de las Flores. Competencia, defensa personal y alto rendimiento. Tu primera semana es gratis." />
+    <meta property="og:url" content="https://bfs-murex.vercel.app/" />
+    <meta property="og:image" content="https://bfs-murex.vercel.app/instructor-zain.jpg" />
+    <meta property="og:image:alt" content="Sensei Rafael Zain Pedraza, fundador de BFS Martial Arts" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Clases de Karate en San Francisco Coacalco | BFS Martial Arts" />
+    <meta name="twitter:description" content="Karate para ninos, jovenes y adultos en Villa de las Flores. Tu primera semana es gratis." />
+    <meta name="twitter:image" content="https://bfs-murex.vercel.app/instructor-zain.jpg" />
+
+    <!-- Datos estructurados: le dicen a Google que esto es una academia con
+         direccion, horarios y programas. Alimenta el panel lateral de busqueda
+         y las busquedas de "karate cerca de mi". -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SportsActivityLocation",
+      "@id": "https://bfs-murex.vercel.app/#academia",
+      "name": "BFS Martial Arts & High Performance",
+      "alternateName": "BFS Karate",
+      "description": "Academia de karate y alto rendimiento en San Francisco Coacalco. Clases para ninos, jovenes y adultos.",
+      "url": "https://bfs-murex.vercel.app/",
+      "image": "https://bfs-murex.vercel.app/instructor-zain.jpg",
+      "telephone": "+525634064647",
+      "priceRange": "$$",
+      "currenciesAccepted": "MXN",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Calle Yutes 07, planta alta, Villa de las Flores",
+        "addressLocality": "San Francisco Coacalco",
+        "addressRegion": "Estado de Mexico",
+        "postalCode": "55710",
+        "addressCountry": "MX"
+      },
+      "hasMap": "https://maps.app.goo.gl/QJrgy1DTuhbAYHrE8",
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+          "opens": "07:00",
+          "closes": "22:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Saturday",
+          "opens": "08:00",
+          "closes": "14:00"
+        }
+      ],
+      "sport": ["Karate", "Kickboxing", "Defensa personal"],
+      "founder": {
+        "@type": "Person",
+        "name": "Rafael Zain Pedraza Munguia",
+        "jobTitle": "Fundador y Director Tecnico",
+        "sameAs": "https://instagram.com/zainpedraza"
+      },
+      "areaServed": [
+        { "@type": "City", "name": "San Francisco Coacalco" },
+        { "@type": "City", "name": "Tultitlan" },
+        { "@type": "City", "name": "Ecatepec" }
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Programas",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Karate Kids (4 a 12 anos)" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Karate Competitivo (10 a 18 anos)" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Karate Adultos (18+)" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "High Performance" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Defensa Personal" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Clases Privadas" } }
+        ]
+      }
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

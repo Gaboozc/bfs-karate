@@ -1,0 +1,10 @@
+# BFS Martial Arts
+User-agent: *
+Allow: /
+
+# El panel interno no debe indexarse
+Disallow: /admin
+Disallow: /admin/
+
+# AL COMPRAR EL DOMINIO PROPIO: actualizar esta linea
+Sitemap: https://bfs-murex.vercel.app/sitemap.xml
