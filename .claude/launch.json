@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "bfs-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "template-bfs"],
+      "port": 5173
+    }
+  ]
+}

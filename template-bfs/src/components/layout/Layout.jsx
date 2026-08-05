@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, Phone, MapPin, Mail, Clock, Instagram, Facebook, Youtube } from "lucide-react"
 import { content } from "../../data/content"
+import { real } from "../../data/pendientes"
 
 // Logo — carga /logo.png desde public/; fallback al SVG de karateka si no existe
 export const BFSLogo = ({ className="", size="md", light=false }) => {
@@ -84,10 +85,23 @@ export const Navbar = () => {
   }, [])
   useEffect(() => { setOpen(false) }, [location.pathname])
 
+  // Menu abierto: cerrar con Escape y bloquear el scroll del fondo
+  useEffect(() => {
+    if (!open) return
+    const onKey = e => { if (e.key === "Escape") setOpen(false) }
+    const prev = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    window.addEventListener("keydown", onKey)
+    return () => {
+      window.removeEventListener("keydown", onKey)
+      document.body.style.overflow = prev
+    }
+  }, [open])
+
   return (
     <>
       <motion.nav initial={{ y:-64,opacity:0 }} animate={{ y:0,opacity:1 }} transition={{ duration:0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        className="fixed top-0 left-0 right-0 z-50 transition-colors duration-300"
         style={{ background:scrolled?"rgba(10,10,10,0.97)":"transparent",
           backdropFilter:scrolled?"blur(12px)":"none",
           borderBottom:scrolled?"1px solid rgba(192,57,43,0.2)":"none" }}
@@ -95,8 +109,9 @@ export const Navbar = () => {
         <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-16 md:h-18">
           <Link to="/"><BFSLogo size="sm"/></Link>
 
-          <div className="hidden md:flex items-center gap-8">
-            {content.nav.links.map(l => (
+          {/* Con 8 enlaces el menu no cabe en tablet — pasa a hamburguesa hasta lg */}
+          <div className="hidden lg:flex items-center gap-6">
+            {content.nav.links.filter(l => !l.button).map(l => (
               <Link key={l.href} to={l.href}
                 className="text-xs tracking-[0.15em] uppercase font-semibold transition-colors duration-200 relative"
                 style={{ color:location.pathname===l.href?"#c0392b":"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"14px" }}
@@ -108,14 +123,27 @@ export const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Secundario: delineado, para que Inscribirse gane la mirada */}
+            {content.nav.links.filter(l => l.button).map(l => (
+              <Link key={l.href} to={l.href}
+                className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold transition-colors duration-200"
+                style={{ background:"transparent", color:"#c0392b", border:"1px solid #c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
+                onMouseEnter={e=>{ e.currentTarget.style.background="#c0392b"; e.currentTarget.style.color="#f5f5f5" }}
+                onMouseLeave={e=>{ e.currentTarget.style.background="transparent"; e.currentTarget.style.color="#c0392b" }}
+              >{l.label}</Link>
+            ))}
             <Link to="/contacto"
-              className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold transition-all duration-200"
+              className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold transition-colors duration-200"
               style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
               onMouseEnter={e=>e.currentTarget.style.background="#a93226"}
               onMouseLeave={e=>e.currentTarget.style.background="#c0392b"}
             >{content.nav.ctaText}</Link>
-            <button className="md:hidden" onClick={()=>setOpen(!open)} style={{ color:"#f5f5f5" }}>
-              {open?<X size={22}/>:<Menu size={22}/>}
+            <button className="lg:hidden" onClick={()=>setOpen(!open)} style={{ color:"#f5f5f5" }}
+              aria-label={open ? "Cerrar menu" : "Abrir menu"}
+              aria-expanded={open}
+              aria-controls="menu-movil"
+            >
+              {open?<X size={22} aria-hidden="true"/>:<Menu size={22} aria-hidden="true"/>}
             </button>
           </div>
         </div>
@@ -124,20 +152,37 @@ export const Navbar = () => {
       <AnimatePresence>
         {open && (
           <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
+            id="menu-movil"
+            role="dialog" aria-modal="true" aria-label="Menu de navegacion"
             className="fixed inset-0 z-40 flex flex-col justify-center items-start px-10"
-            style={{ background:"#0a0a0a" }}
+            style={{ background:"#0a0a0a", overscrollBehavior:"contain" }}
           >
-            {content.nav.links.map((l,i)=>(
+            {/* Enlaces de navegacion. Sponsors sale de aqui: baja con los
+                botones para quedar junto a Inscribirse. */}
+            {content.nav.links.filter(l => !l.button).map((l,i)=>(
               <motion.div key={l.href} initial={{ opacity:0,x:-30 }} animate={{ opacity:1,x:0 }} transition={{ delay:i*0.07 }}>
                 <Link to={l.href} className="block font-display text-5xl mb-4 tracking-wider"
                   style={{ color:location.pathname===l.href?"#c0392b":"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                 >{l.label}</Link>
               </motion.div>
             ))}
-            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.35 }} className="mt-6">
-              <Link to="/contacto" className="inline-flex px-8 py-3 text-sm font-bold" style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
-                {content.nav.ctaText}
-              </Link>
+
+            {/* Botones de accion */}
+            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.35 }}
+              className="flex flex-col gap-3 mt-7 w-full max-w-[280px]"
+            >
+              {/* Secundario: mismo rojo pero delineado, para que Inscribirse
+                  se lea como la accion principal */}
+              {content.nav.links.filter(l => l.button).map(l => (
+                <Link key={l.href} to={l.href}
+                  className="inline-flex items-center justify-center px-8 py-3.5 font-bold tracking-[0.12em]"
+                  style={{ background:"transparent", color:"#c0392b", border:"2px solid #c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"22px" }}
+                >{l.label}</Link>
+              ))}
+              <Link to="/contacto"
+                className="inline-flex items-center justify-center px-8 py-3.5 font-bold tracking-[0.12em]"
+                style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"22px" }}
+              >{content.nav.ctaText}</Link>
             </motion.div>
           </motion.div>
         )}
@@ -170,7 +215,7 @@ export const Footer = () => (
           <ul className="space-y-2.5">
             {content.nav.links.map(l=>(
               <li key={l.href}><Link to={l.href} className="text-sm transition-colors duration-200" style={{ color:"rgba(245,245,245,0.35)" }}
-                onMouseEnter={e=>e.target.style.color="#c0392b"} onMouseLeave={e=>e.target.style.color="rgba(245,245,245,0.35)"}
+                onMouseEnter={e=>e.currentTarget.style.color="#c0392b"} onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.35)"}
               >{l.label}</Link></li>
             ))}
           </ul>
@@ -188,14 +233,14 @@ export const Footer = () => (
         <div>
           <h4 className="font-display text-sm tracking-widest mb-5" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Contacto</h4>
           <ul className="space-y-3">
-            {[{Icon:MapPin,val:`${content.business.address}, ${content.business.city}`},{Icon:Phone,val:content.business.phone},{Icon:Mail,val:content.business.email}].map(({Icon,val},i)=>(
+            {[{Icon:MapPin,val:`${content.business.address}, ${content.business.city}`},{Icon:Phone,val:content.business.phone},{Icon:Mail,val:real(content.business.email)}].filter(({val})=>val).map(({Icon,val},i)=>(
               <li key={i} className="flex items-start gap-2"><Icon size={13} className="mt-0.5 shrink-0" style={{ color:"#c0392b" }}/><span className="text-sm" style={{ color:"rgba(245,245,245,0.35)" }}>{val}</span></li>
             ))}
           </ul>
           <div className="flex gap-3 mt-5">
-            {[{href:content.business.social.instagram,label:"IG"},{href:content.business.social.facebook,label:"FB"},{href:content.business.social.youtube,label:"YT"}].filter(s=>s.href).map(({href,label})=>(
+            {[{href:real(content.business.social.instagram),label:"IG"},{href:real(content.business.social.facebook),label:"FB"},{href:real(content.business.social.youtube),label:"YT"}].filter(s=>s.href).map(({href,label})=>(
               <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-                className="w-8 h-8 flex items-center justify-center text-xs font-bold transition-all duration-200 font-display"
+                className="w-8 h-8 flex items-center justify-center text-xs font-bold transition-colors duration-200 font-display"
                 style={{ border:"1px solid rgba(192,57,43,0.3)", color:"rgba(245,245,245,0.3)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                 onMouseEnter={e=>{e.currentTarget.style.borderColor="#c0392b";e.currentTarget.style.color="#c0392b"}}
                 onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(192,57,43,0.3)";e.currentTarget.style.color="rgba(245,245,245,0.3)"}}

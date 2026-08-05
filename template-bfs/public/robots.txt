@@ -1,0 +1,9 @@
+# BFS Martial Arts
+User-agent: *
+Allow: /
+
+# El panel interno no debe indexarse
+Disallow: /admin
+Disallow: /admin/
+
+Sitemap: https://bfsmartialart.com/sitemap.xml

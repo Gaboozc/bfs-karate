@@ -57,11 +57,42 @@ body {
 /* Linea roja */
 .blood-line { width: 40px; height: 3px; background: #c0392b; }
 
+/* Foco visible — sin esto el sitio no se puede navegar con teclado.
+   :focus-visible en vez de :focus para no marcar en clic con mouse. */
+:focus-visible {
+  outline: 2px solid #c0392b;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+/* Sobre fondo rojo el contorno rojo no se ve — se invierte a claro */
+.section-red :focus-visible,
+[style*="background:#c0392b"]:focus-visible,
+[style*="background: #c0392b"]:focus-visible {
+  outline-color: #f5f5f5;
+}
+
+/* Enlace para saltar al contenido — solo aparece al tabular */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 12px 20px;
+  background: #c0392b;
+  color: #f5f5f5;
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 15px;
+}
+.skip-link:focus {
+  left: 8px;
+  top: 8px;
+}
+
 /* Card de programa */
 .program-card {
   background: #1c1c1c;
   border: 1px solid rgba(192,57,43,0.15);
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 .program-card:hover {
   border-color: rgba(192,57,43,0.45);
@@ -71,7 +102,7 @@ body {
 
 /* Celda del horario */
 .schedule-cell {
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
   cursor: default;
 }
 .schedule-cell.has-class:hover {
@@ -90,11 +121,35 @@ body {
   letter-spacing: -0.02em;
 }
 
+/* ---- Banner de sponsors en loop ---- */
+/* La pista se renderiza duplicada; -50% deja el punto de corte invisible */
+@keyframes sponsor-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.sponsor-track {
+  display: flex;
+  width: max-content;
+  animation: sponsor-scroll var(--sponsor-speed, 32s) linear infinite;
+}
+.sponsor-marquee:hover .sponsor-track { animation-play-state: paused; }
+
+/* Desvanece los bordes para que los logos no aparezcan de golpe */
+.sponsor-marquee {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+          mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sponsor-track { animation: none; }
+  .sponsor-marquee { -webkit-mask-image: none; mask-image: none; overflow-x: auto; }
+}
+
 /* ---- Admin dark panel ---- */
 .admin-body     { font-family:'Barlow Condensed',sans-serif; background:#0a0a0a; color:#e2e8f0; min-height:100vh; }
 .admin-card     { background:#1a1a1a; border:1px solid #2a2a2a; border-radius:10px; }
 .admin-sidebar  { background:#111111; border-right:1px solid #2a2a2a; }
-.kpi-card       { background:#1a1a1a; border:1px solid #2a2a2a; border-radius:10px; transition:all 0.2s; }
+.kpi-card       { background:#1a1a1a; border:1px solid #2a2a2a; border-radius:10px; transition:border-color 0.2s, box-shadow 0.2s; }
 .kpi-card:hover { border-color:rgba(192,57,43,0.4); box-shadow:0 0 20px rgba(192,57,43,0.06); }
 
 .status-active    { background:rgba(74,222,128,0.12);  color:#4ade80; border:1px solid rgba(74,222,128,0.3);  }
