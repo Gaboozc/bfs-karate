@@ -1,43 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- AL COMPRAR EL DOMINIO PROPIO: reemplazar bfs-murex.vercel.app en todas las URL -->
+<!-- Dominio propio: bfsmartialart.com (confirmado). Al agregar una ruta
+     publica nueva, sumarla aqui tambien. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://bfs-murex.vercel.app/</loc>
+    <loc>https://bfsmartialart.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://bfs-murex.vercel.app/programas</loc>
+    <loc>https://bfsmartialart.com/programas</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://bfs-murex.vercel.app/horarios</loc>
+    <loc>https://bfsmartialart.com/horarios</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://bfs-murex.vercel.app/contacto</loc>
+    <loc>https://bfsmartialart.com/contacto</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://bfs-murex.vercel.app/instructores</loc>
+    <loc>https://bfsmartialart.com/instructores</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://bfs-murex.vercel.app/eventos</loc>
+    <loc>https://bfsmartialart.com/eventos</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://bfs-murex.vercel.app/merch</loc>
+    <loc>https://bfsmartialart.com/merch</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://bfs-murex.vercel.app/sponsors</loc>
+    <loc>https://bfsmartialart.com/sponsors</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

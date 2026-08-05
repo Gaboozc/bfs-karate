@@ -10,7 +10,7 @@ export const content = {
     founded:  "{{2010}}",
     phone:    "+52 56 3406 4647",
     whatsapp: "525563406647",
-    email:    "{{info@bfsmartialarts.com}}",
+    email:    "{{info@bfsmartialart.com}}",
     address:  "Calle Yutes 07-planta alta, Villa de las Flores",
     city:     "San Francisco Coacalco, Estado de Mexico, 55710",
     googleMapsUrl: "https://maps.app.goo.gl/QJrgy1DTuhbAYHrE8",
