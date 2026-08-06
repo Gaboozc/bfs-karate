@@ -128,11 +128,39 @@ export const borrarHorario = async id => {
   return { error }
 }
 
+// ── Categorias de la tienda ─────────────────────────────────────────────────
+
+export const categoriasTodas = async () => {
+  if (!supabase) return { datos: [], error: { message: "Sin conexion a la base de datos." } }
+  const { data, error } = await supabase.from("categorias").select("*").order("orden").order("nombre")
+  return { datos: data ?? [], error }
+}
+
+export const guardarCategoria = async categoria => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { id, ...campos } = categoria
+  const consulta = id
+    ? supabase.from("categorias").update(campos).eq("id", id)
+    : supabase.from("categorias").insert(campos)
+  const { error } = await consulta
+  return { error }
+}
+
+/** Al borrar, los productos de esa categoria quedan sin categoria, no se borran. */
+export const borrarCategoria = async id => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("categorias").delete().eq("id", id)
+  return { error }
+}
+
 // ── Inventario ──────────────────────────────────────────────────────────────
 
 export const productosTodos = async () => {
   if (!supabase) return { datos: [], error: { message: "Sin conexion a la base de datos." } }
-  const { data, error } = await supabase.from("productos").select("*").order("categoria").order("nombre")
+  const { data, error } = await supabase
+    .from("productos")
+    .select("*, categorias(id, nombre)")
+    .order("nombre")
   return { datos: data ?? [], error }
 }
 

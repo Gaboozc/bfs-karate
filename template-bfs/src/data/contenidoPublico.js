@@ -106,7 +106,8 @@ export const programasPublicos = async respaldo => {
 const productoDelSitio = fila => ({
   id:        fila.id,
   name:      fila.nombre,
-  category:  fila.categoria,
+  // La categoria viene de su propia tabla; el texto suelto es el respaldo
+  category:  fila.categorias?.nombre ?? fila.categoria ?? "Sin categoria",
   // Sin precio definido, la tienda muestra "Consultar" por si sola
   price:     fila.precio != null ? `$${Number(fila.precio).toLocaleString("es-MX")}` : "{{pendiente}}",
   desc:      fila.descripcion,
@@ -115,9 +116,9 @@ const productoDelSitio = fila => ({
   featured:  fila.destacado,
 })
 
-/** Productos disponibles y con existencias. */
+/** Productos disponibles y con existencias, con su categoria. */
 export const productosPublicos = async respaldo => {
-  const filas = await leer("productos?select=*&order=categoria.asc,nombre.asc")
+  const filas = await leer("productos?select=*,categorias(nombre)&order=nombre.asc")
   return filas?.length ? filas.map(productoDelSitio) : respaldo
 }
 

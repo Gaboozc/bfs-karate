@@ -5,19 +5,20 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Plus, Pencil, Trash2, X, Package, AlertTriangle, Minus } from "lucide-react"
-import { productosTodos, guardarProducto, borrarProducto, ajustarExistencias } from "../data/supabase"
-
-const CATEGORIAS = ["Ropa", "Equipo", "Accesorios"]
+import { Plus, Pencil, Trash2, X, Package, AlertTriangle, Minus, Tag } from "lucide-react"
+import {
+  productosTodos, guardarProducto, borrarProducto, ajustarExistencias,
+  categoriasTodas, guardarCategoria, borrarCategoria,
+} from "../data/supabase"
 
 const productoVacio = () => ({
-  nombre: "", categoria: "Ropa", precio: "", descripcion: "",
+  nombre: "", categoria_id: null, precio: "", descripcion: "",
   imagen: "", etiqueta: "", destacado: false, disponible: true,
   existencias: "", alerta_minima: 3,
 })
 
 // ── Formulario ──────────────────────────────────────────────────────────────
-const Formulario = ({ producto, onGuardar, onCancelar, guardando }) => {
+const Formulario = ({ producto, categorias, onGuardar, onCancelar, guardando }) => {
   const [campos, setCampos] = useState(producto)
   const cambiar = (llave, valor) => setCampos(c => ({ ...c, [llave]: valor }))
 
@@ -26,8 +27,11 @@ const Formulario = ({ producto, onGuardar, onCancelar, guardando }) => {
     onGuardar({
       ...campos,
       // Vacio significa "sin definir", no cero
-      precio:      campos.precio === "" ? null : Number(campos.precio),
-      existencias: campos.existencias === "" ? null : Number(campos.existencias),
+      precio:       campos.precio === "" ? null : Number(campos.precio),
+      existencias:  campos.existencias === "" ? null : Number(campos.existencias),
+      categoria_id: campos.categoria_id || null,
+      // Se conserva el texto por compatibilidad con el sitio publico
+      categoria:    categorias.find(c => c.id === Number(campos.categoria_id))?.nombre ?? null,
     })
   }
 
@@ -68,9 +72,12 @@ const Formulario = ({ producto, onGuardar, onCancelar, guardando }) => {
             <div>
               <label htmlFor="pr-cat" className={etiq} style={{ color:"#94a3b8" }}>Categoria</label>
               <select id="pr-cat" className={input} style={estilo}
-                value={campos.categoria} onChange={e => cambiar("categoria", e.target.value)}
+                value={campos.categoria_id ?? ""} onChange={e => cambiar("categoria_id", e.target.value)}
               >
-                {CATEGORIAS.map(c => <option key={c} value={c} style={{ background:"#1a1a1a" }}>{c}</option>)}
+                <option value="" style={{ background:"#1a1a1a" }}>Sin categoria</option>
+                {categorias.map(c => (
+                  <option key={c.id} value={c.id} style={{ background:"#1a1a1a" }}>{c.nombre}</option>
+                ))}
               </select>
             </div>
             <div>
@@ -160,6 +167,144 @@ const Formulario = ({ producto, onGuardar, onCancelar, guardando }) => {
   )
 }
 
+// ── Gestor de categorias ────────────────────────────────────────────────────
+// Vive dentro del inventario, no en su propia seccion: se administran mientras
+// se cargan productos, que es cuando uno nota que falta una.
+const PanelCategorias = ({ categorias, productos, onCerrar, onCambio }) => {
+  const [nueva, setNueva] = useState("")
+  const [error, setError] = useState("")
+  const [porBorrar, setPorBorrar] = useState(null)
+
+  const cuantosUsan = id => productos.filter(p => p.categoria_id === id).length
+
+  const crear = async e => {
+    e.preventDefault()
+    const nombre = nueva.trim()
+    if (!nombre) return
+    if (categorias.some(c => c.nombre.toLowerCase() === nombre.toLowerCase())) {
+      setError("Ya existe una categoria con ese nombre."); return
+    }
+    const { error } = await guardarCategoria({ nombre, orden: categorias.length })
+    if (error) { setError(error.message); return }
+    setNueva(""); setError(""); onCambio()
+  }
+
+  const eliminar = async cat => {
+    const { error } = await borrarCategoria(cat.id)
+    setPorBorrar(null)
+    if (error) { setError(error.message); return }
+    onCambio()
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background:"rgba(10,10,10,0.85)" }}
+      onClick={onCerrar}
+      role="dialog" aria-modal="true" aria-label="Categorias de la tienda"
+    >
+      <motion.div initial={{ scale:0.96, y:12 }} animate={{ scale:1, y:0 }}
+        className="admin-card w-full max-w-md max-h-[85vh] overflow-y-auto"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom:"1px solid #2a2a2a" }}>
+          <h2 className="font-display text-lg text-white" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
+            Categorias
+          </h2>
+          <button onClick={onCerrar} aria-label="Cerrar" style={{ color:"#64748b" }}><X size={18}/></button>
+        </div>
+
+        <div className="p-6 space-y-4">
+          <form onSubmit={crear} className="flex gap-2">
+            <input value={nueva} onChange={e => { setNueva(e.target.value); setError("") }}
+              placeholder="Ropa, Equipo, Suplementos…"
+              aria-label="Nombre de la categoria"
+              className="flex-1 px-3 py-2.5 rounded-lg text-sm text-white"
+              style={{ background:"#0a0a0a", border:"1px solid #2a2a2a" }}
+            />
+            <button type="submit" disabled={!nueva.trim()}
+              className="px-4 rounded-lg text-sm font-bold text-white shrink-0"
+              style={{ background: nueva.trim() ? "#c0392b" : "#2a2a2a", cursor: nueva.trim() ? "pointer" : "not-allowed" }}
+              aria-label="Crear categoria"
+            ><Plus size={15}/></button>
+          </form>
+
+          {error && <p role="alert" className="text-xs" style={{ color:"#f87171" }}>{error}</p>}
+
+          {categorias.length === 0 && (
+            <p className="text-xs py-3 text-center" style={{ color:"#64748b" }}>
+              Todavia no hay categorias. Crea la primera arriba.
+            </p>
+          )}
+
+          <div className="space-y-2">
+            {categorias.map(c => {
+              const usos = cuantosUsan(c.id)
+              return (
+                <div key={c.id} className="flex items-center gap-3 px-3 py-2.5 rounded-lg"
+                  style={{ background:"#0a0a0a", border:"1px solid #2a2a2a" }}
+                >
+                  <Tag size={13} style={{ color:"#c0392b" }} className="shrink-0"/>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-white truncate">{c.nombre}</p>
+                    <p className="text-[10px]" style={{ color:"#64748b" }}>
+                      {usos === 0 ? "sin productos" : usos + (usos !== 1 ? " productos" : " producto")}
+                    </p>
+                  </div>
+                  <button onClick={() => setPorBorrar(c)}
+                    className="w-7 h-7 rounded flex items-center justify-center shrink-0"
+                    style={{ background:"#1a1a1a", color:"#f87171" }}
+                    aria-label={"Eliminar categoria " + c.nombre}
+                  ><Trash2 size={12}/></button>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </motion.div>
+
+      <AnimatePresence>
+        {porBorrar && (
+          <motion.div
+            initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4"
+            style={{ background:"rgba(10,10,10,0.9)" }}
+            onClick={e => { e.stopPropagation(); setPorBorrar(null) }}
+            role="dialog" aria-modal="true" aria-label="Confirmar eliminacion de categoria"
+          >
+            <motion.div initial={{ scale:0.96 }} animate={{ scale:1 }}
+              className="admin-card p-6 w-full max-w-sm" onClick={e => e.stopPropagation()}
+            >
+              <h3 className="font-display text-lg text-white mb-2" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
+                Eliminar categoria
+              </h3>
+              <p className="text-sm mb-1" style={{ color:"#94a3b8" }}>
+                Se va a eliminar <strong className="text-white">{porBorrar.nombre}</strong>.
+              </p>
+              <p className="text-xs mb-5" style={{ color:"#64748b" }}>
+                {cuantosUsan(porBorrar.id) > 0
+                  ? "Sus productos NO se borran: quedan sin categoria y podras reasignarlos."
+                  : "No tiene productos asignados."}
+              </p>
+              <div className="flex gap-3">
+                <button onClick={() => setPorBorrar(null)}
+                  className="flex-1 py-2.5 rounded-lg text-sm font-semibold"
+                  style={{ background:"#1a1a1a", color:"#94a3b8", border:"1px solid #2a2a2a" }}
+                >Cancelar</button>
+                <button onClick={() => eliminar(porBorrar)}
+                  className="flex-1 py-2.5 rounded-lg text-sm font-bold text-white"
+                  style={{ background:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"15px" }}
+                >Eliminar</button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
 // ── Vista principal ─────────────────────────────────────────────────────────
 const AdminInventario = () => {
   const [productos, setProductos] = useState([])
@@ -168,13 +313,16 @@ const AdminInventario = () => {
   const [editando, setEditando]   = useState(null)
   const [guardando, setGuardando] = useState(false)
   const [porBorrar, setPorBorrar] = useState(null)
-  const [filtro, setFiltro]       = useState("Todos")
+  const [filtro, setFiltro]       = useState(null)   // null = todas
+  const [categorias, setCategorias] = useState([])
+  const [verCategorias, setVerCategorias] = useState(false)
 
   const recargar = async () => {
     setCargando(true)
-    const { datos, error } = await productosTodos()
-    if (error) setError(error.message)
-    else { setProductos(datos); setError("") }
+    const [p, c] = await Promise.all([productosTodos(), categoriasTodas()])
+    if (p.error) setError(p.error.message)
+    else { setProductos(p.datos); setError("") }
+    if (!c.error) setCategorias(c.datos)
     setCargando(false)
   }
 
@@ -206,7 +354,7 @@ const AdminInventario = () => {
     setProductos(ps => ps.map(x => x.id === p.id ? { ...x, existencias: nuevo } : x))
   }
 
-  const visibles = filtro === "Todos" ? productos : productos.filter(p => p.categoria === filtro)
+  const visibles = filtro == null ? productos : productos.filter(p => p.categoria_id === filtro)
   const agotados = productos.filter(p => p.existencias === 0)
   const bajos    = productos.filter(p => p.existencias != null && p.existencias > 0 && p.existencias <= (p.alerta_minima ?? 3))
 
@@ -219,10 +367,16 @@ const AdminInventario = () => {
             {cargando ? "Cargando…" : `${productos.length} producto${productos.length !== 1 ? "s" : ""} en catalogo`}
           </p>
         </div>
-        <button onClick={() => setEditando(productoVacio())}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold text-white"
-          style={{ background:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"14px" }}
-        ><Plus size={15}/> NUEVO PRODUCTO</button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setVerCategorias(true)}
+            className="inline-flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold"
+            style={{ background:"#1a1a1a", color:"#94a3b8", border:"1px solid #2a2a2a" }}
+          ><Tag size={13}/> Categorias</button>
+          <button onClick={() => setEditando(productoVacio())}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold text-white"
+            style={{ background:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"14px" }}
+          ><Plus size={15}/> NUEVO PRODUCTO</button>
+        </div>
       </div>
 
       {error && (
@@ -265,15 +419,23 @@ const AdminInventario = () => {
 
       {/* Filtros */}
       <div className="flex flex-wrap gap-2">
-        {["Todos", ...CATEGORIAS].map(c => (
-          <button key={c} onClick={() => setFiltro(c)}
+        <button onClick={() => setFiltro(null)}
+          className="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
+          style={{
+            background: filtro == null ? "#c0392b" : "#1a1a1a",
+            color:      filtro == null ? "#ffffff" : "#64748b",
+            border:     `1px solid ${filtro == null ? "#c0392b" : "#2a2a2a"}`,
+          }}
+        >Todos</button>
+        {categorias.map(c => (
+          <button key={c.id} onClick={() => setFiltro(c.id)}
             className="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
             style={{
-              background: filtro === c ? "#c0392b" : "#1a1a1a",
-              color:      filtro === c ? "#ffffff" : "#64748b",
-              border:     `1px solid ${filtro === c ? "#c0392b" : "#2a2a2a"}`,
+              background: filtro === c.id ? "#c0392b" : "#1a1a1a",
+              color:      filtro === c.id ? "#ffffff" : "#64748b",
+              border:     `1px solid ${filtro === c.id ? "#c0392b" : "#2a2a2a"}`,
             }}
-          >{c}</button>
+          >{c.nombre}</button>
         ))}
       </div>
 
@@ -308,7 +470,9 @@ const AdminInventario = () => {
                         <p className="font-semibold text-white text-xs">{p.nombre}</p>
                         {p.etiqueta && <p className="text-[10px]" style={{ color:"#c0392b" }}>{p.etiqueta}</p>}
                       </td>
-                      <td className="px-4 py-3 text-xs" style={{ color:"#94a3b8" }}>{p.categoria}</td>
+                      <td className="px-4 py-3 text-xs" style={{ color: p.categorias ? "#94a3b8" : "#475569" }}>
+                        {p.categorias?.nombre ?? "sin categoria"}
+                      </td>
                       <td className="px-4 py-3 text-xs" style={{ color: p.precio != null ? "#e2e8f0" : "#64748b" }}>
                         {p.precio != null ? `$${Number(p.precio).toLocaleString("es-MX")}` : "Consultar"}
                       </td>
@@ -366,8 +530,16 @@ const AdminInventario = () => {
       )}
 
       <AnimatePresence>
+        {verCategorias && (
+          <PanelCategorias categorias={categorias} productos={productos}
+            onCerrar={() => setVerCategorias(false)} onCambio={recargar}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {editando && (
-          <Formulario producto={editando} guardando={guardando}
+          <Formulario producto={editando} categorias={categorias} guardando={guardando}
             onGuardar={alGuardar} onCancelar={() => setEditando(null)}
           />
         )}
