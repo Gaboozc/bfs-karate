@@ -81,6 +81,27 @@ export const horariosPublicos = async respaldo => {
   return { days: respaldo.days, slots: [...porHora.values()] }
 }
 
+/** Traduce un programa de la base al formato que usa el sitio. */
+const programaDelSitio = fila => ({
+  id:       fila.id,
+  title:    fila.nombre,
+  ageRange: fila.edades,
+  level:    fila.nivel,
+  desc:     fila.descripcion,
+  price:    fila.precio != null ? `$${Number(fila.precio).toLocaleString("es-MX")}/mes` : "{{pendiente}}",
+  duration: fila.duracion,
+  schedule: "",                 // el horario real vive en su propia seccion
+  color:    fila.color,
+  icon:     "trophy",
+  featured: fila.destacado,
+})
+
+/** Programas activos, en el orden definido por el Sensei. */
+export const programasPublicos = async respaldo => {
+  const filas = await leer("programas?select=*&activo=eq.true&order=orden.asc,nombre.asc")
+  return filas?.length ? filas.map(programaDelSitio) : respaldo
+}
+
 /** Traduce un producto de la base al formato que usa la tienda. */
 const productoDelSitio = fila => ({
   id:        fila.id,
@@ -100,4 +121,4 @@ export const productosPublicos = async respaldo => {
   return filas?.length ? filas.map(productoDelSitio) : respaldo
 }
 
-export default { eventosPublicos, horariosPublicos, productosPublicos }
+export default { eventosPublicos, horariosPublicos, productosPublicos, programasPublicos }

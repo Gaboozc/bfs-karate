@@ -9,7 +9,7 @@ import {
 } from "lucide-react"
 import { content } from "../data/content"
 import { precio, real, soloReales } from "../data/pendientes"
-import { eventosPublicos, horariosPublicos, productosPublicos } from "../data/contenidoPublico"
+import { eventosPublicos, horariosPublicos, productosPublicos, programasPublicos } from "../data/contenidoPublico"
 import { Navbar, Footer, WhatsAppButton, SectionHeader } from "../components/layout/Layout"
 import {
   Hero, BeltProgress, Testimonials, EnrollCTA, MetodologiaBFS, SponsorSection,
@@ -92,7 +92,16 @@ const FaqItem = ({ q, a }) => {
   )
 }
 
-export const ProgramasPage = () => (
+export const ProgramasPage = () => {
+  // Los programas los administra el Sensei desde el panel.
+  const [programas, setProgramas] = useState(content.programs)
+  useEffect(() => {
+    let vigente = true
+    programasPublicos(content.programs).then(d => { if (vigente) setProgramas(d) })
+    return () => { vigente = false }
+  }, [])
+
+  return (
   <motion.div initial="initial" animate="animate" exit="exit" variants={pageTransition}>
     <PageBanner eyebrow="Disciplinas" title="Nuestros Programas" />
     <section className="py-16 md:py-20" style={{ background:"#0a0a0a" }}>
@@ -103,7 +112,7 @@ export const ProgramasPage = () => (
         <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
           initial="hidden" animate="visible" variants={stagger}
         >
-          {content.programs.map(prog => {
+          {programas.map(prog => {
             const Icon = progIcons[prog.icon] || Trophy
             return (
               <motion.div key={prog.id} variants={scaleIn}
@@ -178,7 +187,8 @@ export const ProgramasPage = () => (
 
     <EnrollCTA variant="programas" />
   </motion.div>
-)
+  )
+}
 
 export const InstructoresPage = () => {
   const inst = content.instructors[0]

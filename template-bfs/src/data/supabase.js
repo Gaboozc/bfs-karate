@@ -74,11 +74,41 @@ export const borrarEvento = async id => {
   return { error }
 }
 
+// ── Programas ───────────────────────────────────────────────────────────────
+// Las clases que imparte la academia. Alimentan la pagina de programas del
+// sitio y las opciones al armar el horario.
+
+export const programasTodos = async () => {
+  if (!supabase) return { datos: [], error: { message: "Sin conexion a la base de datos." } }
+  const { data, error } = await supabase.from("programas").select("*").order("orden").order("nombre")
+  return { datos: data ?? [], error }
+}
+
+export const guardarPrograma = async programa => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { id, ...campos } = programa
+  const consulta = id
+    ? supabase.from("programas").update(campos).eq("id", id)
+    : supabase.from("programas").insert(campos)
+  const { error } = await consulta
+  return { error }
+}
+
+export const borrarPrograma = async id => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("programas").delete().eq("id", id)
+  return { error }
+}
+
 // ── Horarios ────────────────────────────────────────────────────────────────
 
+/** Horarios con los datos del programa al que pertenece cada clase. */
 export const horariosTodos = async () => {
   if (!supabase) return { datos: [], error: { message: "Sin conexion a la base de datos." } }
-  const { data, error } = await supabase.from("horarios").select("*").order("dia").order("hora")
+  const { data, error } = await supabase
+    .from("horarios")
+    .select("*, programas(id, nombre, color)")
+    .order("dia").order("hora")
   return { datos: data ?? [], error }
 }
 

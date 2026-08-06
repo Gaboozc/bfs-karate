@@ -6,7 +6,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Plus, X, Trash2 } from "lucide-react"
-import { horariosTodos, guardarHorario, borrarHorario } from "../data/supabase"
+import { horariosTodos, guardarHorario, borrarHorario, programasTodos } from "../data/supabase"
 
 const DIAS = [
   { n:1, corto:"Lun", largo:"Lunes"     },
@@ -18,29 +18,22 @@ const DIAS = [
   { n:7, corto:"Dom", largo:"Domingo"   },
 ]
 
-// Los mismos programas y colores que usa el sitio publico
-const PROGRAMAS = {
-  "Karate Kids":  "#f5c518",
-  "Competitivo":  "#c0392b",
-  "Adultos":      "#1a5276",
-  "High Perf.":   "#6b4c36",
-  "Defensa P.":   "#2d6a4f",
-}
-
 const HORAS_SUGERIDAS = ["07:00","09:00","10:00","16:00","17:30","19:00","20:30"]
 
 const AdminHorarios = () => {
   const [horarios, setHorarios] = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError]       = useState("")
-  const [celda, setCelda]       = useState(null)   // { dia, hora, actual }
+  const [programas, setProgramas] = useState([])
+  const [celda, setCelda]         = useState(null)   // { dia, hora, actual }
   const [horaNueva, setHoraNueva] = useState("")
 
   const recargar = async () => {
     setCargando(true)
-    const { datos, error } = await horariosTodos()
-    if (error) setError(error.message)
-    else { setHorarios(datos); setError("") }
+    const [h, p] = await Promise.all([horariosTodos(), programasTodos()])
+    if (h.error) setError(h.error.message)
+    else { setHorarios(h.datos); setError("") }
+    if (!p.error) setProgramas(p.datos.filter(x => x.activo))
     setCargando(false)
   }
 
@@ -55,16 +48,16 @@ const AdminHorarios = () => {
   const buscar = (dia, hora) =>
     horarios.find(h => h.dia === dia && h.hora.slice(0, 5) === hora)
 
-  const asignar = async (dia, hora, programa) => {
+  const asignar = async (dia, hora, prog) => {
     const existente = buscar(dia, hora)
     let res
-    if (!programa) {
+    if (!prog) {
       // Quitar la clase de esa celda
       res = existente ? await borrarHorario(existente.id) : { error: null }
     } else if (existente) {
-      res = await guardarHorario({ id: existente.id, programa })
+      res = await guardarHorario({ id: existente.id, programa_id: prog.id, programa: prog.nombre })
     } else {
-      res = await guardarHorario({ dia, hora, programa, activo: true })
+      res = await guardarHorario({ dia, hora, programa_id: prog.id, programa: prog.nombre, activo: true })
     }
     setCelda(null)
     if (res.error) { setError(res.error.message); return }
@@ -136,11 +129,11 @@ const AdminHorarios = () => {
                   </td>
                   {DIAS.map(d => {
                     const h = buscar(d.n, hora)
-                    const color = h ? PROGRAMAS[h.programa] || "#888888" : null
+                    const color = h?.programas?.color || "#888888"
                     return (
                       <td key={d.n} className="px-1 py-1">
                         <button
-                          onClick={() => setCelda({ dia:d.n, hora, actual:h?.programa || "" })}
+                          onClick={() => setCelda({ dia:d.n, hora, actual:h?.programa_id ?? null })}
                           className="w-full py-2 px-1 rounded text-[10px] font-bold tracking-wide transition-colors"
                           style={{
                             background: h ? `${color}20` : "transparent",
@@ -149,9 +142,9 @@ const AdminHorarios = () => {
                             minHeight:  "34px",
                           }}
                           aria-label={h
-                            ? `${h.programa}, ${d.largo} ${hora}. Tocar para cambiar`
+                            ? `${h.programas?.nombre ?? h.programa}, ${d.largo} ${hora}. Tocar para cambiar`
                             : `Sin clase, ${d.largo} ${hora}. Tocar para asignar`}
-                        >{h ? h.programa : "+"}</button>
+                        >{h ? (h.programas?.nombre ?? h.programa) : "+"}</button>
                       </td>
                     )
                   })}
@@ -164,10 +157,10 @@ const AdminHorarios = () => {
 
       {/* Leyenda */}
       <div className="flex flex-wrap gap-4">
-        {Object.entries(PROGRAMAS).map(([nombre, color]) => (
-          <div key={nombre} className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-sm" style={{ background:color }}/>
-            <span className="text-xs" style={{ color:"#64748b" }}>{nombre}</span>
+        {programas.map(p => (
+          <div key={p.id} className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-sm" style={{ background:p.color }}/>
+            <span className="text-xs" style={{ color:"#64748b" }}>{p.nombre}</span>
           </div>
         ))}
       </div>
@@ -197,17 +190,23 @@ const AdminHorarios = () => {
               </div>
 
               <div className="p-4 space-y-2">
-                {Object.entries(PROGRAMAS).map(([nombre, color]) => (
-                  <button key={nombre} onClick={() => asignar(celda.dia, celda.hora, nombre)}
+                {programas.length === 0 && (
+                  <p className="text-xs py-2" style={{ color:"#64748b" }}>
+                    Primero crea tus clases en la seccion Programas. Ahi defines
+                    karate, crossfit, acondicionamiento o lo que impartas.
+                  </p>
+                )}
+                {programas.map(p => (
+                  <button key={p.id} onClick={() => asignar(celda.dia, celda.hora, p)}
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors"
                     style={{
-                      background: celda.actual === nombre ? `${color}20` : "#0a0a0a",
-                      color,
-                      border: `1px solid ${celda.actual === nombre ? color : "#2a2a2a"}`,
+                      background: celda.actual === p.id ? `${p.color}20` : "#0a0a0a",
+                      color: p.color,
+                      border: `1px solid ${celda.actual === p.id ? p.color : "#2a2a2a"}`,
                     }}
                   >
-                    <div className="w-3 h-3 rounded-sm shrink-0" style={{ background:color }}/>
-                    {nombre}
+                    <div className="w-3 h-3 rounded-sm shrink-0" style={{ background:p.color }}/>
+                    {p.nombre}
                   </button>
                 ))}
 
