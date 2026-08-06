@@ -59,4 +59,45 @@ export const eventosPublicos = async respaldo => {
   return filas?.length ? filas.map(aFormatoDelSitio) : respaldo
 }
 
-export default { eventosPublicos }
+/**
+ * Horario semanal, en el formato de rejilla que usa el sitio:
+ * filas por hora, columnas por dia.
+ */
+export const horariosPublicos = async respaldo => {
+  const filas = await leer("horarios?select=*&activo=eq.true&order=hora.asc,dia.asc")
+  if (!filas?.length) return respaldo
+
+  const CLAVES = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+  const porHora = new Map()
+
+  for (const f of filas) {
+    const hora = f.hora.slice(0, 5)               // "16:00:00" -> "16:00"
+    if (!porHora.has(hora)) {
+      porHora.set(hora, { time: hora, mon:null, tue:null, wed:null, thu:null, fri:null, sat:null, sun:null })
+    }
+    porHora.get(hora)[CLAVES[f.dia - 1]] = f.programa
+  }
+
+  return { days: respaldo.days, slots: [...porHora.values()] }
+}
+
+/** Traduce un producto de la base al formato que usa la tienda. */
+const productoDelSitio = fila => ({
+  id:        fila.id,
+  name:      fila.nombre,
+  category:  fila.categoria,
+  // Sin precio definido, la tienda muestra "Consultar" por si sola
+  price:     fila.precio != null ? `$${Number(fila.precio).toLocaleString("es-MX")}` : "{{pendiente}}",
+  desc:      fila.descripcion,
+  image:     fila.imagen,
+  badge:     fila.etiqueta,
+  featured:  fila.destacado,
+})
+
+/** Productos disponibles y con existencias. */
+export const productosPublicos = async respaldo => {
+  const filas = await leer("productos?select=*&order=categoria.asc,nombre.asc")
+  return filas?.length ? filas.map(productoDelSitio) : respaldo
+}
+
+export default { eventosPublicos, horariosPublicos, productosPublicos }

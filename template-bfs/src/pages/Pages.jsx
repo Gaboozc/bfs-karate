@@ -9,7 +9,7 @@ import {
 } from "lucide-react"
 import { content } from "../data/content"
 import { precio, real, soloReales } from "../data/pendientes"
-import { eventosPublicos } from "../data/contenidoPublico"
+import { eventosPublicos, horariosPublicos, productosPublicos } from "../data/contenidoPublico"
 import { Navbar, Footer, WhatsAppButton, SectionHeader } from "../components/layout/Layout"
 import {
   Hero, BeltProgress, Testimonials, EnrollCTA, MetodologiaBFS, SponsorSection,
@@ -310,7 +310,13 @@ export const InstructoresPage = () => {
 }
 
 export const HorariosPage = () => {
-  const { schedule } = content
+  // El horario viene de la base, donde el Sensei lo edita en la parrilla.
+  const [schedule, setSchedule] = useState(content.schedule)
+  useEffect(() => {
+    let vigente = true
+    horariosPublicos(content.schedule).then(d => { if (vigente) setSchedule(d) })
+    return () => { vigente = false }
+  }, [])
   const dayKeys = ["mon","tue","wed","thu","fri","sat","sun"]
   return (
     <motion.div initial="initial" animate="animate" exit="exit" variants={pageTransition}>
@@ -482,9 +488,18 @@ export const ContactoPage = () => {
 export const MerchPage = () => {
   const [activeFilter, setActiveFilter] = useState("Todos")
   const categories = ["Todos", "Ropa", "Equipo", "Accesorios"]
+  // El catalogo viene del inventario del panel. Lo agotado ya no llega aqui:
+  // la base lo filtra antes.
+  const [merch, setMerch] = useState(content.merch)
+  useEffect(() => {
+    let vigente = true
+    productosPublicos(content.merch).then(d => { if (vigente) setMerch(d) })
+    return () => { vigente = false }
+  }, [])
+
   const filtered = activeFilter === "Todos"
-    ? content.merch
-    : content.merch.filter(p => p.category === activeFilter)
+    ? merch
+    : merch.filter(p => p.category === activeFilter)
 
   return (
     <motion.div initial="initial" animate="animate" exit="exit" variants={pageTransition}>

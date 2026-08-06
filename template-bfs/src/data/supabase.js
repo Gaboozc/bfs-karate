@@ -74,6 +74,61 @@ export const borrarEvento = async id => {
   return { error }
 }
 
+// ── Horarios ────────────────────────────────────────────────────────────────
+
+export const horariosTodos = async () => {
+  if (!supabase) return { datos: [], error: { message: "Sin conexion a la base de datos." } }
+  const { data, error } = await supabase.from("horarios").select("*").order("dia").order("hora")
+  return { datos: data ?? [], error }
+}
+
+export const guardarHorario = async horario => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { id, ...campos } = horario
+  const consulta = id
+    ? supabase.from("horarios").update(campos).eq("id", id)
+    : supabase.from("horarios").insert(campos)
+  const { error } = await consulta
+  return { error }
+}
+
+export const borrarHorario = async id => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("horarios").delete().eq("id", id)
+  return { error }
+}
+
+// ── Inventario ──────────────────────────────────────────────────────────────
+
+export const productosTodos = async () => {
+  if (!supabase) return { datos: [], error: { message: "Sin conexion a la base de datos." } }
+  const { data, error } = await supabase.from("productos").select("*").order("categoria").order("nombre")
+  return { datos: data ?? [], error }
+}
+
+export const guardarProducto = async producto => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { id, ...campos } = producto
+  const consulta = id
+    ? supabase.from("productos").update(campos).eq("id", id)
+    : supabase.from("productos").insert(campos)
+  const { error } = await consulta
+  return { error }
+}
+
+export const borrarProducto = async id => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("productos").delete().eq("id", id)
+  return { error }
+}
+
+/** Ajusta existencias sin abrir el formulario completo. */
+export const ajustarExistencias = async (id, existencias) => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("productos").update({ existencias }).eq("id", id)
+  return { error }
+}
+
 // ── Sesion del panel ────────────────────────────────────────────────────────
 
 export const iniciarSesion = async (email, password) => {

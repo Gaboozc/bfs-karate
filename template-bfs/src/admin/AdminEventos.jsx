@@ -8,7 +8,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Plus, Pencil, Trash2, Eye, EyeOff, X, Calendar } from "lucide-react"
+import { Plus, Pencil, Trash2, Eye, EyeOff, X, Calendar, List, ChevronLeft, ChevronRight } from "lucide-react"
 import { eventosTodos, guardarEvento, borrarEvento } from "../data/supabase"
 
 const TIPOS = ["Torneo", "Seminario", "Competencia", "Exhibicion", "Formacion"]
@@ -151,6 +151,107 @@ const Formulario = ({ evento, onGuardar, onCancelar, guardando }) => {
   )
 }
 
+// ── Calendario del mes ──────────────────────────────────────────────────────
+// Ver los eventos repartidos en el mes hace evidente lo que una lista no
+// muestra: semanas saturadas, huecos largos, choques de fecha.
+const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
+const DIAS_SEMANA = ["Lun","Mar","Mie","Jue","Vie","Sab","Dom"]
+
+const Calendario = ({ eventos, onNuevo, onEditar }) => {
+  const hoy = new Date()
+  const [mes, setMes] = useState({ y: hoy.getFullYear(), m: hoy.getMonth() })
+  const { y, m } = mes
+
+  const diasDelMes = new Date(y, m + 1, 0).getDate()
+  const primerDia  = new Date(y, m, 1).getDay()
+  const offset     = primerDia === 0 ? 6 : primerDia - 1   // lunes primero
+  const celdas     = Math.ceil((offset + diasDelMes) / 7) * 7
+
+  const porDia = {}
+  for (const ev of eventos) {
+    const d = new Date(ev.fecha + "T12:00:00")
+    if (d.getFullYear() === y && d.getMonth() === m) {
+      const dia = d.getDate()
+      ;(porDia[dia] ||= []).push(ev)
+    }
+  }
+
+  const irA = delta => {
+    const d = new Date(y, m + delta, 1)
+    setMes({ y: d.getFullYear(), m: d.getMonth() })
+  }
+
+  const fechaISO = dia => `${y}-${String(m + 1).padStart(2, "0")}-${String(dia).padStart(2, "0")}`
+
+  return (
+    <div className="admin-card p-4">
+      <div className="flex items-center justify-between mb-4">
+        <button onClick={() => irA(-1)} aria-label="Mes anterior"
+          className="w-8 h-8 rounded-lg flex items-center justify-center"
+          style={{ background:"#0a0a0a", border:"1px solid #2a2a2a", color:"#94a3b8" }}
+        ><ChevronLeft size={15}/></button>
+        <h2 className="font-display text-lg text-white" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
+          {MESES[m]} {y}
+        </h2>
+        <button onClick={() => irA(1)} aria-label="Mes siguiente"
+          className="w-8 h-8 rounded-lg flex items-center justify-center"
+          style={{ background:"#0a0a0a", border:"1px solid #2a2a2a", color:"#94a3b8" }}
+        ><ChevronRight size={15}/></button>
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 mb-1">
+        {DIAS_SEMANA.map(d => (
+          <div key={d} className="text-center py-1 text-[10px] font-bold tracking-wider" style={{ color:"#c0392b" }}>{d}</div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-1">
+        {Array.from({ length: celdas }, (_, i) => {
+          const dia   = i - offset + 1
+          const valido = dia >= 1 && dia <= diasDelMes
+          if (!valido) return <div key={i} aria-hidden="true"/>
+
+          const delDia = porDia[dia] || []
+          const esHoy  = y === hoy.getFullYear() && m === hoy.getMonth() && dia === hoy.getDate()
+
+          return (
+            <button key={i}
+              onClick={() => delDia.length ? onEditar(delDia[0]) : onNuevo(fechaISO(dia))}
+              className="rounded p-1 flex flex-col items-start gap-1 transition-colors"
+              style={{
+                minHeight:"62px",
+                background: esHoy ? "rgba(192,57,43,0.1)" : "#0a0a0a",
+                border: esHoy ? "1px solid rgba(192,57,43,0.4)" : "1px solid #1a1a1a",
+              }}
+              aria-label={delDia.length
+                ? `${dia} de ${MESES[m]}: ${delDia.map(e => e.titulo).join(", ")}`
+                : `${dia} de ${MESES[m]}, sin eventos. Tocar para agregar`}
+            >
+              <span className="text-[10px] font-bold" style={{ color: esHoy ? "#c0392b" : "#64748b" }}>{dia}</span>
+              {delDia.slice(0, 2).map(ev => (
+                <span key={ev.id} className="w-full text-[8px] px-1 py-0.5 rounded truncate text-left"
+                  style={{
+                    background: `${ev.color || "#c0392b"}25`,
+                    color: ev.color || "#c0392b",
+                    opacity: ev.publicado ? 1 : 0.5,
+                  }}
+                >{ev.titulo}</span>
+              ))}
+              {delDia.length > 2 && (
+                <span className="text-[8px]" style={{ color:"#64748b" }}>+{delDia.length - 2} mas</span>
+              )}
+            </button>
+          )
+        })}
+      </div>
+
+      <p className="text-[11px] mt-3" style={{ color:"#64748b" }}>
+        Toca un dia vacio para crear un evento en esa fecha. Los borradores se ven mas tenues.
+      </p>
+    </div>
+  )
+}
+
 // ── Vista principal ─────────────────────────────────────────────────────────
 const AdminEventos = () => {
   const [eventos, setEventos]   = useState([])
@@ -159,6 +260,7 @@ const AdminEventos = () => {
   const [editando, setEditando] = useState(null)
   const [guardando, setGuardando] = useState(false)
   const [porBorrar, setPorBorrar] = useState(null)
+  const [vista, setVista] = useState("calendario")
 
   const recargar = async () => {
     setCargando(true)
@@ -203,10 +305,28 @@ const AdminEventos = () => {
             {cargando ? "Cargando…" : `${eventos.length} evento${eventos.length !== 1 ? "s" : ""} · ${eventos.filter(e => e.publicado).length} publicado${eventos.filter(e => e.publicado).length !== 1 ? "s" : ""}`}
           </p>
         </div>
-        <button onClick={() => setEditando(eventoVacio())}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold text-white"
-          style={{ background: "#c0392b", fontFamily: "'Bebas Neue',Impact,sans-serif", fontSize: "14px" }}
-        ><Plus size={15}/> NUEVO EVENTO</button>
+        <div className="flex items-center gap-2">
+          {/* Selector de vista */}
+          <div className="flex rounded-lg overflow-hidden" style={{ border:"1px solid #2a2a2a" }}>
+            {[
+              { id:"calendario", Icon:Calendar, label:"Calendario" },
+              { id:"lista",      Icon:List,     label:"Lista"      },
+            ].map(({ id, Icon, label }) => (
+              <button key={id} onClick={() => setVista(id)}
+                className="px-3 py-2 flex items-center gap-1.5 text-xs font-semibold transition-colors"
+                style={{
+                  background: vista === id ? "#c0392b" : "#0a0a0a",
+                  color:      vista === id ? "#ffffff" : "#64748b",
+                }}
+                aria-pressed={vista === id}
+              ><Icon size={13}/> <span className="hidden sm:inline">{label}</span></button>
+            ))}
+          </div>
+          <button onClick={() => setEditando(eventoVacio())}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold text-white"
+            style={{ background: "#c0392b", fontFamily: "'Bebas Neue',Impact,sans-serif", fontSize: "14px" }}
+          ><Plus size={15}/> <span className="hidden sm:inline">NUEVO EVENTO</span></button>
+        </div>
       </div>
 
       {error && (
@@ -225,7 +345,14 @@ const AdminEventos = () => {
         </div>
       )}
 
-      {eventos.length > 0 && (
+      {vista === "calendario" && !cargando && (
+        <Calendario eventos={eventos}
+          onNuevo={fecha => setEditando({ ...eventoVacio(), fecha })}
+          onEditar={ev => setEditando(ev)}
+        />
+      )}
+
+      {vista === "lista" && eventos.length > 0 && (
         <div className="space-y-3">
           {eventos.map(ev => (
             <div key={ev.id} className="admin-card p-4 flex flex-col sm:flex-row sm:items-center gap-4"
