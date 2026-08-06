@@ -13,24 +13,39 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recha
 import { adminData } from "../data/adminData"
 import { BFSLogo } from "../components/layout/Layout"
 import { fadeInUp, stagger } from "../styles/animations"
+import { iniciarSesion, cerrarSesion, sesionActual, alCambiarSesion, hayConexion } from "../data/supabase"
 
-const ADMIN_PW     = "admin123"
 const CHART_COLORS = ["#c0392b","#f5c518","#1a5276","#6b4c36","#2d6a4f","#888888","#f5f5f5"]
 const beltColors   = { "Blanco":"#f5f5f5", "Blanco raya Morada":"#f5f5f5", "Morada":"#8b3fa8", "Morada raya Amarilla":"#8b3fa8", "Amarilla":"#f5c518", "Naranja":"#e07b39", "Azul":"#2e75b6", "Azul raya Marron":"#2e75b6", "Marron":"#6b4c36", "Negro":"#1a1a1a" }
 
 
-const AdminLogin = ({ onLogin }) => {
-  const [pw, setPw]   = useState("")
-  const [err, setErr] = useState(false)
+// Acceso con las cuentas creadas en Supabase. Ya no hay contrasena escrita
+// en el codigo: las credenciales se validan contra el servidor.
+const AdminLogin = () => {
+  const [email, setEmail] = useState("")
+  const [pw, setPw]       = useState("")
+  const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const handleSubmit = (e) => {
-    e.preventDefault(); setLoading(true)
-    setTimeout(()=>{
-      if (pw===ADMIN_PW){ onLogin(); setErr(false) }
-      else { setErr(true); setPw("") }
-      setLoading(false)
-    }, 600)
+
+  const handleSubmit = async e => {
+    e.preventDefault()
+    setLoading(true); setError("")
+    const { error } = await iniciarSesion(email.trim(), pw)
+    if (error) {
+      // No se distingue "correo inexistente" de "contrasena incorrecta":
+      // decirlo permitiria averiguar que cuentas existen
+      setError(
+        error.message?.includes("Invalid login")
+          ? "Correo o contrasena incorrectos."
+          : error.message || "No se pudo iniciar sesion. Intenta de nuevo."
+      )
+      setPw("")
+    }
+    setLoading(false)
   }
+
+  const listo = email.trim() && pw
+
   return (
     <div className="admin-body min-h-screen flex items-center justify-center px-4">
       <motion.div initial={{ opacity:0,y:24 }} animate={{ opacity:1,y:0 }} transition={{ duration:0.5 }} className="w-full max-w-sm">
@@ -42,22 +57,37 @@ const AdminLogin = ({ onLogin }) => {
           <p className="text-sm" style={{ color:"#64748b" }}>BFS Martial Arts & High Performance</p>
         </div>
         <div className="admin-card p-7">
-          <form onSubmit={handleSubmit} className="space-y-5">
+          {!hayConexion && (
+            <p role="alert" className="text-xs mb-4 p-3 rounded-lg" style={{ background:"rgba(248,113,113,0.1)", color:"#f87171" }}>
+              Falta configurar la conexion a la base de datos.
+            </p>
+          )}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="admin-email" className="block text-xs font-semibold mb-2 uppercase tracking-wider" style={{ color:"#94a3b8" }}>Correo</label>
+              <input id="admin-email" name="email" type="email" autoComplete="username"
+                value={email} onChange={e=>{ setEmail(e.target.value); setError("") }}
+                placeholder="sensei@bfsmartialart.com" autoFocus spellCheck={false}
+                aria-invalid={!!error}
+                className="w-full px-4 py-3 rounded-lg text-sm text-white"
+                style={{ background:"#0a0a0a", border:error?"1px solid #f87171":"1px solid #2a2a2a" }}
+              />
+            </div>
             <div>
               <label htmlFor="admin-pw" className="block text-xs font-semibold mb-2 uppercase tracking-wider" style={{ color:"#94a3b8" }}>Contrasena</label>
               <input id="admin-pw" name="password" type="password" autoComplete="current-password"
-                value={pw} onChange={e=>{ setPw(e.target.value); setErr(false) }}
-                placeholder="••••••••" autoFocus
-                aria-invalid={err} aria-describedby={err ? "admin-pw-error" : undefined}
+                value={pw} onChange={e=>{ setPw(e.target.value); setError("") }}
+                placeholder="••••••••"
+                aria-invalid={!!error} aria-describedby={error ? "admin-error" : undefined}
                 className="w-full px-4 py-3 rounded-lg text-sm text-white"
-                style={{ background:"#0a0a0a", border:err?"1px solid #f87171":"1px solid #2a2a2a" }}
+                style={{ background:"#0a0a0a", border:error?"1px solid #f87171":"1px solid #2a2a2a" }}
               />
-              {err && <p id="admin-pw-error" role="alert" className="text-xs mt-2" style={{ color:"#f87171" }}>Contrasena incorrecta. Verifica e intenta de nuevo.</p>}
             </div>
-            <motion.button type="submit" disabled={loading||!pw}
+            {error && <p id="admin-error" role="alert" className="text-xs" style={{ color:"#f87171" }}>{error}</p>}
+            <motion.button type="submit" disabled={loading||!listo}
               className="w-full py-3 rounded-lg text-sm font-bold text-white"
-              style={{ background:pw?"#c0392b":"#2a2a2a", cursor:pw?"pointer":"not-allowed", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"16px" }}
-              whileHover={pw?{ scale:1.02 }:{}} whileTap={pw?{ scale:0.98 }:{}}
+              style={{ background:listo?"#c0392b":"#2a2a2a", cursor:listo?"pointer":"not-allowed", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"16px" }}
+              whileHover={listo?{ scale:1.02 }:{}} whileTap={listo?{ scale:0.98 }:{}}
             >{loading?"Verificando…":"INGRESAR"}</motion.button>
           </form>
         </div>
@@ -334,14 +364,34 @@ const AdminAlumnos = () => {
 // Punto de entrada del panel: autenticacion + rutas internas
 // ─────────────────────────────────────────────────────────────────────────────
 const AdminPanel = () => {
-  const [isAuth, setIsAuth] = useState(() => sessionStorage.getItem("bfs_admin_auth") === "1")
-  const handleLogin  = () => { sessionStorage.setItem("bfs_admin_auth", "1"); setIsAuth(true)  }
-  const handleLogout = () => { sessionStorage.removeItem("bfs_admin_auth");   setIsAuth(false) }
+  const [sesion, setSesion]     = useState(null)
+  const [cargando, setCargando] = useState(true)
 
-  if (!isAuth) return <AdminLogin onLogin={handleLogin}/>
+  // Al abrir, se pregunta a Supabase si hay sesion valida. Y se queda
+  // escuchando: si expira o se cierra en otra pestana, el panel reacciona.
+  useEffect(() => {
+    let vigente = true
+    sesionActual().then(s => {
+      if (vigente) { setSesion(s); setCargando(false) }
+    })
+    return alCambiarSesion(s => { if (vigente) setSesion(s) }) || (() => { vigente = false })
+  }, [])
+
+  if (cargando) {
+    return (
+      <div className="admin-body min-h-screen flex items-center justify-center">
+        <div className="w-9 h-9 rounded-full animate-spin"
+          style={{ border:"3px solid rgba(192,57,43,0.2)", borderTopColor:"#c0392b" }}
+          role="status" aria-label="Verificando sesion"
+        />
+      </div>
+    )
+  }
+
+  if (!sesion) return <AdminLogin/>
 
   return (
-    <AdminLayout onLogout={handleLogout}>
+    <AdminLayout onLogout={cerrarSesion}>
       <Routes>
         <Route path="/admin"           element={<Navigate to="/admin/dashboard" replace/>}/>
         <Route path="/admin/dashboard" element={<AdminDashboard/>}/>
