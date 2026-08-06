@@ -46,6 +46,34 @@ export const consultar = async (consulta, respaldo) => {
   }
 }
 
+// ── Eventos ─────────────────────────────────────────────────────────────────
+
+// La lectura publica de eventos vive en contenidoPublico.js, que usa fetch
+// en vez de esta libreria para no cargarla en el sitio publico.
+
+/** Todos los eventos, incluidos los borradores. Requiere sesion. */
+export const eventosTodos = async () => {
+  if (!supabase) return { datos: [], error: { message: "Sin conexion a la base de datos." } }
+  const { data, error } = await supabase.from("eventos").select("*").order("fecha", { ascending: false })
+  return { datos: data ?? [], error }
+}
+
+export const guardarEvento = async evento => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { id, ...campos } = evento
+  const consulta = id
+    ? supabase.from("eventos").update(campos).eq("id", id)
+    : supabase.from("eventos").insert(campos)
+  const { error } = await consulta
+  return { error }
+}
+
+export const borrarEvento = async id => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("eventos").delete().eq("id", id)
+  return { error }
+}
+
 // ── Sesion del panel ────────────────────────────────────────────────────────
 
 export const iniciarSesion = async (email, password) => {

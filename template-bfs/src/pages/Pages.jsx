@@ -9,6 +9,7 @@ import {
 } from "lucide-react"
 import { content } from "../data/content"
 import { precio, real, soloReales } from "../data/pendientes"
+import { eventosPublicos } from "../data/contenidoPublico"
 import { Navbar, Footer, WhatsAppButton, SectionHeader } from "../components/layout/Layout"
 import {
   Hero, BeltProgress, Testimonials, EnrollCTA, MetodologiaBFS, SponsorSection,
@@ -643,12 +644,25 @@ export const EventosPage = () => {
 
   const cleanDate = str => str.replace(/\{\{|\}\}/g, "")
 
-  // Los eventos pasados afirman resultados concretos (medallas, promociones).
-  // Solo se muestran los que tienen titulo, sede y resultado confirmados.
-  const pasadosReales = soloReales(content.eventosPasados, "title", "location", "resultado", "date")
+  // Los eventos vienen de la base de datos, donde el Sensei los publica.
+  // Mientras cargan —o si la base no responde— se usa el contenido local.
+  const [eventos, setEventos] = useState(content.eventos)
+  useEffect(() => {
+    let vigente = true
+    eventosPublicos(content.eventos).then(datos => { if (vigente) setEventos(datos) })
+    return () => { vigente = false }
+  }, [])
+
+  // Los ya realizados salen de la misma lista: son los de fecha pasada con
+  // resultado registrado. Sin resultado confirmado no se muestran, porque
+  // afirmarian medallas o promociones que nadie ha verificado.
+  const pasadosReales = soloReales(
+    eventos.filter(e => new Date(cleanDate(e.date)) < today && e.resultado),
+    "title", "location", "resultado", "date"
+  )
 
   const eventsByDay = {}
-  content.eventos.forEach(e => {
+  eventos.forEach(e => {
     const d = new Date(cleanDate(e.date))
     if (d.getFullYear() === y && d.getMonth() === m) {
       const day = d.getDate()
@@ -657,7 +671,7 @@ export const EventosPage = () => {
     }
   })
 
-  const allFuture = content.eventos
+  const allFuture = eventos
     .filter(e => new Date(cleanDate(e.date)) >= new Date(today.getFullYear(), today.getMonth(), today.getDate()))
     .sort((a, b) => new Date(cleanDate(a.date)) - new Date(cleanDate(b.date)))
 

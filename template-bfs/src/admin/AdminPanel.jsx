@@ -7,13 +7,14 @@ import { useState, useEffect } from "react"
 import { Routes, Route, Link, useNavigate, useLocation, Navigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import {
-  LayoutDashboard, Users, UserCheck, Award, LogOut, Eye, Search, Menu, X,
+  LayoutDashboard, Users, UserCheck, Award, LogOut, Eye, Search, Menu, X, Calendar,
 } from "lucide-react"
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts"
 import { adminData } from "../data/adminData"
 import { BFSLogo } from "../components/layout/Layout"
 import { fadeInUp, stagger } from "../styles/animations"
 import { iniciarSesion, cerrarSesion, sesionActual, alCambiarSesion, hayConexion } from "../data/supabase"
+import AdminEventos from "./AdminEventos"
 
 const CHART_COLORS = ["#c0392b","#f5c518","#1a5276","#6b4c36","#2d6a4f","#888888","#f5f5f5"]
 const beltColors   = { "Blanco":"#f5f5f5", "Blanco raya Morada":"#f5f5f5", "Morada":"#8b3fa8", "Morada raya Amarilla":"#8b3fa8", "Amarilla":"#f5c518", "Naranja":"#e07b39", "Azul":"#2e75b6", "Azul raya Marron":"#2e75b6", "Marron":"#6b4c36", "Negro":"#1a1a1a" }
@@ -104,8 +105,9 @@ const AdminLogin = () => {
 const AdminSidebar = ({ onLogout, onClose }) => {
   const location = useLocation()
   const items = [
-    { href:"/admin/dashboard", Icon:LayoutDashboard, label:"Dashboard"  },
-    { href:"/admin/alumnos",   Icon:Users,           label:"Alumnos"    },
+    { href:"/admin/dashboard", Icon:LayoutDashboard, label:"Dashboard" },
+    { href:"/admin/eventos",   Icon:Calendar,        label:"Eventos"   },
+    { href:"/admin/alumnos",   Icon:Users,           label:"Alumnos"   },
   ]
   return (
     <div className="admin-sidebar flex flex-col" style={{ width:"210px", minWidth:"210px", height:"100vh" }}>
@@ -149,7 +151,7 @@ const AdminSidebar = ({ onLogout, onClose }) => {
 const AdminLayout = ({ children, onLogout }) => {
   const location = useLocation()
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const pageTitles = { "/admin/dashboard":"Dashboard", "/admin/alumnos":"Alumnos" }
+  const pageTitles = { "/admin/dashboard":"Dashboard", "/admin/eventos":"Eventos", "/admin/alumnos":"Alumnos" }
 
   return (
     <div className="admin-body flex">
@@ -395,6 +397,7 @@ const AdminPanel = () => {
       <Routes>
         <Route path="/admin"           element={<Navigate to="/admin/dashboard" replace/>}/>
         <Route path="/admin/dashboard" element={<AdminDashboard/>}/>
+        <Route path="/admin/eventos"   element={<AdminEventos/>}/>
         <Route path="/admin/alumnos"   element={<AdminAlumnos/>}/>
         {/* Cualquier ruta vieja (clases, pagos) regresa al dashboard */}
         <Route path="*"                element={<Navigate to="/admin/dashboard" replace/>}/>
