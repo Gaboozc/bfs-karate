@@ -39,10 +39,11 @@ const COLOR_CINTA = {
 const alumnoVacio = () => ({
   nombre: "", fecha_nacimiento: "", cinta: "", estado: "activo",
   fecha_inscripcion: new Date().toISOString().slice(0, 10),
-  tutor_nombre: "", tutor_telefono: "", direccion: "", contacto_emergencia: "",
-  lesiones_previas: "", alergias: "", condiciones: "",
-  autoriza_imagen: false, autoriza_salud: false, notas: "",
-  _programas: [],
+  tutor_nombre: "", tutor2_nombre: "", tutor_telefono: "", telefono2: "",
+  direccion: "", contacto_emergencia: "",
+  lesiones_previas: "", deporte_previo: "", alergias: "", condiciones: "",
+  autoriza_imagen: false, autoriza_salud: false, acepta_reglamento: false,
+  notas: "", _programas: [],
 })
 
 const edadDe = fecha => {
@@ -179,34 +180,44 @@ const Formulario = ({ alumno, programas, onGuardar, onCancelar, guardando }) => 
             {esMenor ? "Padre, madre o tutor" : "Contacto"}
           </p>
 
+          <div>
+            <label htmlFor="al-tutor" className={etiq} style={{ color:"#94a3b8" }}>Padre, madre o tutor</label>
+            <input id="al-tutor" className={input} style={estilo}
+              value={campos.tutor_nombre || ""} onChange={e => cambiar("tutor_nombre", e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="al-tutor2" className={etiq} style={{ color:"#94a3b8" }}>
+              Segundo tutor <span style={{ textTransform:"none", fontWeight:400, color:"#64748b" }}>· opcional</span>
+            </label>
+            <input id="al-tutor2" className={input} style={estilo}
+              value={campos.tutor2_nombre || ""} onChange={e => cambiar("tutor2_nombre", e.target.value)}
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="al-tutor" className={etiq} style={{ color:"#94a3b8" }}>Nombre</label>
-              <input id="al-tutor" className={input} style={estilo}
-                value={campos.tutor_nombre || ""} onChange={e => cambiar("tutor_nombre", e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="al-tel" className={etiq} style={{ color:"#94a3b8" }}>Telefono</label>
+              <label htmlFor="al-tel" className={etiq} style={{ color:"#94a3b8" }}>Celular de contacto</label>
               <input id="al-tel" type="tel" className={input} style={estilo}
                 value={campos.tutor_telefono || ""} onChange={e => cambiar("tutor_telefono", e.target.value)}
                 placeholder="55 1234 5678"
               />
             </div>
+            <div>
+              <label htmlFor="al-tel2" className={etiq} style={{ color:"#94a3b8" }}>2do numero de contacto</label>
+              <input id="al-tel2" type="tel" className={input} style={estilo}
+                value={campos.telefono2 || ""} onChange={e => cambiar("telefono2", e.target.value)}
+              />
+            </div>
           </div>
 
           <div>
-            <label htmlFor="al-dir" className={etiq} style={{ color:"#94a3b8" }}>Direccion</label>
+            <label htmlFor="al-dir" className={etiq} style={{ color:"#94a3b8" }}>
+              Direccion <span style={{ textTransform:"none", fontWeight:400, color:"#64748b" }}>· opcional</span>
+            </label>
             <input id="al-dir" className={input} style={estilo}
               value={campos.direccion || ""} onChange={e => cambiar("direccion", e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="al-emerg" className={etiq} style={{ color:"#94a3b8" }}>Contacto de emergencia</label>
-            <input id="al-emerg" className={input} style={estilo}
-              value={campos.contacto_emergencia || ""} onChange={e => cambiar("contacto_emergencia", e.target.value)}
-              placeholder="Nombre y telefono de otra persona"
             />
           </div>
 
@@ -220,10 +231,18 @@ const Formulario = ({ alumno, programas, onGuardar, onCancelar, guardando }) => 
           </div>
 
           <div>
-            <label htmlFor="al-lesiones" className={etiq} style={{ color:"#94a3b8" }}>Lesiones previas</label>
+            <label htmlFor="al-lesiones" className={etiq} style={{ color:"#94a3b8" }}>Fracturas o lesiones graves</label>
             <input id="al-lesiones" className={input} style={estilo}
               value={campos.lesiones_previas || ""} onChange={e => cambiar("lesiones_previas", e.target.value)}
-              placeholder="Rodilla derecha, hombro izquierdo…"
+              placeholder="Vacio si no ha tenido"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="al-deporte" className={etiq} style={{ color:"#94a3b8" }}>Deportes de contacto previos</label>
+            <input id="al-deporte" className={input} style={estilo}
+              value={campos.deporte_previo || ""} onChange={e => cambiar("deporte_previo", e.target.value)}
+              placeholder="Box, taekwondo, judo… vacio si ninguno"
             />
           </div>
 
@@ -274,6 +293,21 @@ const Formulario = ({ alumno, programas, onGuardar, onCancelar, guardando }) => 
                 <span className="text-sm text-white block">Datos de salud</span>
                 <span className="text-[11px]" style={{ color:"#64748b" }}>
                   Autoriza guardar lesiones, alergias y condiciones
+                </span>
+              </div>
+            </label>
+
+            <label className="flex items-start gap-3 px-3 py-2.5 rounded-lg cursor-pointer"
+              style={{ background:"#0a0a0a", border:"1px solid #2a2a2a" }}
+            >
+              <input type="checkbox" checked={campos.acepta_reglamento}
+                onChange={e => cambiar("acepta_reglamento", e.target.checked)}
+                className="w-4 h-4 mt-0.5" style={{ accentColor:"#c0392b" }}
+              />
+              <div>
+                <span className="text-sm text-white block">Reglamento interno</span>
+                <span className="text-[11px]" style={{ color:"#64748b" }}>
+                  Pagos, recargo por atraso, faltas y no reembolso
                 </span>
               </div>
             </label>
@@ -365,17 +399,19 @@ const Ficha = ({ alumno, onCerrar, onCambio }) => {
               {alumno.lesiones_previas && <p className="text-xs" style={{ color:"#e2e8f0" }}>Lesiones: {alumno.lesiones_previas}</p>}
               {alumno.alergias && <p className="text-xs" style={{ color:"#e2e8f0" }}>Alergias: {alumno.alergias}</p>}
               {alumno.condiciones && <p className="text-xs" style={{ color:"#e2e8f0" }}>Condiciones: {alumno.condiciones}</p>}
+              {alumno.deporte_previo && (
+                <p className="text-xs mt-1" style={{ color:"#94a3b8" }}>Viene de: {alumno.deporte_previo}</p>
+              )}
             </div>
           )}
 
           {(alumno.tutor_nombre || alumno.tutor_telefono || alumno.contacto_emergencia) && (
             <div>
               <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color:"#c0392b" }}>Contacto</p>
-              {alumno.tutor_nombre && <p className="text-xs" style={{ color:"#94a3b8" }}>{alumno.tutor_nombre}</p>}
+              {alumno.tutor_nombre  && <p className="text-xs" style={{ color:"#94a3b8" }}>{alumno.tutor_nombre}</p>}
+              {alumno.tutor2_nombre && <p className="text-xs" style={{ color:"#94a3b8" }}>{alumno.tutor2_nombre}</p>}
               {alumno.tutor_telefono && <p className="text-xs" style={{ color:"#94a3b8" }}>{alumno.tutor_telefono}</p>}
-              {alumno.contacto_emergencia && (
-                <p className="text-xs mt-1" style={{ color:"#94a3b8" }}>Emergencia: {alumno.contacto_emergencia}</p>
-              )}
+              {alumno.telefono2      && <p className="text-xs" style={{ color:"#94a3b8" }}>{alumno.telefono2}</p>}
             </div>
           )}
 
