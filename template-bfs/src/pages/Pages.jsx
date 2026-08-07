@@ -19,6 +19,9 @@ import { fadeInUp, fadeIn, scaleIn, stagger, staggerSlow, viewportOnce, pageTran
 
 // Carga diferida: recharts y todo el panel quedan fuera del paquete publico
 const AdminPanel = lazy(() => import("../admin/AdminPanel"))
+// El formulario de inscripcion tambien se carga aparte: solo lo necesita
+// quien llega por el enlace
+const Inscripcion = lazy(() => import("./Inscripcion"))
 
 const progIcons = { trophy:Trophy, star:Star, shield:Shield, zap:Zap, "user-shield":Shield, "user-check":UserCheck }
 
@@ -918,13 +921,27 @@ const CargandoPanel = () => (
 
 const App = () => {
   const location = useLocation()
-  const isAdmin  = location.pathname.startsWith("/admin")
+  const isAdmin       = location.pathname.startsWith("/admin")
+  const esInscripcion = location.pathname.startsWith("/inscripcion")
 
   // El panel se descarga solo cuando alguien entra a /admin
   if (isAdmin) {
     return (
       <Suspense fallback={<CargandoPanel/>}>
         <AdminPanel/>
+      </Suspense>
+    )
+  }
+
+  // El formulario de inscripcion va a pantalla completa, sin menu ni pie:
+  // quien llega por el enlace viene a una sola cosa, y cualquier otro
+  // elemento solo le da oportunidad de distraerse y no terminar.
+  if (esInscripcion) {
+    return (
+      <Suspense fallback={<CargandoPanel/>}>
+        <Routes>
+          <Route path="/inscripcion/:slug" element={<Inscripcion/>}/>
+        </Routes>
       </Suspense>
     )
   }

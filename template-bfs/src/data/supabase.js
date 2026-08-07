@@ -260,6 +260,72 @@ export const registrarGrado = async (alumnoId, cinta, fecha, notas) => {
   return { error: error2 }
 }
 
+// ── Bandeja de inscripciones ────────────────────────────────────────────────
+
+export const solicitudesTodas = async () => {
+  if (!supabase) return { datos: [], error: { message: "Sin conexion a la base de datos." } }
+  const { data, error } = await supabase
+    .from("solicitudes")
+    .select("*, programas(id, nombre, color)")
+    .order("creado_en", { ascending: false })
+  return { datos: data ?? [], error }
+}
+
+/**
+ * Convierte una solicitud en alumno: crea la ficha con los mismos datos, lo
+ * inscribe en el programa y marca la solicitud como aprobada.
+ */
+export const aprobarSolicitud = async solicitud => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+
+  const { error: errorAlumno, id: alumnoId } = await guardarAlumno({
+    nombre:            solicitud.nombre,
+    fecha_nacimiento:  solicitud.fecha_nacimiento,
+    fecha_inscripcion: solicitud.creado_en?.slice(0, 10),
+    tutor_nombre:      solicitud.tutor_nombre,
+    tutor2_nombre:     solicitud.tutor2_nombre,
+    tutor_telefono:    solicitud.tutor_telefono,
+    telefono2:         solicitud.telefono2,
+    lesiones_previas:  solicitud.lesiones_previas,
+    deporte_previo:    solicitud.deporte_previo,
+    alergias:          solicitud.alergias,
+    condiciones:       solicitud.condiciones,
+    autoriza_imagen:   solicitud.acepto_imagen,
+    autoriza_salud:    solicitud.acepto_salud,
+    acepta_reglamento: solicitud.acepto_contrato,
+    estado:            "activo",
+  })
+  if (errorAlumno) return { error: errorAlumno }
+
+  if (solicitud.programa_id && alumnoId) {
+    await supabase.from("inscripciones").insert({
+      alumno_id:     alumnoId,
+      programa_id:   solicitud.programa_id,
+      carta_firmada: solicitud.acepto_contrato,
+      firmada_el:    solicitud.creado_en?.slice(0, 10),
+    })
+  }
+
+  const { error } = await supabase.from("solicitudes")
+    .update({ estado: "aprobada", alumno_id: alumnoId, resuelto_en: new Date().toISOString() })
+    .eq("id", solicitud.id)
+  return { error }
+}
+
+export const rechazarSolicitud = async id => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("solicitudes")
+    .update({ estado: "rechazada", resuelto_en: new Date().toISOString() })
+    .eq("id", id)
+  return { error }
+}
+
+export const borrarSolicitud = async id => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("solicitudes").delete().eq("id", id)
+  return { error }
+}
+
 // ── Sesion del panel ────────────────────────────────────────────────────────
 
 export const iniciarSesion = async (email, password) => {

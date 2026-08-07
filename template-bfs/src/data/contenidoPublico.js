@@ -122,4 +122,40 @@ export const productosPublicos = async respaldo => {
   return filas?.length ? filas.map(productoDelSitio) : respaldo
 }
 
-export default { eventosPublicos, horariosPublicos, productosPublicos, programasPublicos }
+// ── Inscripcion en linea ────────────────────────────────────────────────────
+
+/** Programa de un enlace publico, con su contrato. null si no existe. */
+export const programaPorSlug = async slug => {
+  const filas = await leer(`programas?select=id,nombre,color,contrato,slug&slug=eq.${encodeURIComponent(slug)}&activo=eq.true`)
+  return filas?.[0] ?? null
+}
+
+/**
+ * Envia una solicitud de inscripcion. La politica de la base permite
+ * insertar sin sesion, pero no leer: nadie puede consultar los datos de
+ * otras personas desde el formulario.
+ */
+export const enviarSolicitud = async datos => {
+  if (!hayConexion) return { error: { message: "Sin conexion" } }
+  try {
+    const res = await fetch(`${URL}/rest/v1/solicitudes`, {
+      method: "POST",
+      headers: {
+        apikey: CLAVE,
+        Authorization: `Bearer ${CLAVE}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify(datos),
+    })
+    if (!res.ok) return { error: { message: `La base respondio ${res.status}` } }
+    return { error: null }
+  } catch (e) {
+    return { error: { message: e.message } }
+  }
+}
+
+export default {
+  eventosPublicos, horariosPublicos, productosPublicos, programasPublicos,
+  programaPorSlug, enviarSolicitud,
+}
