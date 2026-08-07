@@ -908,6 +908,34 @@ const ScrollToTop = () => {
   return null
 }
 
+// Direccion que no existe. Ofrece salidas en vez de dejar a la persona parada
+// frente a una pagina en blanco.
+const NoEncontrada = () => (
+  <motion.div {...pageTransition} className="min-h-[70vh] flex items-center justify-center px-5 pt-24 pb-16">
+    <div className="text-center max-w-md">
+      <p className="font-display leading-none mb-3"
+        style={{ fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"clamp(4rem,14vw,7rem)", color:"#c0392b" }}
+      >404</p>
+      <h1 className="font-display text-2xl mb-3" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif", color:"#f5f5f5" }}>
+        Esta pagina no existe
+      </h1>
+      <p className="text-base mb-8" style={{ color:"rgba(245,245,245,0.75)" }}>
+        Puede que el enlace este mal escrito o que ya no este disponible.
+      </p>
+      <div className="flex flex-wrap gap-3 justify-center">
+        <Link to="/"
+          className="inline-flex items-center px-6 py-3 uppercase tracking-[0.08em]"
+          style={{ background:"#c0392b", color:"#ffffff", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"16px", fontWeight:700 }}
+        >Ir al inicio</Link>
+        <Link to="/contacto"
+          className="inline-flex items-center px-6 py-3 uppercase tracking-[0.08em]"
+          style={{ background:"transparent", color:"#e74c3c", border:"1px solid #c0392b", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"16px", fontWeight:700 }}
+        >Contactanos</Link>
+      </div>
+    </div>
+  </motion.div>
+)
+
 // Pantalla mientras se descarga el panel de administracion
 const CargandoPanel = () => (
   <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background:"#0a0a0a" }}>
@@ -963,6 +991,9 @@ const App = () => {
             <Route path="/merch"       element={<MerchPage/>}/>
             <Route path="/sponsors"    element={<SponsorsPage/>}/>
             <Route path="/contacto"    element={<ContactoPage/>}/>
+            {/* Sin esto, una direccion equivocada dibuja el menu y el pie con
+                la pagina vacia en medio, y nadie entiende que paso. */}
+            <Route path="*"            element={<NoEncontrada/>}/>
           </Routes>
         </AnimatePresence>
       </div>

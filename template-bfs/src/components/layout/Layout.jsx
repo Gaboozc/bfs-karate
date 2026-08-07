@@ -73,6 +73,23 @@ export const SectionHeader = ({ eyebrow, title, subtitle, align="center", light=
 }
 
 // Navbar
+// LEGIBILIDAD DEL MENU
+//
+// El menu usaba Bebas Neue a 13-14px pidiendole peso 600 y 700. Bebas Neue
+// solo tiene UN peso real, asi que el navegador falsificaba la negrita
+// engordando el contorno al dibujarlo: los trazos se empastan y los huecos de
+// la "e" y la "s" se cierran. A tamano de titular no se nota; a 13px vuelve el
+// texto ilegible para cualquiera con problemas de vista.
+//
+// El menu ahora usa Barlow Condensed, que si trae pesos reales, en tamanos mas
+// grandes. Bebas Neue se queda donde funciona: los titulares.
+const MENU = "'Barlow Condensed',system-ui,sans-serif"
+
+// Rojo aclarado SOLO para texto sobre fondo oscuro. El #c0392b de la marca da
+// 3.6:1 contra el negro y reprueba el minimo de 4.5:1; este da 5.2:1. El rojo
+// original se conserva en fondos y bordes, donde el contraste no aplica.
+const ROJO_TEXTO = "#e74c3c"
+
 export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen]         = useState(false)
@@ -100,7 +117,10 @@ export const Navbar = () => {
 
   return (
     <>
-      <motion.nav initial={{ y:-64,opacity:0 }} animate={{ y:0,opacity:1 }} transition={{ duration:0.5 }}
+      {/* Solo se anima la opacidad. Animar la posicion deja un transform
+          permanente sobre la barra, y un elemento transformado se dibuja en su
+          propia capa: pierde el suavizado subpixel y el texto se ve lavado. */}
+      <motion.nav initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:0.5 }}
         className="fixed top-0 left-0 right-0 z-50 transition-colors duration-300"
         style={{ background:scrolled?"rgba(10,10,10,0.97)":"transparent",
           backdropFilter:scrolled?"blur(12px)":"none",
@@ -113,8 +133,8 @@ export const Navbar = () => {
           <div className="hidden lg:flex items-center gap-6">
             {content.nav.links.filter(l => !l.button).map(l => (
               <Link key={l.href} to={l.href}
-                className="text-xs tracking-[0.15em] uppercase font-semibold transition-colors duration-200 relative"
-                style={{ color:location.pathname===l.href?"#c0392b":"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"14px" }}
+                className="tracking-[0.08em] uppercase transition-colors duration-200 relative"
+                style={{ color:location.pathname===l.href?ROJO_TEXTO:"rgba(245,245,245,0.88)", fontFamily:MENU, fontSize:"15px", fontWeight:600 }}
               >
                 {l.label}
                 {location.pathname===l.href && <motion.span layoutId="activeBFS" className="absolute -bottom-1 left-0 right-0 h-0.5" style={{ background:"#c0392b" }}/>}
@@ -126,15 +146,15 @@ export const Navbar = () => {
             {/* Secundario: delineado, para que Inscribirse gane la mirada */}
             {content.nav.links.filter(l => l.button).map(l => (
               <Link key={l.href} to={l.href}
-                className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold transition-colors duration-200"
-                style={{ background:"transparent", color:"#c0392b", border:"1px solid #c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
-                onMouseEnter={e=>{ e.currentTarget.style.background="#c0392b"; e.currentTarget.style.color="#f5f5f5" }}
-                onMouseLeave={e=>{ e.currentTarget.style.background="transparent"; e.currentTarget.style.color="#c0392b" }}
+                className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 uppercase tracking-[0.08em] transition-colors duration-200"
+                style={{ background:"transparent", color:ROJO_TEXTO, border:"1px solid #c0392b", fontFamily:MENU, fontSize:"15px", fontWeight:700 }}
+                onMouseEnter={e=>{ e.currentTarget.style.background="#c0392b"; e.currentTarget.style.color="#ffffff" }}
+                onMouseLeave={e=>{ e.currentTarget.style.background="transparent"; e.currentTarget.style.color=ROJO_TEXTO }}
               >{l.label}</Link>
             ))}
             <Link to="/contacto"
-              className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold transition-colors duration-200"
-              style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
+              className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 uppercase tracking-[0.08em] transition-colors duration-200"
+              style={{ background:"#c0392b", color:"#ffffff", fontFamily:MENU, fontSize:"15px", fontWeight:700 }}
               onMouseEnter={e=>e.currentTarget.style.background="#a93226"}
               onMouseLeave={e=>e.currentTarget.style.background="#c0392b"}
             >{content.nav.ctaText}</Link>
@@ -162,7 +182,7 @@ export const Navbar = () => {
             {content.nav.links.filter(l => !l.button).map((l,i)=>(
               <motion.div key={l.href} initial={{ opacity:0,x:-30 }} animate={{ opacity:1,x:0 }} transition={{ delay:i*0.07 }}>
                 <Link to={l.href} className="block font-display text-5xl mb-4 tracking-wider"
-                  style={{ color:location.pathname===l.href?"#c0392b":"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                  style={{ color:location.pathname===l.href?ROJO_TEXTO:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                 >{l.label}</Link>
               </motion.div>
             ))}
@@ -175,13 +195,13 @@ export const Navbar = () => {
                   se lea como la accion principal */}
               {content.nav.links.filter(l => l.button).map(l => (
                 <Link key={l.href} to={l.href}
-                  className="inline-flex items-center justify-center px-8 py-3.5 font-bold tracking-[0.12em]"
-                  style={{ background:"transparent", color:"#c0392b", border:"2px solid #c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"22px" }}
+                  className="inline-flex items-center justify-center px-8 py-3.5 uppercase tracking-[0.08em]"
+                  style={{ background:"transparent", color:ROJO_TEXTO, border:"2px solid #c0392b", fontFamily:MENU, fontSize:"21px", fontWeight:700 }}
                 >{l.label}</Link>
               ))}
               <Link to="/contacto"
-                className="inline-flex items-center justify-center px-8 py-3.5 font-bold tracking-[0.12em]"
-                style={{ background:"#c0392b", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"22px" }}
+                className="inline-flex items-center justify-center px-8 py-3.5 uppercase tracking-[0.08em]"
+                style={{ background:"#c0392b", color:"#ffffff", fontFamily:MENU, fontSize:"21px", fontWeight:700 }}
               >{content.nav.ctaText}</Link>
             </motion.div>
           </motion.div>
