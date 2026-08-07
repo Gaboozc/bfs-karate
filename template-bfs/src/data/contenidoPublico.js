@@ -131,6 +131,17 @@ export const programaPorSlug = async slug => {
 }
 
 /**
+ * Manifiesto y reglamento. Son los mismos para toda disciplina, asi que se
+ * guardan una sola vez y no duplicados por programa: cambiar un articulo se
+ * hace en un lugar y no puede quedar distinto segun por donde entro la persona.
+ * Devuelve { manifiesto, reglamento } con { titulo, texto }.
+ */
+export const documentosComunes = async () => {
+  const filas = await leer("documentos?select=clave,titulo,texto&order=orden")
+  return Object.fromEntries((filas ?? []).map(d => [d.clave, d]))
+}
+
+/**
  * Envia una solicitud de inscripcion. La politica de la base permite
  * insertar sin sesion, pero no leer: nadie puede consultar los datos de
  * otras personas desde el formulario.
@@ -157,5 +168,5 @@ export const enviarSolicitud = async datos => {
 
 export default {
   eventosPublicos, horariosPublicos, productosPublicos, programasPublicos,
-  programaPorSlug, enviarSolicitud,
+  programaPorSlug, documentosComunes, enviarSolicitud,
 }

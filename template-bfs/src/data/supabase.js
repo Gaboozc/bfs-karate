@@ -292,7 +292,9 @@ export const aprobarSolicitud = async solicitud => {
     condiciones:       solicitud.condiciones,
     autoriza_imagen:   solicitud.acepto_imagen,
     autoriza_salud:    solicitud.acepto_salud,
-    acepta_reglamento: solicitud.acepto_contrato,
+    // El reglamento se acepta aparte del contrato de la disciplina: son
+    // documentos distintos y la ficha debe reflejar cual firmo cada quien
+    acepta_reglamento: solicitud.acepto_reglamento,
     estado:            "activo",
   })
   if (errorAlumno) return { error: errorAlumno }

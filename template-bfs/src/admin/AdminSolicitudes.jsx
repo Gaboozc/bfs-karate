@@ -73,15 +73,44 @@ const VisorContrato = ({ solicitud, onCerrar }) => (
           </p>
         </div>
 
-        {/* Texto literal */}
-        <div className="p-4 text-sm leading-relaxed"
-          style={{ background:"#0a0a0a", border:"1px solid #2a2a2a", color:"#94a3b8", whiteSpace:"pre-line" }}
-        >{solicitud.contrato_texto || "No se guardo el texto del acuerdo."}</div>
+        {/* La firma primero: es lo que se busca al abrir esta ventana */}
+        {solicitud.firma ? (
+          <div>
+            <p className="text-[10px] uppercase tracking-wider mb-2" style={{ color:"#64748b" }}>Firma</p>
+            <div className="p-3 rounded-lg" style={{ background:"#0a0a0a", border:"1px solid #2a2a2a" }}>
+              <img src={solicitud.firma} alt={`Firma de ${solicitud.contrato_firmante || solicitud.nombre}`}
+                className="w-full" style={{ maxHeight:"150px", objectFit:"contain" }}
+              />
+            </div>
+          </div>
+        ) : (
+          <p className="text-xs p-3 rounded-lg"
+            style={{ background:"rgba(248,113,113,0.08)", color:"#f87171" }}
+          >Esta solicitud no trae firma. Llego antes de que el formulario la pidiera.</p>
+        )}
+
+        {/* Los tres textos, cada uno como se mostro ese dia */}
+        {[
+          ["Contrato de " + (solicitud.programas?.nombre ?? "la disciplina"), solicitud.contrato_texto],
+          ["Manifiesto",                                                      solicitud.manifiesto_texto],
+          ["Reglamento general",                                              solicitud.reglamento_texto],
+        ].filter(([, texto]) => texto).map(([titulo, texto]) => (
+          <details key={titulo} style={{ background:"#0a0a0a", border:"1px solid #2a2a2a" }}>
+            <summary className="px-4 py-3 text-xs font-semibold cursor-pointer" style={{ color:"#e2e8f0" }}>
+              {titulo}
+            </summary>
+            <div className="px-4 pb-4 text-xs leading-relaxed"
+              style={{ color:"#94a3b8", whiteSpace:"pre-line" }}
+            >{texto}</div>
+          </details>
+        ))}
 
         {/* Permisos marcados */}
         <div className="space-y-2">
           {[
-            ["Acepto el acuerdo",           solicitud.acepto_contrato],
+            ["Acepto el contrato",          solicitud.acepto_contrato],
+            ["Acepto el manifiesto",        solicitud.acepto_manifiesto],
+            ["Acepto el reglamento",        solicitud.acepto_reglamento],
             ["Autorizo datos de salud",     solicitud.acepto_salud],
             ["Autorizo uso de imagen",      solicitud.acepto_imagen],
           ].map(([texto, si]) => (
@@ -97,8 +126,9 @@ const VisorContrato = ({ solicitud, onCerrar }) => (
         </div>
 
         <p className="text-[11px] pt-2" style={{ color:"#475569" }}>
-          Este es el texto exacto que se mostro al momento de aceptar. Si el
-          acuerdo cambia despues, esta copia no se modifica.
+          Estos son los textos exactos que se mostraron al momento de firmar.
+          Si el contrato o el reglamento cambian despues, esta copia no se
+          modifica.
         </p>
       </div>
     </motion.div>
