@@ -14,11 +14,12 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recha
 import { adminData } from "../data/adminData"
 import { BFSLogo } from "../components/layout/Layout"
 import { fadeInUp, stagger } from "../styles/animations"
-import { iniciarSesion, cerrarSesion, sesionActual, alCambiarSesion, hayConexion, eventosTodos } from "../data/supabase"
+import { iniciarSesion, cerrarSesion, sesionActual, alCambiarSesion, hayConexion, eventosTodos, alumnosTodos } from "../data/supabase"
 import AdminEventos from "./AdminEventos"
 import AdminHorarios from "./AdminHorarios"
 import AdminInventario from "./AdminInventario"
 import AdminProgramas from "./AdminProgramas"
+import AdminAlumnos from "./AdminAlumnos"
 
 const CHART_COLORS = ["#c0392b","#f5c518","#1a5276","#6b4c36","#2d6a4f","#888888","#f5f5f5"]
 const beltColors   = { "Blanco":"#f5f5f5", "Blanco raya Morada":"#f5f5f5", "Morada":"#8b3fa8", "Morada raya Amarilla":"#8b3fa8", "Amarilla":"#f5c518", "Naranja":"#e07b39", "Azul":"#2e75b6", "Azul raya Marron":"#2e75b6", "Marron":"#6b4c36", "Negro":"#1a1a1a" }
@@ -216,14 +217,19 @@ const AdminLayout = ({ children, onLogout }) => {
 
 // ── Dashboard ─────────────────────────────────────────────────────────────
 const AdminDashboard = () => {
-  const { alumnos, charts } = adminData
+  const { charts } = adminData
   const [eventos, setEventos] = useState([])
+  const [alumnos, setAlumnos] = useState([])
 
   // El proximo evento se lee de la base, para que el tablero avise de lo que
   // viene sin tener que entrar a la seccion de eventos.
   useEffect(() => {
     let vigente = true
-    eventosTodos().then(({ datos }) => { if (vigente) setEventos(datos) })
+    Promise.all([eventosTodos(), alumnosTodos()]).then(([e, a]) => {
+      if (!vigente) return
+      setEventos(e.datos)
+      setAlumnos(a.datos)
+    })
     return () => { vigente = false }
   }, [])
 
@@ -233,7 +239,7 @@ const AdminDashboard = () => {
   const mesActual= `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}`
 
   const activos    = alumnos.filter(a => a.estado === "activo").length
-  const nuevosMes  = alumnos.filter(a => a.alta?.startsWith(mesActual)).length
+  const nuevosMes  = alumnos.filter(a => a.fecha_inscripcion?.startsWith(mesActual)).length
   const cintasNegras = alumnos.filter(a => a.belt === "Negro").length
 
   const proximo = eventos
@@ -311,87 +317,6 @@ const AdminDashboard = () => {
               <div className="text-[9px] tracking-wider uppercase" style={{ color:"rgba(245,245,245,0.35)" }}>{c.nombre}</div>
             </div>
           ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ── Alumnos ───────────────────────────────────────────────────────────────
-const AdminAlumnos = () => {
-  const [search, setSearch]   = useState("")
-  const [filterProg, setFilterProg] = useState("Todos")
-  const programas = ["Todos", ...new Set(adminData.alumnos.map(a=>a.programa))]
-  const filtered = adminData.alumnos.filter(a => {
-    const matchS = a.nombre.toLowerCase().includes(search.toLowerCase())
-    const matchP = filterProg==="Todos" || a.programa===filterProg
-    return matchS && matchP
-  })
-  return (
-    <div className="space-y-5">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="font-display text-2xl text-white mb-1" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Directorio de Alumnos</h1>
-          <p className="text-sm" style={{ color:"#64748b" }}>{adminData.alumnos.length} alumnos registrados</p>
-        </div>
-        <button className="px-4 py-2.5 rounded-lg text-sm font-bold text-white" style={{ background:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"14px" }}>+ NUEVO ALUMNO</button>
-      </div>
-
-      <div className="flex flex-wrap gap-2 items-center">
-        <div className="relative flex-1 min-w-48">
-          <Search size={14} aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"/>
-          <input type="search" name="buscar-alumno" aria-label="Buscar alumno"
-            spellCheck={false} autoComplete="off"
-            value={search} onChange={e=>setSearch(e.target.value)} placeholder="Buscar alumno…"
-            className="w-full pl-9 pr-4 py-2.5 rounded-lg text-sm text-white"
-            style={{ background:"#1a1a1a", border:"1px solid #2a2a2a" }}
-          />
-        </div>
-        {programas.map(prog=>(
-          <button key={prog} onClick={()=>setFilterProg(prog)}
-            className="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors duration-200"
-            style={{ background:filterProg===prog?"#c0392b":"#1a1a1a", color:filterProg===prog?"#ffffff":"#64748b",
-              border:`1px solid ${filterProg===prog?"#c0392b":"#2a2a2a"}` }}
-          >{prog}</button>
-        ))}
-      </div>
-
-      <div className="admin-card overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr style={{ borderBottom:"1px solid #2a2a2a" }}>
-                {["Alumno","Programa","Cinta","Estado","Instructor"].map(h=>(
-                  <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider" style={{ color:"#64748b" }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((a,i)=>(
-                <tr key={a.id}
-                  style={{ borderBottom:"1px solid #111111", background:i%2===0?"transparent":"rgba(255,255,255,0.01)" }}
-                  onMouseEnter={e=>e.currentTarget.style.background="rgba(192,57,43,0.04)"}
-                  onMouseLeave={e=>e.currentTarget.style.background=i%2===0?"transparent":"rgba(255,255,255,0.01)"}
-                >
-                  <td className="px-4 py-3">
-                    <p className="font-semibold text-white text-xs">{a.nombre}</p>
-                    <p className="text-[10px]" style={{ color:"#64748b" }}>{a.id} · {a.edad} anos</p>
-                  </td>
-                  <td className="px-4 py-3 text-xs" style={{ color:"#94a3b8" }}>{a.programa}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-5 h-1.5 rounded-sm" style={{ background:beltColors[a.belt]||"#888888" }}/>
-                      <span className="text-xs" style={{ color:"rgba(245,245,245,0.55)" }}>{a.belt}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${a.estado==="activo"?"status-active":"status-inactive"}`}>{a.estado}</span>
-                  </td>
-                  <td className="px-4 py-3 text-xs" style={{ color:"#64748b" }}>{a.instructor}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>

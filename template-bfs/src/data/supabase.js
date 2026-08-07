@@ -187,6 +187,79 @@ export const ajustarExistencias = async (id, existencias) => {
   return { error }
 }
 
+// ── Padron de alumnos ───────────────────────────────────────────────────────
+// Estas tablas no tienen lectura publica: sin sesion no devuelven nada.
+
+/** Alumnos con sus programas y su ultimo grado. */
+export const alumnosTodos = async () => {
+  if (!supabase) return { datos: [], error: { message: "Sin conexion a la base de datos." } }
+  const { data, error } = await supabase
+    .from("alumnos")
+    .select("*, inscripciones(id, programa_id, hasta, programas(id, nombre, color))")
+    .order("nombre")
+  return { datos: data ?? [], error }
+}
+
+export const guardarAlumno = async alumno => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." }, id: null }
+  const { id, inscripciones, ...campos } = alumno
+  if (id) {
+    const { error } = await supabase.from("alumnos").update(campos).eq("id", id)
+    return { error, id }
+  }
+  const { data, error } = await supabase.from("alumnos").insert(campos).select("id").single()
+  return { error, id: data?.id ?? null }
+}
+
+export const borrarAlumno = async id => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("alumnos").delete().eq("id", id)
+  return { error }
+}
+
+/**
+ * Deja al alumno inscrito exactamente en los programas indicados:
+ * agrega los que faltan y quita los que ya no esten.
+ */
+export const fijarInscripciones = async (alumnoId, programaIds) => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+
+  const { data: actuales } = await supabase
+    .from("inscripciones").select("id, programa_id").eq("alumno_id", alumnoId)
+
+  const previos = (actuales ?? []).map(i => i.programa_id)
+  const porAgregar = programaIds.filter(p => !previos.includes(p))
+  const porQuitar  = (actuales ?? []).filter(i => !programaIds.includes(i.programa_id))
+
+  if (porQuitar.length) {
+    const { error } = await supabase.from("inscripciones").delete().in("id", porQuitar.map(i => i.id))
+    if (error) return { error }
+  }
+  if (porAgregar.length) {
+    const { error } = await supabase.from("inscripciones")
+      .insert(porAgregar.map(programa_id => ({ alumno_id: alumnoId, programa_id })))
+    if (error) return { error }
+  }
+  return { error: null }
+}
+
+/** Historial de cintas de un alumno, de lo mas reciente a lo mas antiguo. */
+export const gradosDeAlumno = async alumnoId => {
+  if (!supabase) return { datos: [], error: null }
+  const { data, error } = await supabase
+    .from("grados").select("*").eq("alumno_id", alumnoId).order("fecha", { ascending: false })
+  return { datos: data ?? [], error }
+}
+
+/** Registra un cambio de cinta y actualiza la cinta actual del alumno. */
+export const registrarGrado = async (alumnoId, cinta, fecha, notas) => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("grados").insert({ alumno_id: alumnoId, cinta, fecha, notas })
+  if (error) return { error }
+  const { error: error2 } = await supabase.from("alumnos").update({ cinta }).eq("id", alumnoId)
+  return { error: error2 }
+}
+
 // ── Sesion del panel ────────────────────────────────────────────────────────
 
 export const iniciarSesion = async (email, password) => {
