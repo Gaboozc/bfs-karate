@@ -128,6 +128,33 @@ export const borrarHorario = async id => {
   return { error }
 }
 
+// ── Franjas horarias ────────────────────────────────────────────────────────
+//
+// Los renglones de la parrilla, tengan clase o no. Una hora vacia significa
+// "aqui quiero poner algo" y eso es informacion que hay que conservar; no cabe
+// en la tabla de horarios, donde cada fila es una clase con dia y programa.
+
+export const franjasTodas = async () => {
+  if (!supabase) return { datos: [], error: { message: "Sin conexion a la base de datos." } }
+  const { data, error } = await supabase.from("franjas").select("*").order("hora")
+  return { datos: data ?? [], error }
+}
+
+export const guardarFranja = async hora => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("franjas").insert({ hora })
+  // Agregar una hora que ya estaba no es un fallo: el renglon ya existe, que
+  // es justo lo que se pedia
+  if (error?.code === "23505") return { error: null }
+  return { error }
+}
+
+export const borrarFranja = async hora => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("franjas").delete().eq("hora", hora)
+  return { error }
+}
+
 // ── Categorias de la tienda ─────────────────────────────────────────────────
 
 export const categoriasTodas = async () => {

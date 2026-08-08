@@ -6,7 +6,11 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Plus, X, Trash2 } from "lucide-react"
-import { horariosTodos, guardarHorario, borrarHorario, programasTodos } from "../data/supabase"
+import {
+  horariosTodos, guardarHorario, borrarHorario, programasTodos,
+  franjasTodas, guardarFranja, borrarFranja,
+} from "../data/supabase"
+import { enAmPm } from "../data/horas"
 
 const DIAS = [
   { n:1, corto:"Lun", largo:"Lunes"     },
@@ -18,21 +22,10 @@ const DIAS = [
   { n:7, corto:"Dom", largo:"Domingo"   },
 ]
 
-const HORAS_SUGERIDAS = ["07:00","09:00","10:00","16:00","17:30","19:00","20:30"]
-
-// Las horas se guardan y se ordenan en formato de 24 con cero adelante
-// ("07:00", "17:30"): asi el orden alfabetico coincide con el cronologico y no
-// hace falta convertir nada para ordenar. La conversion a AM/PM es solo para
-// mostrar, en el ultimo momento.
-const enAmPm = hhmm => {
-  const [h, m] = hhmm.split(":").map(Number)
-  const periodo = h < 12 ? "AM" : "PM"
-  const hora12  = h % 12 === 0 ? 12 : h % 12
-  return `${hora12}:${String(m).padStart(2, "0")} ${periodo}`
-}
 
 const AdminHorarios = () => {
   const [horarios, setHorarios] = useState([])
+  const [franjas, setFranjas]   = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError]       = useState("")
   const [programas, setProgramas] = useState([])
@@ -41,19 +34,22 @@ const AdminHorarios = () => {
 
   const recargar = async () => {
     setCargando(true)
-    const [h, p] = await Promise.all([horariosTodos(), programasTodos()])
+    const [h, p, f] = await Promise.all([horariosTodos(), programasTodos(), franjasTodas()])
     if (h.error) setError(h.error.message)
     else { setHorarios(h.datos); setError("") }
     if (!p.error) setProgramas(p.datos.filter(x => x.activo))
+    if (!f.error) setFranjas(f.datos)
     setCargando(false)
   }
 
   useEffect(() => { recargar() }, [])
 
-  // Horas presentes en la base, mas las sugeridas, ordenadas
+  // Renglones de la parrilla: las horas guardadas, mas las que ya tienen clase.
+  // Se ordenan sobre el valor de 24 horas, donde el orden alfabetico coincide
+  // con el cronologico; el AM/PM es solo para mostrar.
   const horas = [...new Set([
+    ...franjas.map(f => f.hora.slice(0, 5)),
     ...horarios.map(h => h.hora.slice(0, 5)),
-    ...HORAS_SUGERIDAS,
   ])].sort()
 
   const buscar = (dia, hora) =>
@@ -75,13 +71,21 @@ const AdminHorarios = () => {
     recargar()
   }
 
-  const agregarHora = e => {
+  const agregarHora = async e => {
     e.preventDefault()
     if (!horaNueva) return
-    // Solo se agrega visualmente; queda guardada al asignarle una clase
-    HORAS_SUGERIDAS.push(horaNueva)
+    const { error } = await guardarFranja(horaNueva)
     setHoraNueva("")
-    setHorarios(h => [...h])
+    if (error) { setError(error.message); return }
+    recargar()
+  }
+
+  // Solo se ofrece quitar renglones vacios. Con clases asignadas el renglon
+  // seguiria apareciendo de todos modos, asi que el boton mentiria.
+  const quitarHora = async hora => {
+    const { error } = await borrarFranja(hora)
+    if (error) { setError(error.message); return }
+    recargar()
   }
 
   const clasesActivas = horarios.length
@@ -135,8 +139,21 @@ const AdminHorarios = () => {
             <tbody>
               {horas.map(hora => (
                 <tr key={hora} style={{ borderBottom:"1px solid #111111" }}>
-                  <td className="px-3 py-2 text-xs font-bold whitespace-nowrap" style={{ color:"#64748b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
-                    {enAmPm(hora)}
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-bold" style={{ color:"#64748b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
+                        {enAmPm(hora)}
+                      </span>
+                      {!DIAS.some(d => buscar(d.n, hora)) && (
+                        <button onClick={() => quitarHora(hora)}
+                          aria-label={`Quitar el renglon de las ${enAmPm(hora)}`}
+                          title="Quitar este renglon"
+                          style={{ color:"#334155" }}
+                          onMouseEnter={e => e.currentTarget.style.color = "#f87171"}
+                          onMouseLeave={e => e.currentTarget.style.color = "#334155"}
+                        ><X size={12}/></button>
+                      )}
+                    </div>
                   </td>
                   {DIAS.map(d => {
                     const h = buscar(d.n, hora)

@@ -23,7 +23,10 @@ const leer = async ruta => {
       headers: { apikey: CLAVE, Authorization: `Bearer ${CLAVE}` },
     })
     if (!res.ok) {
-      console.warn(`[contenido] la base respondio ${res.status}, se usa el respaldo`)
+      // Se incluye la consulta y el motivo: un aviso que solo dice "400" no
+      // permite distinguir una columna inexistente de un permiso faltante
+      const motivo = await res.text().catch(() => "")
+      console.warn(`[contenido] ${res.status} en "${ruta}", se usa el respaldo. ${motivo.slice(0, 200)}`)
       return null
     }
     return await res.json()

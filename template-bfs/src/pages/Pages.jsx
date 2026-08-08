@@ -9,6 +9,7 @@ import {
 } from "lucide-react"
 import { content } from "../data/content"
 import { precio, real, soloReales } from "../data/pendientes"
+import { enAmPm } from "../data/horas"
 import { eventosPublicos, horariosPublicos, productosPublicos, programasPublicos } from "../data/contenidoPublico"
 import { Navbar, Footer, WhatsAppButton, SectionHeader } from "../components/layout/Layout"
 import {
@@ -352,7 +353,7 @@ export const HorariosPage = () => {
               <tbody>
                 {schedule.slots.map((slot,i)=>(
                   <tr key={i} style={{ borderBottom:"1px solid rgba(245,245,245,0.04)" }}>
-                    <td className="py-3 pr-6 font-bold text-xs" style={{ color:"rgba(245,245,245,0.4)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{slot.time}</td>
+                    <td className="py-3 pr-6 font-bold text-xs whitespace-nowrap" style={{ color:"rgba(245,245,245,0.4)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{enAmPm(slot.time)}</td>
                     {dayKeys.map(key=>{
                       const cls = slot[key]
                       const color = { "Karate Kids":"#f5c518","Karate Competitivo":"#c0392b","Adultos":"#1a5276","High Perf.":"#6b4c36","Defensa P.":"#2d6a4f","High Performance":"#6b4c36" }[cls]
