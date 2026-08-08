@@ -20,6 +20,17 @@ const DIAS = [
 
 const HORAS_SUGERIDAS = ["07:00","09:00","10:00","16:00","17:30","19:00","20:30"]
 
+// Las horas se guardan y se ordenan en formato de 24 con cero adelante
+// ("07:00", "17:30"): asi el orden alfabetico coincide con el cronologico y no
+// hace falta convertir nada para ordenar. La conversion a AM/PM es solo para
+// mostrar, en el ultimo momento.
+const enAmPm = hhmm => {
+  const [h, m] = hhmm.split(":").map(Number)
+  const periodo = h < 12 ? "AM" : "PM"
+  const hora12  = h % 12 === 0 ? 12 : h % 12
+  return `${hora12}:${String(m).padStart(2, "0")} ${periodo}`
+}
+
 const AdminHorarios = () => {
   const [horarios, setHorarios] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -124,8 +135,8 @@ const AdminHorarios = () => {
             <tbody>
               {horas.map(hora => (
                 <tr key={hora} style={{ borderBottom:"1px solid #111111" }}>
-                  <td className="px-3 py-2 text-xs font-bold" style={{ color:"#64748b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
-                    {hora}
+                  <td className="px-3 py-2 text-xs font-bold whitespace-nowrap" style={{ color:"#64748b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
+                    {enAmPm(hora)}
                   </td>
                   {DIAS.map(d => {
                     const h = buscar(d.n, hora)
@@ -142,8 +153,8 @@ const AdminHorarios = () => {
                             minHeight:  "34px",
                           }}
                           aria-label={h
-                            ? `${h.programas?.nombre ?? h.programa}, ${d.largo} ${hora}. Tocar para cambiar`
-                            : `Sin clase, ${d.largo} ${hora}. Tocar para asignar`}
+                            ? `${h.programas?.nombre ?? h.programa}, ${d.largo} ${enAmPm(hora)}. Tocar para cambiar`
+                            : `Sin clase, ${d.largo} ${enAmPm(hora)}. Tocar para asignar`}
                         >{h ? (h.programas?.nombre ?? h.programa) : "+"}</button>
                       </td>
                     )
@@ -181,7 +192,7 @@ const AdminHorarios = () => {
               <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom:"1px solid #2a2a2a" }}>
                 <div>
                   <h2 className="font-display text-base text-white" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
-                    {DIAS.find(d => d.n === celda.dia)?.largo} · {celda.hora}
+                    {DIAS.find(d => d.n === celda.dia)?.largo} · {enAmPm(celda.hora)}
                   </h2>
                 </div>
                 <button onClick={() => setCelda(null)} aria-label="Cerrar" style={{ color:"#64748b" }}>
