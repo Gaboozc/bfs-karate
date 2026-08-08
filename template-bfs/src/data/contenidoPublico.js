@@ -63,14 +63,22 @@ export const eventosPublicos = async respaldo => {
 }
 
 /**
- * Horario semanal, en el formato de rejilla que usa el sitio:
- * filas por hora, columnas por dia.
+ * Horario real de la academia, en el formato de rejilla que usa el sitio:
+ * filas por hora, columnas por dia. Devuelve null si el Sensei no ha cargado
+ * ninguna clase.
+ *
+ * Aqui NO hay respaldo a content.js, a diferencia de eventos o productos. El
+ * horario de content.js es relleno inventado, y publicarlo mientras la base
+ * esta vacia equivale a anunciar clases que no existen: alguien podria
+ * presentarse un sabado a las 9 porque lo leyo en el sitio. Es preferible no
+ * mostrar la seccion. Misma regla que pendientes.js.
  */
-export const horariosPublicos = async respaldo => {
+export const horariosPublicos = async () => {
   const filas = await leer("horarios?select=*&activo=eq.true&order=hora.asc,dia.asc")
-  if (!filas?.length) return respaldo
+  if (!filas?.length) return null
 
   const CLAVES = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+  const DIAS   = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"]
   const porHora = new Map()
 
   for (const f of filas) {
@@ -81,7 +89,7 @@ export const horariosPublicos = async respaldo => {
     porHora.get(hora)[CLAVES[f.dia - 1]] = f.programa
   }
 
-  return { days: respaldo.days, slots: [...porHora.values()] }
+  return { days: DIAS, slots: [...porHora.values()] }
 }
 
 /** Traduce un programa de la base al formato que usa el sitio. */

@@ -325,10 +325,20 @@ export const InstructoresPage = () => {
 
 export const HorariosPage = () => {
   // El horario viene de la base, donde el Sensei lo edita en la parrilla.
-  const [schedule, setSchedule] = useState(content.schedule)
+  //
+  // Mientras no haya cargado ninguna clase, la tabla NO se muestra. El horario
+  // de content.js es relleno inventado, y publicarlo equivale a anunciar
+  // clases que no existen: alguien podria presentarse un sabado a las 9 porque
+  // lo leyo aqui. Vacio arranca en null para no alcanzar a pintar el relleno
+  // durante el instante que tarda la consulta.
+  const [schedule, setSchedule] = useState(null)
+  const [buscando, setBuscando] = useState(true)
   useEffect(() => {
     let vigente = true
-    horariosPublicos(content.schedule).then(d => { if (vigente) setSchedule(d) })
+    horariosPublicos().then(d => {
+      if (!vigente) return
+      setSchedule(d); setBuscando(false)
+    })
     return () => { vigente = false }
   }, [])
   const dayKeys = ["mon","tue","wed","thu","fri","sat","sun"]
@@ -340,6 +350,27 @@ export const HorariosPage = () => {
           <p className="text-base leading-relaxed max-w-2xl mb-10" style={{ color:"#888888" }}>
             {content.horariosPage.intro}
           </p>
+          {buscando ? null : !schedule ? (
+            /* Sin horario cargado: se ofrece la via que si funciona hoy, que
+               es preguntar por WhatsApp */
+            <motion.div initial="hidden" animate="visible" variants={fadeInUp}
+              className="p-8 text-center" style={{ background:"#111111", border:"1px solid rgba(245,245,245,0.08)" }}
+            >
+              <Clock size={26} style={{ color:"#c0392b" }} className="mb-4 mx-auto" aria-hidden="true"/>
+              <h2 className="font-display text-2xl mb-2" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
+                Estamos actualizando el horario
+              </h2>
+              <p className="text-sm mb-6 max-w-md mx-auto" style={{ color:"rgba(245,245,245,0.6)" }}>
+                Escribenos por WhatsApp y te decimos los horarios disponibles
+                para tu edad y tu nivel.
+              </p>
+              <a href={`https://wa.me/${content.business.whatsapp}`}
+                target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center px-6 py-3 uppercase tracking-[0.08em]"
+                style={{ background:"#c0392b", color:"#ffffff", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"16px", fontWeight:700 }}
+              >Preguntar por WhatsApp</a>
+            </motion.div>
+          ) : (
           <motion.div className="overflow-x-auto" initial="hidden" animate="visible" variants={fadeInUp}>
             <table className="w-full text-sm min-w-[900px]">
               <thead>
@@ -374,9 +405,12 @@ export const HorariosPage = () => {
               </tbody>
             </table>
           </motion.div>
-          <p className="text-xs mt-6" style={{ color:"rgba(245,245,245,0.25)" }}>
-            Horarios sujetos a cambio. Consulta disponibilidad de clases privadas directamente con tu instructor.
-          </p>
+          )}
+          {schedule && (
+            <p className="text-xs mt-6" style={{ color:"rgba(245,245,245,0.25)" }}>
+              Horarios sujetos a cambio. Consulta disponibilidad de clases privadas directamente con tu instructor.
+            </p>
+          )}
         </div>
       </section>
 
@@ -414,7 +448,11 @@ export const HorariosPage = () => {
           >
             <h3 className="font-display text-xl mb-4" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Antes de venir</h3>
             <ul className="space-y-2.5">
-              {content.horariosPage.notas.map((n,i) => (
+              {/* Dos de estas notas hablan de la tabla y de ajustes de sabado
+                  y domingo. Sin parrilla publicada no tienen a que referirse */}
+              {content.horariosPage.notas
+                .filter(n => schedule || !/tabla|horario/i.test(n))
+                .map((n,i) => (
                 <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color:"rgba(245,245,245,0.55)" }}>
                   <CheckCircle size={13} style={{ color:"#c0392b" }} className="mt-0.5 shrink-0"/>{n}
                 </li>

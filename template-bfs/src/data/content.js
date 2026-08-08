@@ -15,8 +15,8 @@ export const content = {
     city:     "San Francisco Coacalco, Estado de Mexico, 55710",
     googleMapsUrl: "https://maps.app.goo.gl/QJrgy1DTuhbAYHrE8",
     hours: {
-      weekdays: "Lunes a Viernes: 7:00 - 22:00",
-      saturday: "Sabado: 8:00 - 14:00",
+      weekdays: "Lunes a Viernes: 7:00 AM - 10:00 PM",
+      saturday: "Sabado: 8:00 AM - 2:00 PM",
       sunday:   "Domingo: Cerrado",
     },
     social: {
@@ -225,11 +225,15 @@ export const content = {
     intro: "Siete bloques de horario al dia, de lunes a domingo. Tu mensualidad cubre todos los horarios de tu programa — puedes venir al que te acomode cada semana.",
     // Como funciona cada tipo de clase
     tiposClase: [
-      { name:"High Perf.",   full:"High Performance",  color:"#6b4c36", desc:"Fuerza, velocidad y resistencia. Sin gi. Bloques de 07:00 y 20:30 entre semana para quienes trabajan.", intensidad:"Alta" },
-      { name:"Karate Kids",  full:"Karate Kids",       color:"#f5c518", desc:"Grupos de 4 a 12 anos. Juego dirigido, coordinacion y fundamentos. Turno vespertino y sabado por la manana.", intensidad:"Baja - Media" },
+      // Las descripciones NO mencionan dias ni horas: eso lo dice la parrilla
+      // que administra el Sensei. Antes prometian "bloques de 07:00 y 20:30" y
+      // "sabado por la manana", horarios inventados que seguian anunciandose
+      // aunque la parrilla estuviera vacia.
+      { name:"High Perf.",   full:"High Performance",  color:"#6b4c36", desc:"Fuerza, velocidad y resistencia. Sin gi.", intensidad:"Alta" },
+      { name:"Karate Kids",  full:"Karate Kids",       color:"#f5c518", desc:"Grupos de 4 a 12 anos. Juego dirigido, coordinacion y fundamentos.", intensidad:"Baja - Media" },
       { name:"Adultos",      full:"Karate Adultos",    color:"#1a5276", desc:"Tecnica, forma fisica y defensa personal para 18+. El grupo mas heterogeneo del dojo — desde principiantes hasta cintas cafe.", intensidad:"Media" },
       { name:"Competitivo",  full:"Karate Competitivo",color:"#c0392b", desc:"Kata y kumite bajo reglamento WKF. Requiere aprobacion del instructor para entrar.", intensidad:"Muy alta" },
-      { name:"Defensa P.",   full:"Defensa Personal",  color:"#2d6a4f", desc:"Fin de semana, 15+ anos. Escenarios practicos de autoproteccion. No requiere continuidad ni examen de grado.", intensidad:"Media" },
+      { name:"Defensa P.",   full:"Defensa Personal",  color:"#2d6a4f", desc:"Para 15+ anos. Escenarios practicos de autoproteccion. No requiere continuidad ni examen de grado.", intensidad:"Media" },
     ],
     notas: [
       "Puedes asistir a cualquier horario de tu programa — no estas amarrado a un dia fijo.",
