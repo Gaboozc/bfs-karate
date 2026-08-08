@@ -131,14 +131,32 @@ export const programaPorSlug = async slug => {
 }
 
 /**
- * Manifiesto y reglamento. Son los mismos para toda disciplina, asi que se
- * guardan una sola vez y no duplicados por programa: cambiar un articulo se
- * hace en un lugar y no puede quedar distinto segun por donde entro la persona.
+ * Manifiesto y reglamento que le tocan a una disciplina.
+ *
+ * Un documento sin programa_id aplica a todas; uno con programa_id aplica solo
+ * a esa y le gana al general. Asi el manifiesto vive una sola vez y solo el
+ * reglamento se desdobla, porque el de karate habla de tatami, examenes y
+ * torneos y no describe una clase de acondicionamiento.
+ *
  * Devuelve { manifiesto, reglamento } con { titulo, texto }.
  */
-export const documentosComunes = async () => {
-  const filas = await leer("documentos?select=clave,titulo,texto&order=orden")
-  return Object.fromEntries((filas ?? []).map(d => [d.clave, d]))
+export const documentosDePrograma = async programaId => {
+  const filtro = programaId
+    ? `&or=(programa_id.is.null,programa_id.eq.${programaId})`
+    : "&programa_id=is.null"
+
+  // Si la columna programa_id todavia no existe, la consulta falla entera y
+  // los documentos desaparecerian de la pagina. En ese caso se piden sin
+  // filtrar: es preferible mostrar el reglamento general que ninguno.
+  let filas = await leer(`documentos?select=clave,titulo,texto,programa_id&order=orden${filtro}`)
+  if (!filas) filas = await leer("documentos?select=clave,titulo,texto&order=orden")
+
+  const porClave = {}
+  for (const d of filas ?? []) {
+    // El especifico pisa al general, sin importar en que orden lleguen
+    if (!porClave[d.clave] || d.programa_id != null) porClave[d.clave] = d
+  }
+  return porClave
 }
 
 /**
@@ -168,5 +186,5 @@ export const enviarSolicitud = async datos => {
 
 export default {
   eventosPublicos, horariosPublicos, productosPublicos, programasPublicos,
-  programaPorSlug, documentosComunes, enviarSolicitud,
+  programaPorSlug, documentosDePrograma, enviarSolicitud,
 }

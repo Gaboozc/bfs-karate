@@ -10,9 +10,9 @@
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { motion } from "framer-motion"
-import { CheckCircle, AlertCircle, ArrowLeft, ChevronDown } from "lucide-react"
+import { CheckCircle, AlertCircle, ArrowLeft } from "lucide-react"
 import { content } from "../data/content"
-import { programaPorSlug, documentosComunes, enviarSolicitud } from "../data/contenidoPublico"
+import { programaPorSlug, documentosDePrograma, enviarSolicitud } from "../data/contenidoPublico"
 import FirmaDigital from "../components/FirmaDigital"
 
 const vacio = () => ({
@@ -24,31 +24,28 @@ const vacio = () => ({
   acepto_imagen: false, acepto_salud: false,
 })
 
-// Documento largo plegado. El reglamento son 30 articulos: mostrarlo abierto
-// empuja el boton de enviar tan abajo que la gente abandona, y mostrarlo en un
-// recuadro chico con barra propia hace que nadie lo lea. Plegado deja claro
-// que esta ahi completo y que abrirlo es decision de quien firma.
-const Plegable = ({ titulo, texto, color, abiertoInicial = false }) => {
-  const [abierto, setAbierto] = useState(abiertoInicial)
-  return (
-    <div style={{ background:"#111111", border:"1px solid rgba(245,245,245,0.1)" }}>
-      <button type="button" onClick={() => setAbierto(a => !a)}
-        className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left"
-        aria-expanded={abierto}
-      >
-        <span className="text-sm font-semibold" style={{ color:"#f5f5f5" }}>{titulo}</span>
-        <ChevronDown size={16} aria-hidden="true"
-          style={{ color, flexShrink:0, transform: abierto ? "rotate(180deg)" : "none", transition:"transform 0.2s" }}
-        />
-      </button>
-      {abierto && (
-        <div className="px-5 pb-5 text-sm leading-relaxed"
-          style={{ color:"rgba(245,245,245,0.62)", whiteSpace:"pre-line" }}
-        >{texto}</div>
-      )}
+// Documento a la vista, completo.
+//
+// Antes iba plegado para no alargar la pagina. Fue un error: un documento que
+// le estas pidiendo a alguien que firme, escondido tras un titulo, se lee como
+// si no estuviera. La pagina se hace larga, pero eso es exactamente lo que es
+// firmar un contrato de varias hojas: se recorre y al final se firma.
+const Documento = ({ titulo, texto, color, indice }) => (
+  <section aria-label={titulo}>
+    <div className="flex items-baseline gap-3 mb-3">
+      <span className="font-display text-sm shrink-0"
+        style={{ color, fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+      >{indice}</span>
+      <h2 className="text-sm font-semibold" style={{ color:"#f5f5f5" }}>{titulo}</h2>
     </div>
-  )
-}
+    <div className="p-5 text-sm leading-relaxed"
+      style={{
+        background:"#111111", border:"1px solid rgba(245,245,245,0.1)",
+        color:"rgba(245,245,245,0.68)", whiteSpace:"pre-line",
+      }}
+    >{texto}</div>
+  </section>
+)
 
 const Inscripcion = () => {
   const { slug } = useParams()
@@ -62,10 +59,14 @@ const Inscripcion = () => {
 
   useEffect(() => {
     let vigente = true
-    Promise.all([programaPorSlug(slug), documentosComunes()]).then(([p, d]) => {
-      if (!vigente) return
-      setPrograma(p); setDocs(d); setCargando(false)
-    })
+    // En dos pasos: hay que saber que programa es para pedir el reglamento
+    // que le toca, porque el de karate y el de acondicionamiento difieren
+    programaPorSlug(slug)
+      .then(async p => {
+        const d = p ? await documentosDePrograma(p.id) : {}
+        if (!vigente) return
+        setPrograma(p); setDocs(d); setCargando(false)
+      })
     return () => { vigente = false }
   }, [slug])
 
@@ -310,15 +311,13 @@ const Inscripcion = () => {
           </p>
 
           <p className="text-xs -mt-3" style={{ color:"#888888" }}>
-            Es el mismo texto que se firma en papel en la academia. Toca cada
-            documento para leerlo completo.
+            Es el mismo texto que se firma en papel en la academia, completo y
+            sin recortes. Lee cada documento y marca la casilla de abajo.
           </p>
 
           <div className="space-y-3">
-            {/* El contrato de la disciplina va abierto: es corto y es lo que
-                distingue a karate de acondicionamiento */}
-            <Plegable titulo={`Contrato de ${programa.nombre}`} texto={programa.contrato}
-              color={programa.color} abiertoInicial
+            <Documento indice="1 / 3" titulo={`Contrato de ${programa.nombre}`}
+              texto={programa.contrato} color={programa.color}
             />
             <label className="flex items-start gap-3 p-4 cursor-pointer"
               style={{ background:"#111111", border:`1px solid ${campos.acepto_contrato ? programa.color : "rgba(245,245,245,0.1)"}` }}
@@ -335,7 +334,9 @@ const Inscripcion = () => {
 
           {docs.manifiesto && (
             <div className="space-y-3">
-              <Plegable titulo={docs.manifiesto.titulo} texto={docs.manifiesto.texto} color={programa.color}/>
+              <Documento indice="2 / 3" titulo={docs.manifiesto.titulo}
+                texto={docs.manifiesto.texto} color={programa.color}
+              />
               <label className="flex items-start gap-3 p-4 cursor-pointer"
                 style={{ background:"#111111", border:`1px solid ${campos.acepto_manifiesto ? programa.color : "rgba(245,245,245,0.1)"}` }}
               >
@@ -352,7 +353,9 @@ const Inscripcion = () => {
 
           {docs.reglamento && (
             <div className="space-y-3">
-              <Plegable titulo="Reglamento general de la academia" texto={docs.reglamento.texto} color={programa.color}/>
+              <Documento indice="3 / 3" titulo="Reglamento general de la academia"
+                texto={docs.reglamento.texto} color={programa.color}
+              />
               <label className="flex items-start gap-3 p-4 cursor-pointer"
                 style={{ background:"#111111", border:`1px solid ${campos.acepto_reglamento ? programa.color : "rgba(245,245,245,0.1)"}` }}
               >
