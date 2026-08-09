@@ -141,6 +141,33 @@ export const programaPorSlug = async slug => {
   return filas?.[0] ?? null
 }
 
+// ── Multimedia y redes ──────────────────────────────────────────────────────
+
+/**
+ * Ajustes sueltos del sitio: ID de la playlist de YouTube y URL de las redes.
+ * Devuelve {} si la base no responde, y cada bloque se oculta solo.
+ */
+export const ajustesPublicos = async () => {
+  const filas = await leer("ajustes?select=clave,valor")
+  // null cuando la consulta falla, {} cuando responde sin datos. Confundirlos
+  // haria desaparecer los enlaces que si existen en content.js mientras la
+  // tabla no este creada.
+  if (!filas) return null
+  return Object.fromEntries(filas.map(a => [a.clave, a.valor ?? ""]))
+}
+
+/**
+ * Publicaciones que el Sensei eligio lucir.
+ *
+ * No es un feed automatico y no puede serlo sin backend: Instagram y Facebook
+ * exigen un token de Meta que caduca cada 60 dias y que aqui quedaria expuesto
+ * en el navegador. La unica red incrustable sin llave es YouTube.
+ */
+export const publicacionesPublicas = async () => {
+  const filas = await leer("publicaciones?select=*&publicado=eq.true&order=orden.asc,creado_en.desc")
+  return filas ?? []
+}
+
 /**
  * Manifiesto y reglamento que le tocan a una disciplina.
  *
@@ -198,4 +225,5 @@ export const enviarSolicitud = async datos => {
 export default {
   eventosPublicos, horariosPublicos, productosPublicos, programasPublicos,
   programaPorSlug, documentosDePrograma, enviarSolicitud,
+  ajustesPublicos, publicacionesPublicas,
 }

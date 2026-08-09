@@ -128,6 +128,49 @@ export const borrarHorario = async id => {
   return { error }
 }
 
+// ── Multimedia y redes ──────────────────────────────────────────────────────
+
+/** Ajustes sueltos, como { youtube_playlist: "PL...", red_tiktok: "https://…" } */
+export const ajustesTodos = async () => {
+  if (!supabase) return { datos: {}, error: { message: "Sin conexion a la base de datos." } }
+  const { data, error } = await supabase.from("ajustes").select("clave, valor")
+  return { datos: Object.fromEntries((data ?? []).map(a => [a.clave, a.valor ?? ""])), error }
+}
+
+/** Guarda varios ajustes de una vez. Recibe { clave: valor, … } */
+export const guardarAjustes = async cambios => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const filas = Object.entries(cambios).map(([clave, valor]) => ({
+    clave, valor, actualizado_en: new Date().toISOString(),
+  }))
+  const { error } = await supabase.from("ajustes").upsert(filas, { onConflict: "clave" })
+  return { error }
+}
+
+export const publicacionesTodas = async () => {
+  if (!supabase) return { datos: [], error: { message: "Sin conexion a la base de datos." } }
+  const { data, error } = await supabase
+    .from("publicaciones").select("*")
+    .order("orden").order("creado_en", { ascending: false })
+  return { datos: data ?? [], error }
+}
+
+export const guardarPublicacion = async publicacion => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { id, ...campos } = publicacion
+  const consulta = id
+    ? supabase.from("publicaciones").update(campos).eq("id", id)
+    : supabase.from("publicaciones").insert(campos)
+  const { error } = await consulta
+  return { error }
+}
+
+export const borrarPublicacion = async id => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("publicaciones").delete().eq("id", id)
+  return { error }
+}
+
 // ── Franjas horarias ────────────────────────────────────────────────────────
 //
 // Los renglones de la parrilla, tengan clase o no. Una hora vacia significa

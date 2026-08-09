@@ -8,7 +8,7 @@ import { Routes, Route, Link, useNavigate, useLocation, Navigate } from "react-r
 import { motion, AnimatePresence } from "framer-motion"
 import {
   LayoutDashboard, Users, UserCheck, Award, LogOut, Eye, Search, Menu, X,
-  Calendar, Clock, Package, Dumbbell, Inbox,
+  Calendar, Clock, Package, Dumbbell, Inbox, Clapperboard,
 } from "lucide-react"
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts"
 import { adminData } from "../data/adminData"
@@ -21,6 +21,7 @@ import AdminInventario from "./AdminInventario"
 import AdminProgramas from "./AdminProgramas"
 import AdminAlumnos from "./AdminAlumnos"
 import AdminSolicitudes from "./AdminSolicitudes"
+import AdminMultimedia from "./AdminMultimedia"
 
 const CHART_COLORS = ["#c0392b","#f5c518","#1a5276","#6b4c36","#2d6a4f","#888888","#f5f5f5"]
 const beltColors   = { "Blanco":"#f5f5f5", "Blanco raya Morada":"#f5f5f5", "Morada":"#8b3fa8", "Morada raya Amarilla":"#8b3fa8", "Amarilla":"#f5c518", "Naranja":"#e07b39", "Azul":"#2e75b6", "Azul raya Marron":"#2e75b6", "Marron":"#6b4c36", "Negro":"#1a1a1a" }
@@ -118,6 +119,7 @@ const AdminSidebar = ({ onLogout, onClose }) => {
     { href:"/admin/inventario", Icon:Package,         label:"Inventario" },
     { href:"/admin/alumnos",    Icon:Users,           label:"Alumnos"    },
     { href:"/admin/inscripciones", Icon:Inbox,        label:"Inscripciones" },
+    { href:"/admin/multimedia", Icon:Clapperboard,   label:"Multimedia" },
   ]
   return (
     <div className="admin-sidebar flex flex-col" style={{ width:"210px", minWidth:"210px", height:"100vh" }}>
@@ -164,7 +166,7 @@ const AdminLayout = ({ children, onLogout }) => {
   const pageTitles = {
     "/admin/dashboard":"Dashboard", "/admin/programas":"Programas", "/admin/eventos":"Eventos",
     "/admin/horarios":"Horarios", "/admin/inventario":"Inventario",
-    "/admin/alumnos":"Alumnos", "/admin/inscripciones":"Inscripciones",
+    "/admin/alumnos":"Alumnos", "/admin/inscripciones":"Inscripciones", "/admin/multimedia":"Multimedia",
   }
 
   return (
@@ -366,6 +368,7 @@ const AdminPanel = () => {
         <Route path="/admin/inventario" element={<AdminInventario/>}/>
         <Route path="/admin/alumnos"    element={<AdminAlumnos/>}/>
         <Route path="/admin/inscripciones" element={<AdminSolicitudes/>}/>
+        <Route path="/admin/multimedia" element={<AdminMultimedia/>}/>
         {/* Cualquier ruta vieja (clases, pagos) regresa al dashboard */}
         <Route path="*"                element={<Navigate to="/admin/dashboard" replace/>}/>
       </Routes>

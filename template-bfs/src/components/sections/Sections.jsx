@@ -6,6 +6,7 @@ import { ArrowRight, Trophy, Star, Shield, Zap, UserCheck, Users, CheckCircle, C
 import { SectionHeader } from "../layout/Layout"
 import { content } from "../../data/content"
 import { soloReales, sinPendientes } from "../../data/pendientes"
+import { ajustesPublicos, publicacionesPublicas } from "../../data/contenidoPublico"
 import { heroTitle, heroSub, heroCTA, fadeIn, fadeInUp, fadeInLeft, fadeInRight, scaleIn, stagger, staggerSlow, viewportOnce } from "../../styles/animations"
 
 const progIcons = { trophy:Trophy, star:Star, shield:Shield, zap:Zap, "user-shield":Shield, "user-check":UserCheck }
@@ -357,15 +358,39 @@ const IconFacebook = p => (
   </svg>
 )
 
+// lucide ya no trae iconos de marcas, asi que van en SVG aqui mismo
+const IconTikTok = p => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...p}>
+    <path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5 2.59 2.59 0 1 1 .76-5.07V9.68a5.68 5.68 0 0 0-.76-.05A5.67 5.67 0 1 0 15.54 15.3V8.99a7.35 7.35 0 0 0 4.3 1.38V7.28a4.29 4.29 0 0 1-3.24-1.46z"/>
+  </svg>
+)
+
 const REDES = [
   { key:"instagram", label:"Instagram", handle:"@bfsmartialarts", Icon:IconInstagram, color:"#E1306C", desc:"Fotos y clips del dia a dia" },
+  { key:"tiktok",    label:"TikTok",    handle:"@bfsmartialarts", Icon:IconTikTok,    color:"#25F4EE", desc:"Videos cortos de entrenamiento" },
   { key:"youtube",   label:"YouTube",   handle:"BFS Martial Arts", Icon:IconYouTube, color:"#FF0000", desc:"Entrenamientos y torneos completos" },
   { key:"facebook",  label:"Facebook",  handle:"BFS Martial Arts", Icon:IconFacebook, color:"#1877F2", desc:"Avisos y eventos de la academia" },
 ]
 
+// Para las tarjetas de publicaciones, donde solo se guarda el nombre de la red
+const COLOR_RED  = { instagram:"#E1306C", tiktok:"#25F4EE", youtube:"#FF0000", facebook:"#1877F2", otra:"#888888" }
+const NOMBRE_RED = { instagram:"Instagram", tiktok:"TikTok", youtube:"YouTube", facebook:"Facebook", otra:"Ver" }
+
 export const MultimediaSection = () => {
   const m = content.multimedia
   const [lightbox, setLightbox] = useState(null)
+  const [ajustes, setAjustes]   = useState(null)
+  const [publis, setPublis]     = useState([])
+
+  // Todo esto lo administra el Sensei desde la pestana Multimedia
+  useEffect(() => {
+    let vigente = true
+    Promise.all([ajustesPublicos(), publicacionesPublicas()]).then(([a, p]) => {
+      if (!vigente) return
+      setAjustes(a); setPublis(p)
+    })
+    return () => { vigente = false }
+  }, [])
 
   // Cerrar el visor con Escape
   useEffect(() => {
@@ -375,16 +400,21 @@ export const MultimediaSection = () => {
     return () => window.removeEventListener("keydown", onKey)
   }, [lightbox])
 
-  // Solo se muestran las redes con URL real (las pendientes van entre llaves)
+  // Las redes salen de la base; content.js solo sirve de respaldo mientras la
+  // consulta viaja. Las pendientes van entre llaves y no se muestran, para no
+  // mandar a nadie a un perfil que no existe.
   const redes = REDES
-    .map(r => ({ ...r, url: content.business.social?.[r.key] }))
+    .map(r => ({
+      ...r,
+      url: ajustes?.[`red_${r.key}`] || (ajustes ? "" : content.business.social?.[r.key]),
+    }))
     .filter(r => r.url && !r.url.includes("{{"))
 
   const galeria  = m?.galeria || []
-  const playlist = m?.youtubePlaylistId
+  const playlist = ajustes?.youtube_playlist || m?.youtubePlaylistId
 
   // Si no hay nada que mostrar, la seccion no se renderiza
-  if (!playlist && !galeria.length && !redes.length) return null
+  if (!playlist && !galeria.length && !redes.length && !publis.length) return null
 
   return (
     <section className="py-24 md:py-28" style={{ background:"#111111" }}>
@@ -406,6 +436,48 @@ export const MultimediaSection = () => {
                 allowFullScreen
               />
             </div>
+          </motion.div>
+        )}
+
+        {/* Publicaciones destacadas de redes.
+            No es un feed automatico y no puede serlo sin backend: Instagram y
+            Facebook exigen un token de Meta que caduca cada 60 dias y que aqui
+            quedaria expuesto. El Sensei elige cuales lucir desde el panel. */}
+        {publis.length > 0 && (
+          <motion.div className="mb-14 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+            initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
+          >
+            {publis.map(p => {
+              const color = COLOR_RED[p.red] ?? "#888888"
+              return (
+                <motion.a key={p.id} variants={scaleIn}
+                  href={p.url} target="_blank" rel="noopener noreferrer"
+                  className="group block overflow-hidden"
+                  style={{ background:"#0a0a0a", border:"1px solid rgba(245,245,245,0.08)" }}
+                >
+                  <div className="relative" style={{ aspectRatio:"1/1", background:"#0a0a0a" }}>
+                    {p.imagen ? (
+                      <img src={p.imagen} alt={p.titulo || ""} loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="font-display text-xl" style={{ color, fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
+                          {NOMBRE_RED[p.red] ?? "Ver"}
+                        </span>
+                      </div>
+                    )}
+                    <div className="absolute top-0 left-0 h-1 w-full" style={{ background:color }}/>
+                  </div>
+                  {p.titulo && (
+                    <div className="px-3 py-2.5 flex items-center gap-2">
+                      <span className="text-xs truncate" style={{ color:"rgba(245,245,245,0.7)" }}>{p.titulo}</span>
+                      <ArrowRight size={12} className="ml-auto shrink-0" style={{ color:"rgba(245,245,245,0.25)" }}/>
+                    </div>
+                  )}
+                </motion.a>
+              )
+            })}
           </motion.div>
         )}
 
