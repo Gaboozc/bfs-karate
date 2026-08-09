@@ -7,6 +7,7 @@ import { SectionHeader } from "../layout/Layout"
 import { content } from "../../data/content"
 import { soloReales, sinPendientes } from "../../data/pendientes"
 import { ajustesPublicos, publicacionesPublicas } from "../../data/contenidoPublico"
+import { urlIncrustada } from "../../data/redes"
 import { heroTitle, heroSub, heroCTA, fadeIn, fadeInUp, fadeInLeft, fadeInRight, scaleIn, stagger, staggerSlow, viewportOnce } from "../../styles/animations"
 
 const progIcons = { trophy:Trophy, star:Star, shield:Shield, zap:Zap, "user-shield":Shield, "user-check":UserCheck }
@@ -505,30 +506,55 @@ export const MultimediaSection = () => {
           </motion.div>
         )}
 
-        {/* Redes sociales */}
+        {/* Redes sociales.
+            Cada red publica un widget que muestra el perfil y sus
+            publicaciones recientes en un iframe, sin llave de API. Eso es
+            distinto de la API, que si exige un token que caduca.
+
+            El encabezado con nombre y enlace se dibuja aqui, no dentro del
+            iframe: si el widget no carga —el de Instagram no esta documentado
+            y Meta lo ha roto antes— la tarjeta sigue sirviendo de enlace al
+            perfil en vez de quedar como un hueco. */}
         {redes.length > 0 && (
-          <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-4"
+          <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
             initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
           >
-            {redes.map(({ key, label, handle, desc, Icon, color, url }) => (
-              <motion.a key={key} variants={fadeInUp}
-                href={url} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-4 p-6 transition-colors duration-200"
-                style={{ background:"#0a0a0a", border:"1px solid rgba(245,245,245,0.07)" }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = `${color}70`}
-                onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(245,245,245,0.07)"}
-                whileHover={{ y:-3 }}
-              >
-                <div className="w-12 h-12 flex items-center justify-center shrink-0 rounded-lg" style={{ background:`${color}18` }}>
-                  <Icon width="22" height="22" style={{ color }}/>
-                </div>
-                <div className="min-w-0">
-                  <div className="font-display text-xl leading-none mb-1" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{label}</div>
-                  <div className="text-xs truncate" style={{ color:"#888888" }}>{desc}</div>
-                </div>
-                <ArrowRight size={15} className="ml-auto shrink-0" style={{ color:"rgba(245,245,245,0.25)" }}/>
-              </motion.a>
-            ))}
+            {redes.map(({ key, label, desc, Icon, color, url }) => {
+              const incrustada = urlIncrustada(key, url)
+              return (
+                <motion.div key={key} variants={fadeInUp}
+                  className="overflow-hidden flex flex-col"
+                  style={{ background:"#0a0a0a", border:"1px solid rgba(245,245,245,0.07)" }}
+                >
+                  <a href={url} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-4 transition-colors duration-200"
+                    style={{ borderBottom: incrustada ? "1px solid rgba(245,245,245,0.07)" : "none" }}
+                  >
+                    <div className="w-10 h-10 flex items-center justify-center shrink-0 rounded-lg" style={{ background:`${color}18` }}>
+                      <Icon width="19" height="19" style={{ color }}/>
+                    </div>
+                    <div className="min-w-0">
+                      <div className="font-display text-lg leading-none mb-0.5" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{label}</div>
+                      <div className="text-xs truncate" style={{ color:"#888888" }}>{desc}</div>
+                    </div>
+                    <ArrowRight size={14} className="ml-auto shrink-0" style={{ color:"rgba(245,245,245,0.25)" }}/>
+                  </a>
+
+                  {incrustada && (
+                    <iframe
+                      src={incrustada}
+                      title={`Publicaciones recientes en ${label}`}
+                      loading="lazy"
+                      // Sin allowTransparency el widget pinta su propio fondo
+                      // blanco y rompe el contraste del sitio oscuro
+                      scrolling="no" frameBorder="0" allowTransparency="true"
+                      className="w-full"
+                      style={{ height:"460px", border:"none", background:"#0a0a0a" }}
+                    />
+                  )}
+                </motion.div>
+              )
+            })}
           </motion.div>
         )}
       </div>

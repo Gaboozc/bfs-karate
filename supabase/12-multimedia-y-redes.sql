@@ -8,15 +8,14 @@
 -- El bloque de multimedia del inicio vivia escrito en el codigo: el Sensei no
 -- podia tocarlo. Pasa a la base, junto con los enlaces a las redes.
 --
--- POR QUE NO HAY FEED AUTOMATICO
--- Instagram y Facebook exigen un token de Meta que caduca cada 60 dias y que
--- en un sitio sin backend quedaria expuesto en el navegador de cualquiera.
--- TikTok pide revision de app. La unica red que se puede incrustar sin llave
--- es YouTube, con el ID de una playlist.
+-- COMO SE MUESTRA LO RECIENTE
+-- Con solo la direccion del perfil, cada red muestra sus publicaciones
+-- recientes mediante su widget incrustable, que NO lleva llave de API. Eso es
+-- distinto de la API: la API exige un token que caduca cada 60 dias y que en
+-- un sitio sin backend quedaria expuesto en el navegador.
 --
--- Para las demas, el Sensei pega la URL de la publicacion que quiere lucir.
--- No es automatico, pero para una academia es mejor: se muestra el torneo
--- ganado, no lo que tocara publicar ayer.
+-- Las publicaciones destacadas son otra cosa: sirven para fijar un post
+-- concreto y que no lo tape lo mas reciente.
 -- ============================================================================
 
 

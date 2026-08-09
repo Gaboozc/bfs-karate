@@ -1,14 +1,13 @@
 // Multimedia y redes — BFS Martial Arts
 //
-// POR QUE NO HAY FEED AUTOMATICO
-// Instagram y Facebook exigen un token de Meta que caduca cada 60 dias y que
-// en un sitio sin backend quedaria expuesto en el navegador de cualquiera.
-// TikTok pide revision de app. La unica red incrustable sin llave es YouTube:
-// con el ID de una playlist, la seccion se actualiza sola.
+// Con solo la direccion del perfil, cada red muestra sus publicaciones
+// recientes mediante su widget incrustable, que NO lleva llave de API. Eso es
+// distinto de la API: la API exige un token que caduca cada 60 dias y que en
+// un sitio sin backend quedaria expuesto en el navegador. Ver data/redes.js
+// para cual widget es oficial y cual no.
 //
-// Para las demas, el Sensei pega la URL de la publicacion que quiere lucir.
-// No es automatico, pero para una academia es mejor: se muestra el torneo
-// ganado, no lo que tocara publicar ayer.
+// Las publicaciones destacadas son otra cosa: sirven para fijar un post
+// concreto —el torneo ganado, la graduacion— y que no lo tape lo mas reciente.
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -283,8 +282,10 @@ const AdminMultimedia = () => {
           <h2 className="text-sm font-bold text-white">Perfiles de redes</h2>
         </div>
         <p className="text-xs" style={{ color:"#64748b" }}>
-          Los que dejes vacios no se muestran en el sitio, en vez de llevar a
-          una pagina que no existe.
+          Con la direccion del perfil, el sitio muestra <strong style={{ color:"#e2e8f0" }}>las
+          publicaciones mas recientes de esa red</strong>, actualizandose solas.
+          Los que dejes vacios no se muestran, en vez de llevar a una pagina
+          que no existe.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {REDES.filter(r => r.id !== "otra").map(r => (
@@ -327,9 +328,9 @@ const AdminMultimedia = () => {
         </div>
 
         <p className="text-xs" style={{ color:"#64748b" }}>
-          Instagram, Facebook y TikTok no permiten traer las publicaciones
-          automaticamente sin un servidor propio. A cambio, aqui eliges cuales
-          se lucen: conviene el torneo ganado, no lo ultimo que tocara publicar.
+          Ademas de lo que sale solo en cada red, aqui puedes fijar
+          publicaciones concretas para que se luzcan siempre — el torneo
+          ganado, la graduacion de cintas — sin que las tape lo mas reciente.
         </p>
 
         {cargando ? (
