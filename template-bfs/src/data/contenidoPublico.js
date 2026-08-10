@@ -114,22 +114,43 @@ export const programasPublicos = async respaldo => {
 }
 
 /** Traduce un producto de la base al formato que usa la tienda. */
-const productoDelSitio = fila => ({
-  id:        fila.id,
-  name:      fila.nombre,
-  // La categoria viene de su propia tabla; el texto suelto es el respaldo
-  category:  fila.categorias?.nombre ?? fila.categoria ?? "Sin categoria",
-  // Sin precio definido, la tienda muestra "Consultar" por si sola
-  price:     fila.precio != null ? `$${Number(fila.precio).toLocaleString("es-MX")}` : "{{pendiente}}",
-  desc:      fila.descripcion,
-  image:     fila.imagen,
-  badge:     fila.etiqueta,
-  featured:  fila.destacado,
-})
+const productoDelSitio = fila => {
+  // Las fotos subidas mandan; la de menor orden es la portada. El campo viejo
+  // de enlace sigue sirviendo de respaldo para lo capturado antes de que
+  // existiera la subida de archivos.
+  const subidas = [...(fila.producto_imagenes ?? [])].sort((a, b) => a.orden - b.orden)
+  return {
+    id:        fila.id,
+    name:      fila.nombre,
+    // La categoria viene de su propia tabla; el texto suelto es el respaldo
+    category:  fila.categorias?.nombre ?? fila.categoria ?? "Sin categoria",
+    // Sin precio definido, la tienda muestra "Consultar" por si sola
+    price:     fila.precio != null ? `$${Number(fila.precio).toLocaleString("es-MX")}` : "{{pendiente}}",
+    desc:      fila.descripcion,
+    image:     subidas[0]?.url ?? fila.imagen,
+    images:    subidas.map(i => i.url),
+    badge:     fila.etiqueta,
+    featured:  fila.destacado,
+  }
+}
 
-/** Productos disponibles y con existencias, con su categoria. */
+/**
+ * Productos visibles, con su categoria y sus fotos.
+ *
+ * El filtro por `disponible` faltaba: la casilla "Visible en la tienda" se
+ * guardaba pero no ocultaba nada. Y el orden ahora respeta `destacado`, que
+ * tampoco se estaba usando.
+ */
 export const productosPublicos = async respaldo => {
-  const filas = await leer("productos?select=*,categorias(nombre)&order=nombre.asc")
+  let filas = await leer(
+    "productos?select=*,categorias(nombre),producto_imagenes(url,orden)" +
+    "&disponible=eq.true&order=destacado.desc,nombre.asc",
+  )
+  // Mientras la tabla de fotos no exista, la consulta falla entera y la
+  // tienda mostraria el relleno en vez de los productos reales
+  if (!filas) {
+    filas = await leer("productos?select=*,categorias(nombre)&disponible=eq.true&order=nombre.asc")
+  }
   return filas?.length ? filas.map(productoDelSitio) : respaldo
 }
 

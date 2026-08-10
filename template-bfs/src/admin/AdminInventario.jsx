@@ -10,6 +10,7 @@ import {
   productosTodos, guardarProducto, borrarProducto, ajustarExistencias,
   categoriasTodas, guardarCategoria, borrarCategoria,
 } from "../data/supabase"
+import FotosProducto from "./FotosProducto"
 
 const productoVacio = () => ({
   nombre: "", categoria_id: null, precio: "", descripcion: "",
@@ -113,37 +114,46 @@ const Formulario = ({ producto, categorias, onGuardar, onCancelar, guardando }) 
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="pr-img" className={etiq} style={{ color:"#94a3b8" }}>Imagen (enlace)</label>
-              <input id="pr-img" className={input} style={estilo}
-                value={campos.imagen || ""} onChange={e => cambiar("imagen", e.target.value)}
-                placeholder="https://…"
-              />
-            </div>
-            <div>
-              <label htmlFor="pr-etq" className={etiq} style={{ color:"#94a3b8" }}>Etiqueta</label>
-              <input id="pr-etq" className={input} style={estilo}
-                value={campos.etiqueta || ""} onChange={e => cambiar("etiqueta", e.target.value)}
-                placeholder="Nuevo, Mas vendido…"
-              />
-            </div>
+          <div>
+            <label htmlFor="pr-etq" className={etiq} style={{ color:"#94a3b8" }}>
+              Etiqueta <span style={{ textTransform:"none", fontWeight:400, color:"#64748b" }}>· opcional</span>
+            </label>
+            <input id="pr-etq" className={input} style={estilo}
+              value={campos.etiqueta || ""} onChange={e => cambiar("etiqueta", e.target.value)}
+              placeholder="Nuevo, Mas vendido…"
+            />
           </div>
 
-          <div className="flex flex-col gap-2 pt-1">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" checked={campos.destacado}
-                onChange={e => cambiar("destacado", e.target.checked)}
-                className="w-4 h-4" style={{ accentColor:"#c0392b" }}
-              />
-              <span className="text-sm text-white">Destacar en la tienda</span>
-            </label>
-            <label className="flex items-center gap-3 cursor-pointer">
+          <FotosProducto productoId={producto.id}/>
+
+          {/* Las dos casillas decian "Mostrar en el sitio" y "Destacar en la
+              tienda": suenan casi igual y no explicaban la diferencia. Ahora
+              cada una dice que hace. */}
+          <div className="flex flex-col gap-3 pt-1">
+            <label className="flex items-start gap-3 cursor-pointer">
               <input type="checkbox" checked={campos.disponible}
                 onChange={e => cambiar("disponible", e.target.checked)}
-                className="w-4 h-4" style={{ accentColor:"#c0392b" }}
+                className="w-4 h-4 mt-0.5 shrink-0" style={{ accentColor:"#c0392b" }}
               />
-              <span className="text-sm text-white">Mostrar en el sitio</span>
+              <span className="text-sm text-white">
+                Visible en la tienda
+                <span className="block text-xs mt-0.5" style={{ color:"#64748b" }}>
+                  Desmarcado, nadie lo ve en el sitio. Sirve para ocultarlo sin
+                  borrarlo mientras se agota o se prepara.
+                </span>
+              </span>
+            </label>
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" checked={campos.destacado}
+                onChange={e => cambiar("destacado", e.target.checked)}
+                className="w-4 h-4 mt-0.5 shrink-0" style={{ accentColor:"#c0392b" }}
+              />
+              <span className="text-sm text-white">
+                Destacado
+                <span className="block text-xs mt-0.5" style={{ color:"#64748b" }}>
+                  Aparece primero en la tienda, antes que los demas.
+                </span>
+              </span>
             </label>
           </div>
 

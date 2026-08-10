@@ -128,6 +128,60 @@ export const borrarHorario = async id => {
   return { error }
 }
 
+// ── Fotos de productos ──────────────────────────────────────────────────────
+
+export const imagenesDeProducto = async productoId => {
+  if (!supabase || !productoId) return { datos: [], error: null }
+  const { data, error } = await supabase
+    .from("producto_imagenes").select("*")
+    .eq("producto_id", productoId).order("orden").order("id")
+  return { datos: data ?? [], error }
+}
+
+/**
+ * Sube una foto ya comprimida y la registra.
+ *
+ * Si la subida al bucket funciona pero la fila falla, se borra el archivo:
+ * sin fila nadie lo va a mostrar ni encontrar, y quedaria ocupando espacio
+ * para siempre.
+ */
+export const subirFotoProducto = async (productoId, blob, ruta, orden) => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+
+  const { error: errorSubida } = await supabase.storage
+    .from("productos").upload(ruta, blob, { contentType: blob.type || "image/jpeg", upsert: false })
+  if (errorSubida) return { error: errorSubida }
+
+  const { data: publica } = supabase.storage.from("productos").getPublicUrl(ruta)
+
+  const { error } = await supabase.from("producto_imagenes").insert({
+    producto_id: productoId, url: publica.publicUrl, ruta, orden,
+  })
+  if (error) {
+    await supabase.storage.from("productos").remove([ruta])
+    return { error }
+  }
+  return { error: null, url: publica.publicUrl }
+}
+
+/** Borra la fila y tambien el archivo: quitar solo la fila deja basura. */
+export const borrarFotoProducto = async imagen => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("producto_imagenes").delete().eq("id", imagen.id)
+  if (error) return { error }
+  await supabase.storage.from("productos").remove([imagen.ruta])
+  return { error: null }
+}
+
+/** Reordena las fotos. La de orden 0 es la portada de la tienda. */
+export const reordenarFotos = async imagenes => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const cambios = imagenes.map((img, i) =>
+    supabase.from("producto_imagenes").update({ orden: i }).eq("id", img.id))
+  const resultados = await Promise.all(cambios)
+  return { error: resultados.find(r => r.error)?.error ?? null }
+}
+
 // ── Multimedia y redes ──────────────────────────────────────────────────────
 
 /** Ajustes sueltos, como { youtube_playlist: "PL...", red_tiktok: "https://…" } */
@@ -246,6 +300,17 @@ export const guardarProducto = async producto => {
 
 export const borrarProducto = async id => {
   if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+
+  // Los archivos se borran ANTES que el producto. La base borra sola las
+  // filas de producto_imagenes en cascada, pero el bucket no se entera: si
+  // se hiciera al reves, las rutas ya no existirian y las fotos quedarian
+  // ocupando espacio para siempre, sin nada que las apunte.
+  const { data: fotos } = await supabase
+    .from("producto_imagenes").select("ruta").eq("producto_id", id)
+  if (fotos?.length) {
+    await supabase.storage.from("productos").remove(fotos.map(f => f.ruta))
+  }
+
   const { error } = await supabase.from("productos").delete().eq("id", id)
   return { error }
 }
