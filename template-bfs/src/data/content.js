@@ -19,10 +19,15 @@ export const content = {
       saturday: "Sabado: 8:00 AM - 2:00 PM",
       sunday:   "Domingo: Cerrado",
     },
+    // Cuentas reales, confirmadas. Lo que manda es la tabla `ajustes`, que el
+    // Sensei edita desde el panel; esto es el respaldo si la base no responde.
+    // La de Facebook estaba mal: apuntaba a facebook.com/bfsmartialarts, que
+    // no es la pagina de la academia.
     social: {
-      instagram: "{{https://instagram.com/bfsmartialarts}}",
-      facebook:  "https://facebook.com/bfsmartialarts",
-      youtube:   "{{https://youtube.com/@bfsmartialarts}}",
+      instagram: "https://www.instagram.com/bfs_martialarts/",
+      facebook:  "https://www.facebook.com/p/BFS-Martial-Arts-High-Performance-100083110551806/",
+      youtube:   "https://www.youtube.com/@BFSMARTIALARTSHIGHPERFORMANCE",
+      tiktok:    "https://www.tiktok.com/@bfs.martial.arts",
     },
     certifications: [
       "Federacion Mexicana de Karate",
@@ -392,11 +397,13 @@ export const content = {
     title:   "Miranos en Accion",
     desc:    "Videos de entrenamientos, torneos y la vida diaria del dojo.",
 
-    // Playlist de YouTube incrustada. Se necesita SOLO el ID de la playlist,
-    // no una API key: es el codigo que sigue a "list=" en la URL de YouTube.
-    // Ejemplo: youtube.com/playlist?list=PLxxxxxxxx  ->  "PLxxxxxxxx"
-    // Mientras este vacio, el bloque de video no se muestra.
-    youtubePlaylistId: "",
+    // Lista de SUBIDAS del canal, no una playlist armada a mano: asi cada
+    // video nuevo aparece solo, sin que nadie tenga que agregarlo.
+    //
+    // El truco: la lista de subidas de un canal es su ID con "UC" cambiado por
+    // "UU". El canal de BFS es UC9kk0nifIh00-8dMWvcpM6Q, de ahi sale este.
+    // Lo que manda es el ajuste `youtube_playlist` del panel; esto es respaldo.
+    youtubePlaylistId: "UU9kk0nifIh00-8dMWvcpM6Q",
 
     // Galeria. Cada foto: { src, alt }. src apunta a /public.
     // Mientras el arreglo este vacio, la galeria no se muestra.
