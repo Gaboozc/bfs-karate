@@ -24,28 +24,61 @@ const vacio = () => ({
   acepto_imagen: false, acepto_salud: false,
 })
 
-// Documento a la vista, completo.
+// Documento con su propia barra de desplazamiento.
 //
-// Antes iba plegado para no alargar la pagina. Fue un error: un documento que
-// le estas pidiendo a alguien que firme, escondido tras un titulo, se lee como
-// si no estuviera. La pagina se hace larga, pero eso es exactamente lo que es
-// firmar un contrato de varias hojas: se recorre y al final se firma.
-const Documento = ({ titulo, texto, color, indice }) => (
-  <section aria-label={titulo}>
-    <div className="flex items-baseline gap-3 mb-3">
-      <span className="font-display text-sm shrink-0"
-        style={{ color, fontFamily:"'Bebas Neue',Impact,sans-serif" }}
-      >{indice}</span>
-      <h2 className="text-sm font-semibold" style={{ color:"#f5f5f5" }}>{titulo}</h2>
-    </div>
-    <div className="p-5 text-sm leading-relaxed"
-      style={{
-        background:"#111111", border:"1px solid rgba(245,245,245,0.1)",
-        color:"rgba(245,245,245,0.68)", whiteSpace:"pre-line",
-      }}
-    >{texto}</div>
-  </section>
-)
+// El texto va completo, pero dentro de un recuadro contenido: el reglamento
+// son 30 articulos y desplegado empujaba el boton de enviar tan abajo que la
+// pagina parecia interminable. Sigue estando todo, solo que sin sepultar al
+// resto del formulario.
+//
+// tabIndex={0} NO es decorativo: un recuadro con desplazamiento propio que no
+// puede recibir foco es imposible de leer sin mouse. Con el, se recorre con
+// las flechas. Por eso lleva tambien role y aria-label, que lo anuncian como
+// una region navegable.
+const Documento = ({ titulo, texto, color, indice }) => {
+  const [alFinal, setAlFinal] = useState(false)
+
+  // El degradado inferior avisa que hay mas texto; al llegar abajo estorba
+  const alDesplazar = e => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget
+    setAlFinal(scrollTop + clientHeight >= scrollHeight - 8)
+  }
+
+  return (
+    <section aria-label={titulo}>
+      <div className="flex items-baseline gap-3 mb-2">
+        <span className="font-display text-sm shrink-0"
+          style={{ color, fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+        >{indice}</span>
+        <h2 className="text-sm font-semibold" style={{ color:"#f5f5f5" }}>{titulo}</h2>
+      </div>
+
+      <div className="relative">
+        <div
+          onScroll={alDesplazar}
+          tabIndex={0}
+          role="region"
+          aria-label={`Texto de ${titulo}. Desplazate para leerlo completo`}
+          className="px-4 py-3.5 text-[13px] leading-relaxed overflow-y-auto documento-scroll"
+          style={{
+            background:"#111111", border:"1px solid rgba(245,245,245,0.1)",
+            color:"rgba(245,245,245,0.68)", whiteSpace:"pre-line",
+            maxHeight:"200px",
+          }}
+        >{texto}</div>
+
+        {/* Se apaga al llegar abajo, para no simular texto que ya no hay */}
+        <div aria-hidden="true"
+          className="absolute left-px right-px bottom-px pointer-events-none transition-opacity duration-200"
+          style={{
+            height:"48px", opacity: alFinal ? 0 : 1,
+            background:"linear-gradient(to bottom, rgba(17,17,17,0) 0%, #111111 90%)",
+          }}
+        />
+      </div>
+    </section>
+  )
+}
 
 const Inscripcion = () => {
   const { slug } = useParams()
