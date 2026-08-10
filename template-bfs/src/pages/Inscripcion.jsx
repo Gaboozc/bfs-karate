@@ -115,20 +115,39 @@ const Inscripcion = () => {
   })()
   const esMenor = edad != null && edad < 18
 
-  // Las aceptaciones y la firma son obligatorias: es lo que en papel se
-  // resuelve con las hojas firmadas. Imagen y salud siguen siendo opcionales.
+  // Las aceptaciones obligatorias se declaran UNA vez y de aqui salen tanto
+  // las casillas como la validacion y el contador. Con dos listas separadas,
+  // agregar un documento manana dejaria el boton exigiendo algo que la
+  // pantalla no pide, o al reves.
   //
-  // Cada documento se exige solo si existe. Si no, el formulario pediria
-  // aceptar algo que no esta en pantalla y el boton quedaria muerto sin que
-  // nadie entienda por que.
+  // Cada una entra solo si su documento existe: si no, se pediria aceptar
+  // algo que no esta en pantalla y el boton quedaria muerto sin explicacion.
+  const obligatorias = [
+    programa?.contrato && {
+      llave: "acepto_contrato",
+      texto: `He leido y acepto el contrato de ${programa.nombre}`,
+    },
+    docs.manifiesto && {
+      llave: "acepto_manifiesto",
+      texto: "He leido y acepto el manifiesto",
+    },
+    docs.reglamento && {
+      llave: "acepto_reglamento",
+      texto: "Estoy de acuerdo con el reglamento de la academia",
+    },
+  ].filter(Boolean)
+
+  const totalObligatorias = obligatorias.length
+  const faltantes = obligatorias.filter(o => !campos[o.llave]).length
+  const totalDocs = 1 + (docs.manifiesto ? 1 : 0) + (docs.reglamento ? 1 : 0)
+
+  // Imagen y salud siguen siendo opcionales: no bloquean el registro
   const listo =
     campos.nombre.trim() &&
     campos.tutor_telefono.trim() &&
     campos.contrato_firmante.trim() &&
     campos.firma &&
-    (!programa?.contrato   || campos.acepto_contrato) &&
-    (!docs.manifiesto      || campos.acepto_manifiesto) &&
-    (!docs.reglamento      || campos.acepto_reglamento)
+    faltantes === 0
 
   const enviar = async e => {
     e.preventDefault()
@@ -345,63 +364,87 @@ const Inscripcion = () => {
 
           <p className="text-xs -mt-3" style={{ color:"#888888" }}>
             Es el mismo texto que se firma en papel en la academia, completo y
-            sin recortes. Lee cada documento y marca la casilla de abajo.
+            sin recortes. Leelos y despues marca las casillas de abajo.
           </p>
 
-          <div className="space-y-3">
-            <Documento indice="1 / 3" titulo={`Contrato de ${programa.nombre}`}
+          {/* Primero los documentos, seguidos. Las casillas se agrupan
+              despues: intercaladas, cada una quedaba escondida entre dos
+              bloques de texto y era facil pasarlas por alto. Juntas se ve de
+              un vistazo cuantas faltan. */}
+          <div className="space-y-4">
+            <Documento indice={`1 / ${totalDocs}`} titulo={`Contrato de ${programa.nombre}`}
               texto={programa.contrato} color={programa.color}
             />
-            <label className="flex items-start gap-3 p-4 cursor-pointer"
-              style={{ background:"#111111", border:`1px solid ${campos.acepto_contrato ? programa.color : "rgba(245,245,245,0.1)"}` }}
+            {docs.manifiesto && (
+              <Documento indice={`2 / ${totalDocs}`} titulo={docs.manifiesto.titulo}
+                texto={docs.manifiesto.texto} color={programa.color}
+              />
+            )}
+            {docs.reglamento && (
+              <Documento indice={`${totalDocs} / ${totalDocs}`} titulo="Reglamento general de la academia"
+                texto={docs.reglamento.texto} color={programa.color}
+              />
+            )}
+          </div>
+
+          {/* Aceptaciones, todas juntas */}
+          <p className="text-xs font-bold uppercase tracking-widest pt-3" style={{ color:programa.color }}>
+            Aceptacion
+            <span className="ml-2 font-normal tracking-normal normal-case"
+              style={{ color: faltantes === 0 ? "#4ade80" : "#888888" }}
             >
-              <input type="checkbox" checked={campos.acepto_contrato} required
-                onChange={e => cambiar("acepto_contrato", e.target.checked)}
+              {faltantes === 0
+                ? "· listo"
+                : `· falta${faltantes > 1 ? "n" : ""} ${faltantes} de ${totalObligatorias}`}
+            </span>
+          </p>
+
+          <div className="space-y-2.5">
+            {obligatorias.map(({ llave, texto }) => (
+              <label key={llave} className="flex items-start gap-3 p-4 cursor-pointer"
+                style={{ background:"#111111", border:`1px solid ${campos[llave] ? programa.color : "rgba(245,245,245,0.1)"}` }}
+              >
+                <input type="checkbox" checked={campos[llave]} required
+                  onChange={e => cambiar(llave, e.target.checked)}
+                  className="w-5 h-5 mt-0.5 shrink-0" style={{ accentColor:programa.color }}
+                />
+                <span className="text-sm" style={{ color:"#f5f5f5" }}>{texto}</span>
+              </label>
+            ))}
+
+            {/* Las opcionales van despues y se ven distintas, para que no se
+                confundan con las que si bloquean el registro */}
+            <label className="flex items-start gap-3 p-4 cursor-pointer"
+              style={{ background:"#0d0d0d", border:"1px solid rgba(245,245,245,0.07)" }}
+            >
+              <input type="checkbox" checked={campos.acepto_salud}
+                onChange={e => cambiar("acepto_salud", e.target.checked)}
                 className="w-5 h-5 mt-0.5 shrink-0" style={{ accentColor:programa.color }}
               />
-              <span className="text-sm" style={{ color:"#f5f5f5" }}>
-                He leido y acepto el contrato de {programa.nombre}
+              <span className="text-sm" style={{ color:"rgba(245,245,245,0.75)" }}>
+                Autorizo que la academia guarde la informacion de salud para
+                atender una urgencia
+                <span className="block text-xs mt-0.5" style={{ color:"#888888" }}>
+                  Opcional
+                </span>
+              </span>
+            </label>
+
+            <label className="flex items-start gap-3 p-4 cursor-pointer"
+              style={{ background:"#0d0d0d", border:"1px solid rgba(245,245,245,0.07)" }}
+            >
+              <input type="checkbox" checked={campos.acepto_imagen}
+                onChange={e => cambiar("acepto_imagen", e.target.checked)}
+                className="w-5 h-5 mt-0.5 shrink-0" style={{ accentColor:programa.color }}
+              />
+              <span className="text-sm" style={{ color:"rgba(245,245,245,0.75)" }}>
+                Autorizo que aparezca en fotos y videos de la academia
+                <span className="block text-xs mt-0.5" style={{ color:"#888888" }}>
+                  Opcional. Puedes inscribirte sin aceptar esto.
+                </span>
               </span>
             </label>
           </div>
-
-          {docs.manifiesto && (
-            <div className="space-y-3">
-              <Documento indice="2 / 3" titulo={docs.manifiesto.titulo}
-                texto={docs.manifiesto.texto} color={programa.color}
-              />
-              <label className="flex items-start gap-3 p-4 cursor-pointer"
-                style={{ background:"#111111", border:`1px solid ${campos.acepto_manifiesto ? programa.color : "rgba(245,245,245,0.1)"}` }}
-              >
-                <input type="checkbox" checked={campos.acepto_manifiesto} required
-                  onChange={e => cambiar("acepto_manifiesto", e.target.checked)}
-                  className="w-5 h-5 mt-0.5 shrink-0" style={{ accentColor:programa.color }}
-                />
-                <span className="text-sm" style={{ color:"#f5f5f5" }}>
-                  He leido y acepto el manifiesto
-                </span>
-              </label>
-            </div>
-          )}
-
-          {docs.reglamento && (
-            <div className="space-y-3">
-              <Documento indice="3 / 3" titulo="Reglamento general de la academia"
-                texto={docs.reglamento.texto} color={programa.color}
-              />
-              <label className="flex items-start gap-3 p-4 cursor-pointer"
-                style={{ background:"#111111", border:`1px solid ${campos.acepto_reglamento ? programa.color : "rgba(245,245,245,0.1)"}` }}
-              >
-                <input type="checkbox" checked={campos.acepto_reglamento} required
-                  onChange={e => cambiar("acepto_reglamento", e.target.checked)}
-                  className="w-5 h-5 mt-0.5 shrink-0" style={{ accentColor:programa.color }}
-                />
-                <span className="text-sm" style={{ color:"#f5f5f5" }}>
-                  Estoy de acuerdo con el reglamento de la academia
-                </span>
-              </label>
-            </div>
-          )}
 
           {/* Firma */}
           <p className="text-xs font-bold uppercase tracking-widest pt-3" style={{ color:programa.color }}>
@@ -426,36 +469,6 @@ const Inscripcion = () => {
               ? "Firma del padre, madre o tutor"
               : "Firma del estudiante mayor de 18 anos"}
           />
-
-          <div className="space-y-3">
-            <label className="flex items-start gap-3 p-4 cursor-pointer"
-              style={{ background:"#111111", border:"1px solid rgba(245,245,245,0.1)" }}
-            >
-              <input type="checkbox" checked={campos.acepto_salud}
-                onChange={e => cambiar("acepto_salud", e.target.checked)}
-                className="w-5 h-5 mt-0.5 shrink-0" style={{ accentColor:programa.color }}
-              />
-              <span className="text-sm" style={{ color:"rgba(245,245,245,0.75)" }}>
-                Autorizo que la academia guarde la informacion de salud para
-                atender una urgencia
-              </span>
-            </label>
-
-            <label className="flex items-start gap-3 p-4 cursor-pointer"
-              style={{ background:"#111111", border:"1px solid rgba(245,245,245,0.1)" }}
-            >
-              <input type="checkbox" checked={campos.acepto_imagen}
-                onChange={e => cambiar("acepto_imagen", e.target.checked)}
-                className="w-5 h-5 mt-0.5 shrink-0" style={{ accentColor:programa.color }}
-              />
-              <span className="text-sm" style={{ color:"rgba(245,245,245,0.75)" }}>
-                Autorizo que aparezca en fotos y videos de la academia
-                <span className="block text-xs mt-0.5" style={{ color:"#888888" }}>
-                  Opcional. Puedes inscribirte sin aceptar esto.
-                </span>
-              </span>
-            </label>
-          </div>
 
           {error && (
             <p role="alert" className="text-sm p-3" style={{ background:"rgba(248,113,113,0.1)", color:"#f87171" }}>
