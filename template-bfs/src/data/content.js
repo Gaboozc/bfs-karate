@@ -351,17 +351,15 @@ export const content = {
   sponsor: {
     eyebrow: "Patrocinios",
     title:   "Vuelvete Sponsor",
-    subtitle:"Construye el dojo con nosotros",
-    // El texto anterior decia que el patrocinio cubre inscripciones y
-    // traslados de competidores. No es a donde va el dinero: se destina al
-    // dojo — equipo, mantenimiento y un espacio mas grande. Prometer una cosa
-    // y hacer otra es lo unico que de verdad puede costarle un patrocinador
-    // a la academia.
-    desc:    "Lo que aporta cada patrocinador se convierte en equipo, mantenimiento del dojo y, a mediano plazo, un espacio mas grande. Es una inversion que se queda: la usan mas de 100 alumnos cada semana y se ve en cada video que publicamos.",
+    subtitle:"Tu marca, frente a nuestra comunidad",
+    // El sitio NO dice a que se destina el dinero ni cuanto cuesta cada
+    // paquete. Eso lo explica el Sensei por WhatsApp, caso por caso, junto
+    // con el contrato. Aqui solo van los niveles y lo que incluye cada uno.
+    desc:    "Mas de 100 alumnos entrenan cada semana en BFS, y nuestra comunidad supera los 14 mil seguidores en la zona. Elige el nivel que mejor le acomode a tu marca y escribenos: te contamos todo por WhatsApp.",
     cta:     "Vuelvete Sponsor",
     whatsappMessage: "Hola, me interesa informacion sobre los paquetes de patrocinio de BFS Martial Arts.",
     beneficios: [
-      { title:"Tu marca en el equipo que financiaste", desc:"Placa con tu nombre en el material que tu aportacion hizo posible. Queda ahi, a la vista de cada alumno, clase tras clase." },
+      { title:"Tu marca en el dojo",            desc:"Placa con tu nombre a la vista de cada alumno, clase tras clase, durante toda la vigencia." },
       { title:"Presencia en el dojo",            desc:"Lona o placa de patrocinador visible en el area de entrenamiento durante toda la vigencia." },
       { title:"Menciones en redes",              desc:"Tu marca en las publicaciones de la academia, ante una comunidad de mas de 14 mil seguidores en la zona." },
       { title:"Espacio en eventos BFS",          desc:"Stand o activacion de marca en torneos internos y exhibiciones organizadas por la academia." },
@@ -374,23 +372,23 @@ export const content = {
       {
         name:  "Bronce",
         color: "#6b4c36",
-        tagline:"Sostiene el dojo",
-        items: ["Cubre el mantenimiento del dojo","Logo en lona del area de entrenamiento","Mencion en redes sociales","Reconocimiento en torneo interno"],
-        whatsappMessage: "Hola, me interesa el paquete de patrocinio BRONCE de BFS Martial Arts. Me pueden compartir el costo mensual y que incluye?",
+        tagline:"Presencia local",
+        items: ["Logo en lona del area de entrenamiento","Mencion en redes sociales","Reconocimiento en torneo interno"],
+        whatsappMessage: "Hola, quiero mas informacion para ser sponsor de BFS Martial Arts en el nivel BRONCE.",
       },
       {
         name:  "Plata",
         color: "#c0c0c0",
-        tagline:"Equipa el dojo",
-        items: ["Financia equipo nuevo, con placa a tu nombre","Todo lo del paquete Bronce","Logo bordado en gi de competencia","Publicacion dedicada en redes","Espacio en 1 evento BFS"],
-        whatsappMessage: "Hola, me interesa el paquete de patrocinio PLATA de BFS Martial Arts. Me pueden compartir el costo mensual y que incluye?",
+        tagline:"Mayor visibilidad",
+        items: ["Todo lo del paquete Bronce","Logo bordado en gi de competencia","Publicacion dedicada en redes","Espacio en 1 evento BFS","Placa con tu marca en el area de entrenamiento"],
+        whatsappMessage: "Hola, quiero mas informacion para ser sponsor de BFS Martial Arts en el nivel PLATA.",
       },
       {
         name:  "Oro",
         color: "#f5c518",
-        tagline:"Construye el dojo nuevo",
-        items: ["Impulsa el fondo para un espacio mas grande","Todo lo del paquete Plata","Logo principal en uniforme y lona","Stand en todos los eventos BFS","Contenido de video con la marca","Patrocinador oficial — cupo unico"],
-        whatsappMessage: "Hola, me interesa el paquete de patrocinio ORO de BFS Martial Arts. Me pueden compartir el costo mensual y que incluye?",
+        tagline:"Patrocinador oficial",
+        items: ["Todo lo del paquete Plata","Logo principal en uniforme y lona","Stand en todos los eventos BFS","Contenido de video con la marca","Patrocinador oficial — cupo unico"],
+        whatsappMessage: "Hola, quiero mas informacion para ser sponsor de BFS Martial Arts en el nivel ORO.",
       },
     ],
   },

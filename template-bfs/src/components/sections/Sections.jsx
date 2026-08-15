@@ -6,7 +6,7 @@ import { ArrowRight, Trophy, Star, Shield, Zap, UserCheck, Users, CheckCircle, C
 import { SectionHeader } from "../layout/Layout"
 import { content } from "../../data/content"
 import { soloReales, sinPendientes } from "../../data/pendientes"
-import { ajustesPublicos, publicacionesPublicas } from "../../data/contenidoPublico"
+import { ajustesPublicos, publicacionesPublicas, sponsorsPublicos } from "../../data/contenidoPublico"
 import { urlIncrustada } from "../../data/redes"
 import { heroTitle, heroSub, heroCTA, fadeIn, fadeInUp, fadeInLeft, fadeInRight, scaleIn, stagger, staggerSlow, viewportOnce } from "../../styles/animations"
 
@@ -620,7 +620,17 @@ const SponsorLogo = ({ marca }) => {
 
 export const SponsorsBanner = () => {
   const s = content.sponsorsActuales
-  const marcas = s?.marcas || []
+  const [deLaBase, setDeLaBase] = useState(null)
+
+  // Registrar un patrocinador en el panel lo publica aqui, sin capturarlo dos
+  // veces. Se lee la vista publica: la tabla lleva telefono, correo y monto.
+  useEffect(() => {
+    let vigente = true
+    sponsorsPublicos().then(d => { if (vigente) setDeLaBase(d) })
+    return () => { vigente = false }
+  }, [])
+
+  const marcas = deLaBase ?? s?.marcas ?? []
   if (!marcas.length) return null
 
   const enLoop = marcas.length >= MIN_LOOP

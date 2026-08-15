@@ -154,6 +154,24 @@ export const productosPublicos = async respaldo => {
   return filas?.length ? filas.map(productoDelSitio) : respaldo
 }
 
+/**
+ * Patrocinadores activos para el banner del inicio.
+ *
+ * Lee la VISTA, no la tabla: sponsors lleva telefono, correo y monto acordado,
+ * y RLS no sabe filtrar por columna. La vista solo expone marca, logo, enlace
+ * y nivel. Devuelve null si falla, para no borrar el respaldo de content.js.
+ */
+export const sponsorsPublicos = async () => {
+  const filas = await leer("sponsors_publicos?select=marca,logo,url,tier")
+  if (!filas) return null
+  return filas.map(s => ({
+    name: s.marca,
+    url:  s.url,
+    logo: s.logo,
+    tier: { oro:"Oro", plata:"Plata", bronce:"Bronce" }[s.tier] ?? s.tier,
+  }))
+}
+
 // ── Inscripcion en linea ────────────────────────────────────────────────────
 
 /** Programa de un enlace publico, con su contrato. null si no existe. */

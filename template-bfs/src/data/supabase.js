@@ -128,6 +128,57 @@ export const borrarHorario = async id => {
   return { error }
 }
 
+// ── Patrocinadores ──────────────────────────────────────────────────────────
+
+/**
+ * Patrocinadores con sus pagos.
+ *
+ * Los pagos vienen en la misma consulta: la lista necesita mostrar cuando fue
+ * el ultimo de cada uno, y pedirlos aparte serian N consultas mas para algo
+ * que siempre se muestra junto.
+ */
+export const sponsorsTodos = async () => {
+  if (!supabase) return { datos: [], error: { message: "Sin conexion a la base de datos." } }
+  const { data, error } = await supabase
+    .from("sponsors")
+    .select("*, sponsor_pagos(id, fecha, monto, metodo, nota)")
+    .order("estado").order("marca")
+  return { datos: data ?? [], error }
+}
+
+export const guardarSponsor = async sponsor => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { id, sponsor_pagos, ...campos } = sponsor
+  const consulta = id
+    ? supabase.from("sponsors").update(campos).eq("id", id)
+    : supabase.from("sponsors").insert(campos)
+  const { error } = await consulta
+  return { error }
+}
+
+export const borrarSponsor = async id => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("sponsors").delete().eq("id", id)
+  return { error }
+}
+
+/** Registra un pago. La fecha llega desde el formulario y se puede cambiar. */
+export const registrarPagoSponsor = async pago => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { id, ...campos } = pago
+  const consulta = id
+    ? supabase.from("sponsor_pagos").update(campos).eq("id", id)
+    : supabase.from("sponsor_pagos").insert(campos)
+  const { error } = await consulta
+  return { error }
+}
+
+export const borrarPagoSponsor = async id => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("sponsor_pagos").delete().eq("id", id)
+  return { error }
+}
+
 // ── Fotos de productos ──────────────────────────────────────────────────────
 
 export const imagenesDeProducto = async productoId => {
