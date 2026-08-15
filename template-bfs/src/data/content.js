@@ -351,14 +351,19 @@ export const content = {
   sponsor: {
     eyebrow: "Patrocinios",
     title:   "Vuelvete Sponsor",
-    subtitle:"Apoya a los atletas de BFS",
-    desc:    "Nuestros competidores representan a la academia en torneos regionales, estatales y nacionales. El patrocinio cubre inscripciones, traslados y equipo — y pone tu marca frente a cientos de familias en cada evento.",
+    subtitle:"Construye el dojo con nosotros",
+    // El texto anterior decia que el patrocinio cubre inscripciones y
+    // traslados de competidores. No es a donde va el dinero: se destina al
+    // dojo — equipo, mantenimiento y un espacio mas grande. Prometer una cosa
+    // y hacer otra es lo unico que de verdad puede costarle un patrocinador
+    // a la academia.
+    desc:    "Lo que aporta cada patrocinador se convierte en equipo, mantenimiento del dojo y, a mediano plazo, un espacio mas grande. Es una inversion que se queda: la usan mas de 100 alumnos cada semana y se ve en cada video que publicamos.",
     cta:     "Vuelvete Sponsor",
     whatsappMessage: "Hola, me interesa informacion sobre los paquetes de patrocinio de BFS Martial Arts.",
     beneficios: [
-      { title:"Tu logo en el gi de competencia", desc:"Bordado en el uniforme oficial que los atletas usan en cada torneo de la temporada." },
+      { title:"Tu marca en el equipo que financiaste", desc:"Placa con tu nombre en el material que tu aportacion hizo posible. Queda ahi, a la vista de cada alumno, clase tras clase." },
       { title:"Presencia en el dojo",            desc:"Lona o placa de patrocinador visible en el area de entrenamiento durante toda la vigencia." },
-      { title:"Menciones en redes",              desc:"Tu marca etiquetada en publicaciones de resultados, eventos y contenido de la academia." },
+      { title:"Menciones en redes",              desc:"Tu marca en las publicaciones de la academia, ante una comunidad de mas de 14 mil seguidores en la zona." },
       { title:"Espacio en eventos BFS",          desc:"Stand o activacion de marca en torneos internos y exhibiciones organizadas por la academia." },
     ],
     // PRECIOS PENDIENTES DE DEFINIR — seran mensualidades, no por temporada.
@@ -369,22 +374,22 @@ export const content = {
       {
         name:  "Bronce",
         color: "#6b4c36",
-        tagline:"Apoyo local",
-        items: ["Logo en lona del dojo","Mencion en redes sociales","Reconocimiento en torneo interno"],
+        tagline:"Sostiene el dojo",
+        items: ["Cubre el mantenimiento del dojo","Logo en lona del area de entrenamiento","Mencion en redes sociales","Reconocimiento en torneo interno"],
         whatsappMessage: "Hola, me interesa el paquete de patrocinio BRONCE de BFS Martial Arts. Me pueden compartir el costo mensual y que incluye?",
       },
       {
         name:  "Plata",
         color: "#c0c0c0",
-        tagline:"Mayor visibilidad",
-        items: ["Todo lo del paquete Bronce","Logo bordado en gi de competencia","Publicacion dedicada en redes","Espacio en 1 evento BFS"],
+        tagline:"Equipa el dojo",
+        items: ["Financia equipo nuevo, con placa a tu nombre","Todo lo del paquete Bronce","Logo bordado en gi de competencia","Publicacion dedicada en redes","Espacio en 1 evento BFS"],
         whatsappMessage: "Hola, me interesa el paquete de patrocinio PLATA de BFS Martial Arts. Me pueden compartir el costo mensual y que incluye?",
       },
       {
         name:  "Oro",
         color: "#f5c518",
-        tagline:"Patrocinador oficial",
-        items: ["Todo lo del paquete Plata","Logo principal en uniforme y lona","Stand en todos los eventos BFS","Contenido de video con la marca","Reconocimiento como patrocinador oficial"],
+        tagline:"Construye el dojo nuevo",
+        items: ["Impulsa el fondo para un espacio mas grande","Todo lo del paquete Plata","Logo principal en uniforme y lona","Stand en todos los eventos BFS","Contenido de video con la marca","Patrocinador oficial — cupo unico"],
         whatsappMessage: "Hola, me interesa el paquete de patrocinio ORO de BFS Martial Arts. Me pueden compartir el costo mensual y que incluye?",
       },
     ],
