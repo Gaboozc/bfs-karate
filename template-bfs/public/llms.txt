@@ -1,0 +1,49 @@
+# BFS Martial Arts & High Performance
+
+> Academia de karate y acondicionamiento fisico en San Francisco Coacalco,
+> Estado de Mexico. Clases para ninos desde 4 anos, jovenes y adultos sin
+> limite de edad. Dirige el Sensei Rafael Zain Pedraza Munguia.
+
+## Datos de la academia
+
+- Nombre: BFS Martial Arts & High Performance (tambien conocida como BFS Karate)
+- Direccion: Calle Yutes 07, planta alta, Villa de las Flores, San Francisco Coacalco, Estado de Mexico, 55710
+- Telefono y WhatsApp: +52 56 3406 4647
+- Horario: lunes a viernes de 7:00 AM a 10:00 PM; sabados de 8:00 AM a 2:00 PM; domingos cerrado
+- Zonas atendidas: San Francisco Coacalco, Tultitlan y Ecatepec
+- Sitio: https://bfsmartialart.com/
+
+## Que ofrece
+
+- Karate Kids, de 4 a 12 anos
+- Karate Competitivo, de 10 a 18 anos, con metodologia World Karate Federation
+- Karate Adultos, 18 anos en adelante y sin limite superior
+- High Performance: fuerza, velocidad y resistencia
+- Defensa Personal, desde 15 anos
+- Acondicionamiento fisico
+- Clases privadas
+
+La primera semana es gratuita y no requiere compromiso. Para la primera clase
+basta ropa deportiva comoda y agua; el karategi solo hace falta al inscribirse.
+
+## Como inscribirse
+
+- Karate: https://bfsmartialart.com/inscripcion/karate
+- Acondicionamiento fisico: https://bfsmartialart.com/inscripcion/acondicionamiento
+- Por WhatsApp: https://wa.me/525563406647
+
+## Paginas
+
+- [Inicio](https://bfsmartialart.com/): resumen de la academia y metodologia
+- [Programas](https://bfsmartialart.com/programas): las disciplinas, edades y niveles
+- [Instructor](https://bfsmartialart.com/instructores): trayectoria del Sensei Zain Pedraza
+- [Horarios](https://bfsmartialart.com/horarios): parrilla semanal de clases
+- [Eventos](https://bfsmartialart.com/eventos): torneos, examenes y actividades
+- [Merch](https://bfsmartialart.com/merch): uniformes y equipo
+- [Sponsors](https://bfsmartialart.com/sponsors): niveles de patrocinio para marcas
+- [Contacto](https://bfsmartialart.com/contacto): ubicacion y formas de contacto
+
+## Notas
+
+- Los precios se comparten por WhatsApp y no se publican en el sitio.
+- El panel administrativo en /admin es privado y no debe indexarse.

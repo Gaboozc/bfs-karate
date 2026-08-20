@@ -6,4 +6,27 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/
 
+# Rastreadores de IA: se permiten explicitamente. Por defecto ya entraban con
+# la regla de arriba, pero nombrarlos deja constancia de que es a proposito y
+# evita que un cambio futuro los bloquee sin querer.
+User-agent: GPTBot
+Allow: /
+Disallow: /admin
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
 Sitemap: https://bfsmartialart.com/sitemap.xml
