@@ -4,7 +4,7 @@ export const content = {
   business: {
     name:     "BFS Martial Arts",
     nameShort:"BFS",
-    tagline:  "Better. Stronger. Faster.",
+    tagline:  "Better. Faster. Stronger.",
     sub:      "Martial Arts & High Performance",
     description: "Academia de artes marciales y alto rendimiento. Formamos atletas completos: disciplina mental, tecnica depurada y condicionamiento fisico de elite. Para ninos, jovenes y adultos.",
     founded:  "{{2010}}",
@@ -55,7 +55,7 @@ export const content = {
 
   hero: {
     eyebrow:    "San Francisco Coacalco · Est. {{2010}}",
-    headline:   "BETTER.\nSTRONGER.\nFASTER.",
+    headline:   "BETTER.\nFASTER.\nSTRONGER.",
     subheadline:"Formamos atletas completos. No solo luchadores — personas con disciplina, enfoque y caracter. Clases para todas las edades y niveles.",
     cta:        { primary:"Inscribete Ahora", secondary:"Ver Programas", sponsor:"Vuelvete Sponsor" },
     image:      "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=1600&q=85",
@@ -174,15 +174,18 @@ export const content = {
       name:    "Rafael Zain Pedraza Munguia",
       rank:    "Cinta Negra 4° Dan",
       title:   "Fundador & Director Tecnico",
-      bio:     "Fundador de BFS Martial Arts y cabeza tecnica de la academia. Cinturon Negro 4° Dan con trayectoria en competencia nacional e internacional. Atleta Top Ten Mexico en kickboxing y pointfighting bajo la organizacion NASKA, con participacion en torneos de alto nivel a lo largo de su carrera. Su metodologia combina la disciplina tradicional del karate con el dinamismo del alto rendimiento moderno, formando atletas completos — no solo en tecnica, sino en caracter y enfoque mental.",
+      bio:     "Instructor de artes marciales con 18 años de experiencia en la enseñanza, el entrenamiento y la competencia. Cinturón negro en Taekwondo, Karate-do y Kenpo Americano, con especialización en karate deportivo, point fighting, kick boxing, fitness, fuerza y alto rendimiento. A lo largo de su carrera ha logrado títulos nacionales e internacionales y ha representado a México en torneos de alto nivel. Su enfoque combina disciplina, técnica, preparación física y liderazgo, formando atletas completos y personas con carácter, enfoque y mentalidad competitiva.",
+      bioPremium: "Instructor y atleta de artes marciales con 18 años de experiencia en la enseñanza, el entrenamiento y la competencia. Cinturón negro en Taekwondo, Karate-do y Kenpo Americano, con especialización en karate deportivo, point fighting, kick boxing, fitness, fuerza y alto rendimiento. A lo largo de su trayectoria ha obtenido campeonatos nacionales e internacionales y ha representado a México en torneos de gran nivel. Fundador de BFS Martial Arts & High Performance, combina disciplina, técnica, preparación física y liderazgo para formar atletas completos y personas con carácter, enfoque y mentalidad competitiva.",
+      bioShort: "Instructor de artes marciales con 18 años de experiencia, campeón nacional e internacional y fundador de BFS Martial Arts & High Performance. Especialista en karate deportivo, point fighting, kick boxing y alto rendimiento.",
+      headline: "Instructor, competidor y referente del karate deportivo",
       quote:   "El karate no es solo una tecnica de combate. Es una forma de vida.",
       photo:   "/instructor-zain.jpg",
-      specialties: ["Karate", "Kickboxing", "Pointfighting", "Alto Rendimiento"],
+      specialties: ["Karate Deportivo", "Point Fighting", "Kick Boxing", "Entrenamiento Funcional", "Alto Rendimiento"],
       achievements: [
-        "Atleta Top Ten Mexico — Kickboxing & Pointfighting",
-        "Competidor NASKA (North American Sport Karate Association)",
-        "Cinturon Negro 4° Dan",
-        "Fundador de BFS Martial Arts",
+        "18 años de experiencia como instructor",
+        "Campeón nacional e internacional en karate deportivo",
+        "Competidor destacado en NASKA y circuitos internacionales",
+        "Fundador de BFS Martial Arts & High Performance",
       ],
       instagram: "@zainpedraza",
       beltColor: "#0a0a0a",
@@ -193,20 +196,20 @@ export const content = {
   instructorPage: {
     // Linea de tiempo — los anos son estimados, confirmar con el Sensei
     trayectoria: [
-      { year:"{{2003}}", title:"Inicio en el karate",              desc:"Comienza su formacion en karate tradicional, enfocado en kata y fundamentos." },
-      { year:"{{2009}}", title:"Primer cinturon negro — 1er Dan",  desc:"Obtiene el grado de cinta negra y empieza a asistir en la instruccion de grupos infantiles." },
-      { year:"{{2012}}", title:"Entrada a competencia NASKA",      desc:"Debuta en el circuito de la North American Sport Karate Association en pointfighting." },
-      { year:"{{2015}}", title:"Top Ten Mexico",                   desc:"Alcanza el ranking Top Ten nacional en kickboxing y pointfighting." },
-      { year:"{{2018}}", title:"Fundacion de BFS Martial Arts",    desc:"Abre la academia en San Francisco Coacalco con una metodologia propia: tecnica, fuerza y velocidad en ese orden." },
-      { year:"{{2023}}", title:"Cuarto Dan",                       desc:"Recibe el grado de 4° Dan y consolida el programa de alto rendimiento de la academia." },
+      { year:"{{2003}}", title:"Inicio en artes marciales", desc:"Inicia su camino en karate y disciplinas de combate, desarrollando base tecnica, disciplina y mentalidad competitiva." },
+      { year:"{{2009}}", title:"Primer cinturon negro", desc:"Obtiene la cinta negra y comienza a formar a nuevos estudiantes con enfoque en disciplina, tecnica y actitud." },
+      { year:"{{2012}}", title:"Competencia nacional e internacional", desc:"Se consolida como competidor en torneos de alto nivel, destacandose en pointfighting y karate deportivo." },
+      { year:"{{2018}}", title:"Instructor en Estados Unidos", desc:"Desarrolla experiencia internacional como instructor y gerente de academias con alto nivel de exigencia y crecimiento." },
+      { year:"{{2022}}", title:"Fundacion de BFS Martial Arts", desc:"Crea la academia con una metodologia enfocada en tecnica, condicionamiento de alto rendimiento y desarrollo integral del alumno." },
+      { year:"{{2023}}", title:"Reconocimiento y liderazgo deportivo", desc:"Continua consolidando su trayectoria como referente del karate deportivo y mentor de atletas en México y Estados Unidos." },
     ],
     filosofia: {
       title: "Como entrena el Sensei",
       items: [
-        { title:"Correccion individual, siempre", desc:"Ningun alumno termina una clase sin al menos una correccion dirigida a el por su nombre. El grupo avanza, pero nadie se queda atras." },
-        { title:"Exigencia sin humillacion",      desc:"El nivel de exigencia es alto y no se negocia. El trato, en cambio, nunca se usa como herramienta de presion." },
-        { title:"El caracter antes que el trofeo", desc:"Los resultados en competencia llegan solos cuando la disciplina esta bien construida. El proceso no se salta." },
-        { title:"Adaptacion por etapa",            desc:"Un nino de 6 anos, un competidor de 16 y un adulto de 45 no entrenan igual. La carga se ajusta a cada cuerpo." },
+        { title:"Tecnica con disciplina", desc:"Cada alumno avanza con correccion tecnica, rigor y progresion real. El fundamento siempre va antes de la velocidad." },
+        { title:"Exigencia con respeto", desc:"El nivel de entrenamiento es alto, pero la metodologia se apoya en respeto, paciencia y crecimiento constante." },
+        { title:"Rendimiento y carácter", desc:"La competencia es una herramienta de aprendizaje, pero la verdadera base es la disciplina, la constancia y la fortaleza mental." },
+        { title:"Metodologia adaptada", desc:"Cada alumno, desde niño hasta adulto, se trabaja de acuerdo a su etapa, objetivo y capacidad de desarrollo." },
       ],
     },
   },
@@ -437,11 +440,11 @@ export const content = {
   metodologia: {
     eyebrow: "Por que BFS",
     title:   "El Metodo BFS",
-    intro:   "Better. Stronger. Faster. no es un lema — es el orden en que trabajamos. Primero la tecnica correcta, luego la fuerza para sostenerla, y al final la velocidad para aplicarla.",
+    intro:   "Better. Faster. Stronger. no es un lema — es el orden en que trabajamos. Primero la tecnica correcta, luego la velocidad para aplicarla, y al final la fuerza para sostenerla.",
     pilares: [
-      { letter:"B", word:"BETTER",   title:"Tecnica primero", desc:"Nadie avanza de cinta sin dominar la base. Correccion individual en cada clase, sin importar el nivel del grupo.", color:"#c0392b" },
-      { letter:"S", word:"STRONGER", title:"Fuerza real",     desc:"Acondicionamiento adaptado por edad y etapa. El cuerpo se prepara para aguantar el entrenamiento, no al reves.", color:"#f5c518" },
+      { letter:"B", word:"BETTER",   title:"Tecnica primero",    desc:"Nadie avanza de cinta sin dominar la base. Correccion individual en cada clase, sin importar el nivel del grupo.", color:"#c0392b" },
       { letter:"F", word:"FASTER",   title:"Velocidad aplicada", desc:"Reaccion, timing y distancia bajo presion. Aqui es donde la tecnica se vuelve util en kumite y en la vida real.", color:"#1a5276" },
+      { letter:"S", word:"STRONGER", title:"Fuerza real",        desc:"Acondicionamiento adaptado por edad y etapa. El cuerpo se prepara para aguantar el entrenamiento, no al reves.", color:"#f5c518" },
     ],
   },
 

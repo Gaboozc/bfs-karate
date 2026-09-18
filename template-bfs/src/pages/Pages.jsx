@@ -253,9 +253,12 @@ export const InstructoresPage = () => {
                   style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.03em" }}
                 >{inst.name}</h2>
                 <p className="text-sm font-semibold tracking-wider uppercase" style={{ color:"#c0392b" }}>{inst.title}</p>
+                {inst.headline && (
+                  <p className="mt-2 text-sm font-medium tracking-[0.18em] uppercase" style={{ color:"rgba(245,245,245,0.7)" }}>{inst.headline}</p>
+                )}
                 <div className="blood-line mt-3"/>
               </div>
-              <p className="text-base leading-relaxed" style={{ color:"rgba(245,245,245,0.6)" }}>{inst.bio}</p>
+              <p className="text-base leading-relaxed" style={{ color:"rgba(245,245,245,0.6)" }}>{inst.bioPremium || inst.bio}</p>
               {inst.quote && (
                 <blockquote className="border-l-2 pl-5 italic text-base leading-relaxed"
                   style={{ borderColor:"#c0392b", color:"rgba(245,245,245,0.45)" }}
