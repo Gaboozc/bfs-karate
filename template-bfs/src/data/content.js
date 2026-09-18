@@ -9,7 +9,7 @@ export const content = {
     description: "Academia de artes marciales y alto rendimiento. Formamos atletas completos: disciplina mental, tecnica depurada y condicionamiento fisico de elite. Para ninos, jovenes y adultos.",
     founded:  "{{2010}}",
     phone:    "+52 56 3406 4647",
-    whatsapp: "525563406647",
+    whatsapp: "525634064647",
     email:    "{{info@bfsmartialart.com}}",
     address:  "Calle Yutes 07-planta alta, Villa de las Flores",
     city:     "San Francisco Coacalco, Estado de Mexico, 55710",
