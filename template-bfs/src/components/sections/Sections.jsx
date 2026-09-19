@@ -553,20 +553,26 @@ const SponsorLogo = ({ marca }) => {
         style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.06em" }}
       >{marca.name}</span>
 
-  // El logo va sobre una placa con borde propio. Suelto sobre el fondo negro
-  // parecia flotar y se leia como adorno, no como una marca que respalda a la
-  // academia. La placa tambien le da aire: antes iba a 44px de alto en una
-  // franja de 1500, y a esa escala no se distinguia.
+  // La placa va en claro a proposito. El logo de AlphaDev es el de su
+  // rebranding —letras en cafe oscuro y dorado— disenado para fondo claro:
+  // sobre el negro del sitio ningun pixel suyo alcanza el contraste minimo
+  // (mediana 1.51:1). Sobre blanco llega a 13:1 y se lee tal como su marca
+  // manda. Para un logo pensado para fondo oscuro basta cambiar `placaClara`.
+  const placaClara = true
   const content = (
-    <div className="flex flex-col items-center justify-center gap-3 shrink-0 px-10 py-7 transition-colors duration-200"
-      style={{ background:"#111111", border:"1px solid rgba(245,245,245,0.09)", minWidth:"230px" }}
-      onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(245,193,24,0.45)"}
-      onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(245,245,245,0.09)"}
+    <div className="flex flex-col items-center justify-center gap-3 shrink-0 px-10 py-7 transition-all duration-200"
+      style={{
+        background: placaClara ? "#ffffff" : "#111111",
+        border: placaClara ? "1px solid rgba(245,245,245,0.12)" : "1px solid rgba(245,245,245,0.09)",
+        minWidth: "230px",
+      }}
+      onMouseEnter={e=>{ e.currentTarget.style.borderColor="#f5c518"; e.currentTarget.style.transform="translateY(-2px)" }}
+      onMouseLeave={e=>{ e.currentTarget.style.borderColor=placaClara?"rgba(245,245,245,0.12)":"rgba(245,245,245,0.09)"; e.currentTarget.style.transform="translateY(0)" }}
     >
       {inner}
       {marca.tier && (
         <span className="text-[10px] font-bold tracking-[0.22em] uppercase"
-          style={{ color:"#f5c518", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+          style={{ color: placaClara ? "#8a6a08" : "#f5c518", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
         >Patrocinador {marca.tier}</span>
       )}
     </div>
