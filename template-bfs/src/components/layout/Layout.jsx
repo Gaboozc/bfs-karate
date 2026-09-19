@@ -278,12 +278,23 @@ export const Footer = () => (
         </div>
       </div>
       <div className="h-px mb-5" style={{ background:"rgba(245,245,245,0.05)" }}/>
-      <div className="flex flex-col md:flex-row justify-between items-center gap-2">
+      {/* Cierre centrado: primero el aviso legal, debajo la firma del estudio */}
+      <div className="flex flex-col items-center gap-4 text-center">
         <p className="text-xs" style={{ color:"rgba(245,245,245,0.55)" }}>{content.footer.copyright}</p>
+
         <a href={content.footer.creditUrl} target="_blank" rel="noopener noreferrer"
-          className="text-xs transition-colors" style={{ color:"rgba(245,245,245,0.55)" }}
-          onMouseEnter={e=>e.target.style.color="#c0392b"} onMouseLeave={e=>e.target.style.color="rgba(245,245,245,0.15)"}
-        >{content.footer.credit}</a>
+          className="inline-flex items-center gap-2.5 transition-opacity"
+          onMouseEnter={e=>e.currentTarget.style.opacity="0.75"}
+          onMouseLeave={e=>e.currentTarget.style.opacity="1"}
+        >
+          <span className="text-xs" style={{ color:"rgba(245,245,245,0.55)" }}>{content.footer.credit}</span>
+          {/* El isotipo trae su propio fondo claro: sus trazos oscuros no se
+              verian sobre el negro del pie. Va como plaquita redondeada. */}
+          <img src="/sponsors/ads-isotipo.svg" alt="" aria-hidden="true"
+            width="26" height="26" loading="lazy"
+            style={{ width:"26px", height:"26px", borderRadius:"5px", objectFit:"cover" }}
+          />
+        </a>
       </div>
     </div>
   </footer>
