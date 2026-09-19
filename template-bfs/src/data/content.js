@@ -7,7 +7,7 @@ export const content = {
     tagline:  "Better. Faster. Stronger.",
     sub:      "Martial Arts & High Performance",
     description: "Academia de artes marciales y alto rendimiento. Formamos atletas completos: disciplina mental, tecnica depurada y condicionamiento fisico de elite. Para ninos, jovenes y adultos.",
-    founded:  "{{2010}}",
+    founded:  "2022",
     phone:    "+52 56 3406 4647",
     whatsapp: "525634064647",
     email:    "{{info@bfsmartialart.com}}",
@@ -35,11 +35,12 @@ export const content = {
       "Entrenadores certificados CONADE",
       "Primeros auxilios y RCP",
     ],
+    // Cifras tomadas del CV del Sensei. No se publica nada que no este ahi.
     stats: [
-      { value: "{{+500}}", label: "Atletas formados" },
-      { value: "{{15+}}",  label: "Anos de trayectoria" },
-      { value: "{{120+}}", label: "Medallas ganadas" },
-      { value: "{{8}}",    label: "Instructores certificados" },
+      { value: "+150", label: "Alumnos activos" },
+      { value: "18",   label: "Anos ensenando" },
+      { value: "2",    label: "Academias" },
+      { value: "5",    label: "Paises donde ha competido" },
     ],
   },
 
@@ -54,7 +55,7 @@ export const content = {
   ],
 
   hero: {
-    eyebrow:    "San Francisco Coacalco · Est. {{2010}}",
+    eyebrow:    "San Francisco Coacalco · Est. 2022",
     headline:   "BETTER.\nFASTER.\nSTRONGER.",
     subheadline:"Formamos atletas completos. No solo luchadores — personas con disciplina, enfoque y caracter. Clases para todas las edades y niveles.",
     cta:        { primary:"Inscribete Ahora", secondary:"Ver Programas", sponsor:"Vuelvete Sponsor" },
@@ -172,19 +173,22 @@ export const content = {
     {
       id: 1,
       name:    "Rafael Zain Pedraza Munguia",
-      rank:    "Cinta Negra 4° Dan",
+      rank:    "Cinta Negra 3er Dan",
       title:   "Fundador & Director Tecnico",
-      bio:     "Instructor de artes marciales con 18 años de experiencia en la enseñanza, el entrenamiento y la competencia. Cinturón negro en Taekwondo, Karate-do y Kenpo Americano, con especialización en karate deportivo, point fighting, kick boxing, fitness, fuerza y alto rendimiento. A lo largo de su carrera ha logrado títulos nacionales e internacionales y ha representado a México en torneos de alto nivel. Su enfoque combina disciplina, técnica, preparación física y liderazgo, formando atletas completos y personas con carácter, enfoque y mentalidad competitiva.",
-      bioPremium: "Instructor y atleta de artes marciales con 18 años de experiencia en la enseñanza, el entrenamiento y la competencia. Cinturón negro en Taekwondo, Karate-do y Kenpo Americano, con especialización en karate deportivo, point fighting, kick boxing, fitness, fuerza y alto rendimiento. A lo largo de su trayectoria ha obtenido campeonatos nacionales e internacionales y ha representado a México en torneos de gran nivel. Fundador de BFS Martial Arts & High Performance, combina disciplina, técnica, preparación física y liderazgo para formar atletas completos y personas con carácter, enfoque y mentalidad competitiva.",
-      bioShort: "Instructor de artes marciales con 18 años de experiencia, campeón nacional e internacional y fundador de BFS Martial Arts & High Performance. Especialista en karate deportivo, point fighting, kick boxing y alto rendimiento.",
+      bio:     "Campeon mundial de la liga NASKA en Estados Unidos y campeon nacional WAKO. Ha ganado en Mexico, Estados Unidos, Canada, Venezuela y Guatemala, y es el primer atleta mexicano patrocinado por TopTen, la marca mas grande del sport karate a nivel mundial. Cinta negra en tres disciplinas —karate-do, taekwondo y kenpo americano— con 18 anos ensenando, entre ellos cuatro en Atlanta, Georgia. En 2022 fundo BFS Martial Arts & High Performance, que hoy tiene dos academias y mas de 150 alumnos.",
+      bioShort: "Campeon mundial NASKA y nacional WAKO, con 18 anos ensenando. Fundador de BFS Martial Arts & High Performance.",
       headline: "Instructor, competidor y referente del karate deportivo",
       quote:   "El karate no es solo una tecnica de combate. Es una forma de vida.",
       photo:   "/instructor-zain.jpg",
-      specialties: ["Karate Deportivo", "Point Fighting", "Kick Boxing", "Entrenamiento Funcional", "Alto Rendimiento"],
+      specialties: ["Karate Deportivo", "Point Fighting", "Kickboxing", "Taekwondo", "Kenpo Americano", "Alto Rendimiento"],
       achievements: [
-        "18 años de experiencia como instructor",
-        "Campeón nacional e internacional en karate deportivo",
-        "Competidor destacado en NASKA y circuitos internacionales",
+        "Campeon mundial NASKA (North American Sport Karate Association)",
+        "Campeon nacional WAKO, avalado por CONADE y FENAKIB",
+        "Primer atleta mexicano patrocinado por TopTen",
+        "Primer mexicano en ganar el premio VFT (Ultimo Guerrero en Pie)",
+        "Seleccion nacional WAKO 2024 — 2do lugar Panamericano",
+        "Mejor Trayectoria Deportiva, municipio de Coacalco 2023",
+        "Cinta negra en karate-do, taekwondo y kenpo americano",
         "Fundador de BFS Martial Arts & High Performance",
       ],
       instagram: "@zainpedraza",
@@ -194,24 +198,41 @@ export const content = {
 
   // Contenido exclusivo de la pagina Instructor
   instructorPage: {
-    // Linea de tiempo — los anos son estimados, confirmar con el Sensei
+    // Trayectoria tomada del CV del Sensei. Todas las fechas y resultados
+    // salen de ahi: no hay nada estimado.
     trayectoria: [
-      { year:"{{2003}}", title:"Inicio en artes marciales", desc:"Inicia su camino en karate y disciplinas de combate, desarrollando base tecnica, disciplina y mentalidad competitiva." },
-      { year:"{{2009}}", title:"Primer cinturon negro", desc:"Obtiene la cinta negra y comienza a formar a nuevos estudiantes con enfoque en disciplina, tecnica y actitud." },
-      { year:"{{2012}}", title:"Competencia nacional e internacional", desc:"Se consolida como competidor en torneos de alto nivel, destacandose en pointfighting y karate deportivo." },
-      { year:"{{2018}}", title:"Instructor en Estados Unidos", desc:"Desarrolla experiencia internacional como instructor y gerente de academias con alto nivel de exigencia y crecimiento." },
-      { year:"{{2022}}", title:"Fundacion de BFS Martial Arts", desc:"Crea la academia con una metodologia enfocada en tecnica, condicionamiento de alto rendimiento y desarrollo integral del alumno." },
-      { year:"{{2023}}", title:"Reconocimiento y liderazgo deportivo", desc:"Continua consolidando su trayectoria como referente del karate deportivo y mentor de atletas en México y Estados Unidos." },
+      { year:"2012", title:"Primeros titulos nacionales",
+        desc:"Arranca su etapa competitiva ganando Gold Fighter y Guerreros, y entra como instructor en Matsumura Martial Arts and Fitness." },
+      { year:"2013", title:"Salto al circuito internacional",
+        desc:"Gana los Panamerican Internationals y empieza a competir fuera de Mexico." },
+      { year:"2018", title:"Battle of Atlanta y mudanza a Estados Unidos",
+        desc:"Gana uno de los torneos mas prestigiados del sport karate mundial y se integra como instructor y gerente en Dojo, empresa con cinco franquicias en Atlanta, Georgia." },
+      { year:"2019", title:"Ano internacional",
+        desc:"Gana el US Open, Quebec Open, Blue Grass, Dixieland Nationals, AKA Warrior Cup, el Panamericano WKC en Guatemala y la Batalla de Venezuela." },
+      { year:"2022", title:"Funda BFS Martial Arts & High Performance",
+        desc:"Regresa a Mexico y abre la academia en San Francisco Coacalco con metodologia propia: tecnica, fuerza y velocidad en ese orden." },
+      { year:"2023", title:"Reconocimiento del municipio",
+        desc:"Recibe el premio a Mejor Trayectoria Deportiva de Coacalco y carga la antorcha del municipio. Ese ano tambien gana el Gran Jaguar en Guatemala." },
+      { year:"2024", title:"Seleccion nacional WAKO",
+        desc:"Forma parte de la seleccion mexicana WAKO y obtiene el segundo lugar en el Panamericano." },
     ],
     filosofia: {
       title: "Como entrena el Sensei",
       items: [
-        { title:"Tecnica con disciplina", desc:"Cada alumno avanza con correccion tecnica, rigor y progresion real. El fundamento siempre va antes de la velocidad." },
-        { title:"Exigencia con respeto", desc:"El nivel de entrenamiento es alto, pero la metodologia se apoya en respeto, paciencia y crecimiento constante." },
-        { title:"Rendimiento y carácter", desc:"La competencia es una herramienta de aprendizaje, pero la verdadera base es la disciplina, la constancia y la fortaleza mental." },
-        { title:"Metodologia adaptada", desc:"Cada alumno, desde niño hasta adulto, se trabaja de acuerdo a su etapa, objetivo y capacidad de desarrollo." },
+        { title:"Lo aprendio compitiendo", desc:"No ensena teoria de libro: ha ganado a los mejores peleadores del mundo en las ligas mas grandes —NASKA y WAKO— y lo que corrige en clase es lo que le funciono en el tatami." },
+        { title:"Correccion individual, siempre", desc:"Ningun alumno termina una clase sin al menos una correccion dirigida a el por su nombre. El grupo avanza, pero nadie se queda atras." },
+        { title:"Exigencia sin humillacion", desc:"El nivel de exigencia es alto y no se negocia. El trato, en cambio, nunca se usa como herramienta de presion." },
+        { title:"Adaptacion por etapa", desc:"Un nino de 6 anos, un competidor de 16 y un adulto de 45 no entrenan igual. La carga se ajusta a cada cuerpo." },
       ],
     },
+    // Cobertura en medios, verificable en los enlaces
+    prensa: [
+      { medio:"Black Belt Magazine", url:"https://blackbeltmag.com/zain-pedraza" },
+      { medio:"TDE Power",           url:"https://www.tdepower.com/zain-pedraza" },
+      { medio:"Revista O Sensei",    url:"https://revistaosensei.blogspot.com/2019/07/el-gran-combate-de-la-noche-venezuela.html" },
+    ],
+    // Marcas que lo respaldan como atleta
+    patrocinadores: ["TopTen", "Century", "Combat Shop", "Team Dojo Elite"],
   },
 
   // Horario semanal — filas = clases, columnas = dias

@@ -5,7 +5,7 @@ import { Routes, Route, useLocation, Link } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Trophy, Star, Shield, Zap, UserCheck, Clock, CheckCircle, MapPin, Phone, Mail,
-  ChevronDown, Award, Flame, Ruler,
+  ChevronDown, Award, Flame, Ruler, ArrowUpRight,
 } from "lucide-react"
 import { content } from "../data/content"
 import { precio, real, soloReales } from "../data/pendientes"
@@ -199,7 +199,7 @@ export const InstructoresPage = () => {
   const inst = content.instructors[0]
   if (!inst) return null
   const igUrl = `https://instagram.com/${inst.instagram.replace("@","")}`
-  const { trayectoria, filosofia } = content.instructorPage
+  const { trayectoria, filosofia, prensa, patrocinadores } = content.instructorPage
 
   return (
     <motion.div initial="initial" animate="animate" exit="exit" variants={pageTransition}>
@@ -321,6 +321,46 @@ export const InstructoresPage = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Respaldo verificable: marcas que lo patrocinan y medios que lo han
+          cubierto. Cada enlace es comprobable por quien lo quiera revisar. */}
+      {(patrocinadores?.length || prensa?.length) && (
+      <section className="py-16 md:py-20" style={{ background:"#111111" }}>
+        <div className="max-w-5xl mx-auto px-5 md:px-10 grid grid-cols-1 md:grid-cols-2 gap-12">
+
+          {patrocinadores?.length > 0 && (
+            <motion.div initial="hidden" whileInView="visible" viewport={viewportOnce} variants={fadeInUp}>
+              <p className="text-[10px] font-bold tracking-widest uppercase mb-4" style={{ color:"var(--blood-txt)" }}>Patrocinadores</p>
+              <div className="flex flex-wrap gap-2">
+                {patrocinadores.map(m => (
+                  <span key={m} className="font-display text-lg px-4 py-1.5"
+                    style={{ color:"#f5f5f5", border:"1px solid rgba(245,245,245,0.15)", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.06em" }}
+                  >{m}</span>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {prensa?.length > 0 && (
+            <motion.div initial="hidden" whileInView="visible" viewport={viewportOnce} variants={fadeInUp}>
+              <p className="text-[10px] font-bold tracking-widest uppercase mb-4" style={{ color:"var(--blood-txt)" }}>Han hablado de el</p>
+              <ul className="space-y-2.5">
+                {prensa.map(m => (
+                  <li key={m.medio}>
+                    <a href={m.url} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm transition-colors"
+                      style={{ color:"rgba(245,245,245,0.55)" }}
+                      onMouseEnter={e=>e.currentTarget.style.color="#f5f5f5"}
+                      onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.55)"}
+                    >{m.medio} <ArrowUpRight size={13} aria-hidden="true"/></a>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
+        </div>
+      </section>
+      )}
 
       <EnrollCTA variant="instructor" />
     </motion.div>
