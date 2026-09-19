@@ -17,6 +17,7 @@ import {
   SponsorsBanner, MultimediaSection,
 } from "../components/sections/Sections"
 import { fadeInUp, fadeIn, scaleIn, stagger, staggerSlow, viewportOnce, pageTransition } from "../styles/animations"
+import { textoDe, textoSobre } from "../data/colores"
 
 // Carga diferida: recharts y todo el panel quedan fuera del paquete publico
 const AdminPanel = lazy(() => import("../admin/AdminPanel"))
@@ -30,11 +31,11 @@ const progIcons = { trophy:Trophy, star:Star, shield:Shield, zap:Zap, "user-shie
 const PageBanner = ({ eyebrow, title }) => (
   <div className="pt-24 pb-14 relative overflow-hidden" style={{ background:"#0a0a0a" }}>
     <div className="absolute inset-0 tatami-pattern"/>
-    <div className="num-deco absolute bottom-0 right-4 opacity-40">{title.substring(0,4).toUpperCase()}</div>
+    <div aria-hidden="true" className="num-deco absolute bottom-0 right-4 opacity-40">{title.substring(0,4).toUpperCase()}</div>
     <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-10">
       <div className="flex items-center gap-3 mb-2">
         <div className="h-0.5 w-8" style={{ background:"#c0392b" }}/>
-        <span className="text-[11px] tracking-[0.28em] uppercase font-semibold" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{eyebrow}</span>
+        <span className="text-[11px] tracking-[0.28em] uppercase font-semibold" style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{eyebrow}</span>
       </div>
       <h1 className="font-display" style={{ fontSize:"clamp(3rem,10vw,8rem)", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.03em" }}>{title}</h1>
     </div>
@@ -79,7 +80,7 @@ const FaqItem = ({ q, a }) => {
       >
         <span className="font-display text-lg md:text-xl" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{q}</span>
         <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration:0.2 }} className="shrink-0">
-          <ChevronDown size={18} style={{ color:"#c0392b" }}/>
+          <ChevronDown size={18} style={{ color:"var(--blood-txt)" }}/>
         </motion.span>
       </button>
       <AnimatePresence initial={false}>
@@ -126,24 +127,24 @@ export const ProgramasPage = () => {
                 <div className="w-8 h-1 mb-4" style={{ background:prog.color }}/>
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-9 h-9 flex items-center justify-center rounded-lg" style={{ background:`${prog.color}18` }}>
-                    <Icon size={18} style={{ color:prog.color }}/>
+                    <Icon size={18} style={{ color:textoDe(prog.color) }}/>
                   </div>
-                  {prog.featured && <span className="text-[9px] font-bold px-2 py-0.5 tracking-widest uppercase" style={{ background:"rgba(192,57,43,0.15)", color:"#c0392b" }}>Popular</span>}
+                  {prog.featured && <span className="text-[9px] font-bold px-2 py-0.5 tracking-widest uppercase" style={{ background:"rgba(192,57,43,0.15)", color:"var(--blood-txt)" }}>Popular</span>}
                 </div>
                 <h3 className="font-display text-2xl mb-1" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{prog.title}</h3>
-                <p className="text-xs font-semibold mb-3 tracking-wider" style={{ color:prog.color }}>{prog.ageRange} · {prog.level}</p>
+                <p className="text-xs font-semibold mb-3 tracking-wider" style={{ color:textoDe(prog.color) }}>{prog.ageRange} · {prog.level}</p>
                 <p className="text-sm leading-relaxed mb-5" style={{ color:"#888888" }}>{prog.desc}</p>
                 <div className="space-y-1.5 mb-5">
                   {[["Horario",prog.schedule],["Duracion",prog.duration]].map(([label,val])=>(
                     <div key={label} className="flex items-center gap-2 text-xs" style={{ color:"#888888" }}>
-                      <Clock size={11} style={{ color:prog.color }}/>{label}: {val}
+                      <Clock size={11} style={{ color:textoDe(prog.color) }}/>{label}: {val}
                     </div>
                   ))}
                 </div>
                 <div className="flex items-center justify-between pt-4" style={{ borderTop:"1px solid rgba(245,245,245,0.06)" }}>
                   <div className="font-display text-2xl" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{precio(prog.price)}</div>
                   <Link to="/contacto" className="px-4 py-2 text-xs font-bold transition-colors duration-200"
-                    style={{ background:prog.color, color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
+                    style={{ background:prog.color, color:textoSobre(prog.color), fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
                     onMouseEnter={e=>e.currentTarget.style.opacity="0.85"} onMouseLeave={e=>e.currentTarget.style.opacity="1"}
                   >Inscribirse</Link>
                 </div>
@@ -166,10 +167,10 @@ export const ProgramasPage = () => {
               style={{ background:"#0a0a0a", borderLeft:"3px solid #c0392b" }}
             >
               <div className="absolute top-3 right-4 font-display leading-none select-none pointer-events-none"
-                style={{ fontSize:"4.5rem", color:"#c0392b", opacity:0.09, fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                style={{ fontSize:"4.5rem", color:"var(--blood-txt)", opacity:0.09, fontFamily:"'Bebas Neue',Impact,sans-serif" }}
               >{step.n}</div>
               <div className="relative z-10">
-                <div className="font-display text-sm tracking-[0.2em] mb-3" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>PASO {step.n}</div>
+                <div className="font-display text-sm tracking-[0.2em] mb-3" style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>PASO {step.n}</div>
                 <h3 className="font-display text-2xl mb-2" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{step.title}</h3>
                 <p className="text-sm leading-relaxed" style={{ color:"#888888" }}>{step.desc}</p>
               </div>
@@ -224,7 +225,7 @@ export const InstructoresPage = () => {
               </div>
               <a href={igUrl} target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2 mt-4 text-xs font-semibold transition-colors"
-                style={{ color:"rgba(245,245,245,0.35)" }}
+                style={{ color:"rgba(245,245,245,0.55)" }}
                 onMouseEnter={e=>e.currentTarget.style.color="#c0392b"}
                 onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.35)"}
               >
@@ -236,7 +237,7 @@ export const InstructoresPage = () => {
 
               {/* Especialidades */}
               <div className="mt-6">
-                <p className="text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color:"#c0392b" }}>Especialidades</p>
+                <p className="text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color:"var(--blood-txt)" }}>Especialidades</p>
                 <div className="flex flex-wrap gap-2">
                   {inst.specialties.map((s,i) => (
                     <span key={i} className="text-[11px] px-3 py-1 font-semibold tracking-wider"
@@ -252,25 +253,25 @@ export const InstructoresPage = () => {
                 <h2 className="font-display leading-none mb-1"
                   style={{ fontSize:"clamp(2rem,5vw,3.5rem)", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.03em" }}
                 >{inst.name}</h2>
-                <p className="text-sm font-semibold tracking-wider uppercase" style={{ color:"#c0392b" }}>{inst.title}</p>
+                <p className="text-sm font-semibold tracking-wider uppercase" style={{ color:"var(--blood-txt)" }}>{inst.title}</p>
                 {inst.headline && (
-                  <p className="mt-2 text-sm font-medium tracking-[0.18em] uppercase" style={{ color:"rgba(245,245,245,0.7)" }}>{inst.headline}</p>
+                  <p className="mt-2 text-sm font-medium tracking-[0.18em] uppercase" style={{ color:"rgba(245,245,245,0.55)" }}>{inst.headline}</p>
                 )}
                 <div className="blood-line mt-3"/>
               </div>
               <p className="text-base leading-relaxed" style={{ color:"rgba(245,245,245,0.6)" }}>{inst.bioPremium || inst.bio}</p>
               {inst.quote && (
                 <blockquote className="border-l-2 pl-5 italic text-base leading-relaxed"
-                  style={{ borderColor:"#c0392b", color:"rgba(245,245,245,0.45)" }}
+                  style={{ borderColor:"#c0392b", color:"rgba(245,245,245,0.55)" }}
                 >"{inst.quote}"</blockquote>
               )}
               {inst.achievements && (
                 <div>
-                  <p className="text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color:"#c0392b" }}>Logros destacados</p>
+                  <p className="text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color:"var(--blood-txt)" }}>Logros destacados</p>
                   <ul className="space-y-2">
                     {inst.achievements.map((a,i) => (
                       <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color:"rgba(245,245,245,0.55)" }}>
-                        <Award size={13} style={{ color:"#c0392b" }} className="mt-0.5 shrink-0"/>{a}
+                        <Award size={13} style={{ color:"var(--blood-txt)" }} className="mt-0.5 shrink-0"/>{a}
                       </li>
                     ))}
                   </ul>
@@ -293,7 +294,7 @@ export const InstructoresPage = () => {
                 <div className="absolute left-0 top-1.5 w-[15px] h-[15px] rounded-full"
                   style={{ background:"#0a0a0a", border:"2px solid #c0392b" }}
                 />
-                <div className="font-display text-xl mb-1" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{t.year}</div>
+                <div className="font-display text-xl mb-1" style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{t.year}</div>
                 <h3 className="font-display text-2xl mb-1.5" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{t.title}</h3>
                 <p className="text-sm leading-relaxed" style={{ color:"#888888" }}>{t.desc}</p>
               </motion.div>
@@ -359,7 +360,7 @@ export const HorariosPage = () => {
             <motion.div initial="hidden" animate="visible" variants={fadeInUp}
               className="p-8 text-center" style={{ background:"#111111", border:"1px solid rgba(245,245,245,0.08)" }}
             >
-              <Clock size={26} style={{ color:"#c0392b" }} className="mb-4 mx-auto" aria-hidden="true"/>
+              <Clock size={26} style={{ color:"var(--blood-txt)" }} className="mb-4 mx-auto" aria-hidden="true"/>
               <h2 className="font-display text-2xl mb-2" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
                 Estamos actualizando el horario
               </h2>
@@ -380,14 +381,14 @@ export const HorariosPage = () => {
                 <tr style={{ borderBottom:"2px solid rgba(192,57,43,0.3)" }}>
                   <th className="py-4 pr-6 text-left w-16" style={{ color:"#888888", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"14px" }}>Hora</th>
                   {schedule.days.map(d=>(
-                    <th key={d} className="py-4 px-2 text-center" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"15px" }}>{d}</th>
+                    <th key={d} className="py-4 px-2 text-center" style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"15px" }}>{d}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {schedule.slots.map((slot,i)=>(
                   <tr key={i} style={{ borderBottom:"1px solid rgba(245,245,245,0.04)" }}>
-                    <td className="py-3 pr-6 font-bold text-xs whitespace-nowrap" style={{ color:"rgba(245,245,245,0.4)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{enAmPm(slot.time)}</td>
+                    <td className="py-3 pr-6 font-bold text-xs whitespace-nowrap" style={{ color:"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{enAmPm(slot.time)}</td>
                     {dayKeys.map(key=>{
                       const cls = slot[key]
                       const color = { "Karate Kids":"#f5c518","Karate Competitivo":"#c0392b","Adultos":"#1a5276","High Perf.":"#6b4c36","Defensa P.":"#2d6a4f","High Performance":"#6b4c36" }[cls]
@@ -410,7 +411,7 @@ export const HorariosPage = () => {
           </motion.div>
           )}
           {schedule && (
-            <p className="text-xs mt-6" style={{ color:"rgba(245,245,245,0.25)" }}>
+            <p className="text-xs mt-6" style={{ color:"rgba(245,245,245,0.55)" }}>
               Horarios sujetos a cambio. Consulta disponibilidad de clases privadas directamente con tu instructor.
             </p>
           )}
@@ -431,13 +432,13 @@ export const HorariosPage = () => {
                 <div className="flex items-center justify-between gap-3 mb-3">
                   <h3 className="font-display text-2xl" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{t.full}</h3>
                   <span className="text-[10px] font-bold px-2 py-0.5 tracking-wider uppercase shrink-0"
-                    style={{ background:`${t.color}18`, color:t.color }}
+                    style={{ background:`${t.color}18`, color:textoDe(t.color) }}
                   >{t.name}</span>
                 </div>
                 <p className="text-sm leading-relaxed mb-4" style={{ color:"#888888" }}>{t.desc}</p>
                 <div className="flex items-center gap-2 pt-3" style={{ borderTop:"1px solid rgba(245,245,245,0.06)" }}>
-                  <Flame size={12} style={{ color:t.color }}/>
-                  <span className="text-[11px] font-semibold tracking-wider uppercase" style={{ color:"rgba(245,245,245,0.45)" }}>
+                  <Flame size={12} style={{ color:textoDe(t.color) }}/>
+                  <span className="text-[11px] font-semibold tracking-wider uppercase" style={{ color:"rgba(245,245,245,0.55)" }}>
                     Intensidad: {t.intensidad}
                   </span>
                 </div>
@@ -449,7 +450,7 @@ export const HorariosPage = () => {
           <motion.div className="mt-12 p-7" style={{ background:"#0a0a0a", border:"1px solid rgba(192,57,43,0.15)" }}
             initial="hidden" whileInView="visible" viewport={viewportOnce} variants={fadeInUp}
           >
-            <h3 className="font-display text-xl mb-4" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Antes de venir</h3>
+            <h3 className="font-display text-xl mb-4" style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Antes de venir</h3>
             <ul className="space-y-2.5">
               {/* Dos de estas notas hablan de la tabla y de ajustes de sabado
                   y domingo. Sin parrilla publicada no tienen a que referirse */}
@@ -457,7 +458,7 @@ export const HorariosPage = () => {
                 .filter(n => schedule || !/tabla|horario/i.test(n))
                 .map((n,i) => (
                 <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color:"rgba(245,245,245,0.55)" }}>
-                  <CheckCircle size={13} style={{ color:"#c0392b" }} className="mt-0.5 shrink-0"/>{n}
+                  <CheckCircle size={13} style={{ color:"var(--blood-txt)" }} className="mt-0.5 shrink-0"/>{n}
                 </li>
               ))}
             </ul>
@@ -480,7 +481,7 @@ export const ContactoPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-14">
             <motion.div initial="hidden" animate="visible" variants={fadeInUp}>
               <div className="inline-flex items-center gap-2 px-4 py-2 mb-6" style={{ background:"rgba(192,57,43,0.1)", border:"1px solid rgba(192,57,43,0.3)" }}>
-                <CheckCircle size={13} style={{ color:"#c0392b" }}/><span className="text-xs font-bold" style={{ color:"#c0392b" }}>{content.enroll.badge}</span>
+                <CheckCircle size={13} style={{ color:"var(--blood-txt)" }}/><span className="text-xs font-bold" style={{ color:"var(--blood-txt)" }}>{content.enroll.badge}</span>
               </div>
               <h2 className="font-display mb-2" style={{ fontSize:"clamp(2.5rem,7vw,5rem)", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
                 {content.enroll.headline}
@@ -496,7 +497,7 @@ export const ContactoPage = () => {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
                 {content.enroll.cta}
               </motion.a>
-              <p className="text-center text-xs mt-3" style={{ color:"rgba(245,245,245,0.25)" }}>Respondemos en menos de 15 minutos</p>
+              <p className="text-center text-xs mt-3" style={{ color:"rgba(245,245,245,0.55)" }}>Respondemos en menos de 15 minutos</p>
             </motion.div>
 
             <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="space-y-4">
@@ -512,11 +513,11 @@ export const ContactoPage = () => {
                 ].filter(({val}) => val).map(({Icon,label,val})=>(
                   <div key={label} className="flex items-start gap-3 py-3" style={{ borderBottom:"1px solid rgba(245,245,245,0.05)" }}>
                     <div className="w-7 h-7 flex items-center justify-center rounded shrink-0" style={{ background:"rgba(192,57,43,0.12)" }}>
-                      <Icon size={13} style={{ color:"#c0392b" }}/>
+                      <Icon size={13} style={{ color:"var(--blood-txt)" }}/>
                     </div>
                     <div>
-                      <p className="text-[9px] font-bold uppercase tracking-widest mb-0.5" style={{ color:"#c0392b" }}>{label}</p>
-                      <p className="text-sm" style={{ color:"rgba(245,245,245,0.45)" }}>{val}</p>
+                      <p className="text-[9px] font-bold uppercase tracking-widest mb-0.5" style={{ color:"var(--blood-txt)" }}>{label}</p>
+                      <p className="text-sm" style={{ color:"rgba(245,245,245,0.55)" }}>{val}</p>
                     </div>
                   </div>
                 ))}
@@ -527,7 +528,7 @@ export const ContactoPage = () => {
                 <h3 className="font-display text-lg mb-4" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Certificaciones</h3>
                 {content.business.certifications.map((c,i)=>(
                   <div key={i} className="flex items-center gap-2 mb-2">
-                    <CheckCircle size={12} style={{ color:"#c0392b" }}/>
+                    <CheckCircle size={12} style={{ color:"var(--blood-txt)" }}/>
                     <span className="text-sm" style={{ color:"rgba(245,245,245,0.55)" }}>{c}</span>
                   </div>
                 ))}
@@ -617,7 +618,7 @@ export const MerchPage = () => {
                     <h3 className="font-display text-lg mb-1" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{product.name}</h3>
                     <p className="text-xs leading-relaxed mb-4" style={{ color:"#888888" }}>{product.desc}</p>
                     <div className="flex items-center justify-between pt-3" style={{ borderTop:"1px solid rgba(245,245,245,0.05)" }}>
-                      <span className="font-display text-xl" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{precio(product.price)}</span>
+                      <span className="font-display text-xl" style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{precio(product.price)}</span>
                       <motion.a href={waUrl} target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold"
                         style={{ background:"#25D366", color:"#ffffff", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
@@ -633,7 +634,7 @@ export const MerchPage = () => {
             })}
           </motion.div>
 
-          <p className="text-xs mt-8" style={{ color:"rgba(245,245,245,0.2)" }}>
+          <p className="text-xs mt-8" style={{ color:"rgba(245,245,245,0.55)" }}>
             Precios en MXN. Disponibilidad de tallas sujeta a inventario. Consulta por WhatsApp.
           </p>
         </div>
@@ -652,7 +653,7 @@ export const MerchPage = () => {
                     style={{ background:"#0a0a0a", border:"1px solid rgba(245,245,245,0.06)" }}
                   >
                     <div className="font-display text-3xl leading-none shrink-0"
-                      style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                      style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                     >{step.n}</div>
                     <div>
                       <h3 className="font-display text-xl mb-1" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{step.title}</h3>
@@ -667,7 +668,7 @@ export const MerchPage = () => {
               initial="hidden" whileInView="visible" viewport={viewportOnce} variants={fadeInUp}
             >
               <div className="flex items-center gap-2 mb-4">
-                <Ruler size={15} style={{ color:"#c0392b" }}/>
+                <Ruler size={15} style={{ color:"var(--blood-txt)" }}/>
                 <h3 className="font-display text-xl" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
                   {content.merchPage.tallas.title}
                 </h3>
@@ -675,8 +676,8 @@ export const MerchPage = () => {
               <table className="w-full text-sm mb-4">
                 <thead>
                   <tr style={{ borderBottom:"1px solid rgba(192,57,43,0.25)" }}>
-                    <th className="py-2 text-left" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"14px" }}>Talla</th>
-                    <th className="py-2 text-right" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"14px" }}>Estatura</th>
+                    <th className="py-2 text-left" style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"14px" }}>Talla</th>
+                    <th className="py-2 text-right" style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"14px" }}>Estatura</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -688,7 +689,7 @@ export const MerchPage = () => {
                   ))}
                 </tbody>
               </table>
-              <p className="text-xs leading-relaxed" style={{ color:"rgba(245,245,245,0.35)" }}>{content.merchPage.tallas.note}</p>
+              <p className="text-xs leading-relaxed" style={{ color:"rgba(245,245,245,0.55)" }}>{content.merchPage.tallas.note}</p>
             </motion.div>
           </div>
         </div>
@@ -767,7 +768,7 @@ export const EventosPage = () => {
               <div className="flex items-center justify-between mb-6">
                 <button onClick={prevMonth} aria-label="Mes anterior"
                   className="w-9 h-9 flex items-center justify-center text-lg transition-colors"
-                  style={{ border:"1px solid rgba(192,57,43,0.3)", color:"#c0392b" }}
+                  style={{ border:"1px solid rgba(192,57,43,0.3)", color:"var(--blood-txt)" }}
                   onMouseEnter={e=>e.currentTarget.style.background="rgba(192,57,43,0.1)"}
                   onMouseLeave={e=>e.currentTarget.style.background="transparent"}
                 ><span aria-hidden="true">‹</span></button>
@@ -776,7 +777,7 @@ export const EventosPage = () => {
                 >{MONTHS[m]} {y}</h2>
                 <button onClick={nextMonth} aria-label="Mes siguiente"
                   className="w-9 h-9 flex items-center justify-center text-lg transition-colors"
-                  style={{ border:"1px solid rgba(192,57,43,0.3)", color:"#c0392b" }}
+                  style={{ border:"1px solid rgba(192,57,43,0.3)", color:"var(--blood-txt)" }}
                   onMouseEnter={e=>e.currentTarget.style.background="rgba(192,57,43,0.1)"}
                   onMouseLeave={e=>e.currentTarget.style.background="transparent"}
                 ><span aria-hidden="true">›</span></button>
@@ -786,7 +787,7 @@ export const EventosPage = () => {
               <div className="grid grid-cols-7 mb-1">
                 {DAYS.map(d => (
                   <div key={d} className="text-center py-2 text-[11px] font-bold tracking-widest"
-                    style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                    style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                   >{d}</div>
                 ))}
               </div>
@@ -829,7 +830,7 @@ export const EventosPage = () => {
                       {valid && (
                         <>
                           <span className="text-[11px] font-bold leading-none mb-1"
-                            style={{ color: isToday || isSel ? "#c0392b" : "#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                            style={{ color: isToday || isSel ? "var(--blood-txt)" : "#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                           >{dayNum}</span>
                           <div className="flex gap-0.5 flex-wrap justify-center px-0.5">
                             {dayEvts.slice(0, 3).map((e, ei) => (
@@ -848,7 +849,7 @@ export const EventosPage = () => {
                 {Object.entries(TYPE_COL).map(([type, color]) => (
                   <div key={type} className="flex items-center gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full" style={{ background:color }}/>
-                    <span className="text-[11px]" style={{ color:"rgba(245,245,245,0.45)" }}>{type}</span>
+                    <span className="text-[11px]" style={{ color:"rgba(245,245,245,0.55)" }}>{type}</span>
                   </div>
                 ))}
               </div>
@@ -857,7 +858,7 @@ export const EventosPage = () => {
             {/* Lista de eventos */}
             <div className="lg:col-span-2">
               <h3 className="font-display text-xl mb-5"
-                style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.08em" }}
+                style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.08em" }}
               >
                 {selDay ? `${selDay} de ${MONTHS[m]}` : "Proximos Eventos"}
               </h3>
@@ -876,15 +877,15 @@ export const EventosPage = () => {
                       >
                         <div className="flex items-start justify-between gap-2 mb-2">
                           <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5"
-                            style={{ background:`${evt.color || "#c0392b"}18`, color: evt.color || "#c0392b" }}
+                            style={{ background:`${evt.color || "#c0392b"}18`, color: textoDe(evt.color || "#c0392b") }}
                           >{evt.type}</span>
                           <span className="text-[11px] font-bold shrink-0"
-                            style={{ color:"rgba(245,245,245,0.3)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                            style={{ color:"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                           >{evtDate.toLocaleDateString("es-MX",{ day:"numeric", month:"short", year:"numeric" })}</span>
                         </div>
                         <h4 className="font-display text-base mb-0.5" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{evt.title}</h4>
                         <p className="text-xs mb-1" style={{ color:"#888888" }}>{evt.location}</p>
-                        <p className="text-xs leading-relaxed mb-3" style={{ color:"rgba(245,245,245,0.4)" }}>{evt.desc}</p>
+                        <p className="text-xs leading-relaxed mb-3" style={{ color:"rgba(245,245,245,0.55)" }}>{evt.desc}</p>
                         <a href={waLink} target="_blank" rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 text-xs font-bold"
                           style={{ background: evt.color || "#c0392b", color:"#f5f5f5", padding:"5px 12px", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"12px" }}
@@ -916,16 +917,16 @@ export const EventosPage = () => {
                 >
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5"
-                      style={{ background:`${evt.color}18`, color:evt.color }}
+                      style={{ background:`${evt.color}18`, color:textoDe(evt.color) }}
                     >{evt.type}</span>
                     <span className="text-[11px] font-bold shrink-0"
-                      style={{ color:"rgba(245,245,245,0.3)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                      style={{ color:"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                     >{d.toLocaleDateString("es-MX",{ day:"numeric", month:"long", year:"numeric" })}</span>
                   </div>
                   <h3 className="font-display text-2xl mb-1" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{evt.title}</h3>
                   <p className="text-xs mb-3" style={{ color:"#888888" }}>{evt.location}</p>
                   <div className="flex items-start gap-2 pt-3" style={{ borderTop:"1px solid rgba(245,245,245,0.06)" }}>
-                    <Trophy size={13} style={{ color:evt.color }} className="mt-0.5 shrink-0"/>
+                    <Trophy size={13} style={{ color:textoDe(evt.color) }} className="mt-0.5 shrink-0"/>
                     <span className="text-sm" style={{ color:"rgba(245,245,245,0.6)" }}>{evt.resultado}</span>
                   </div>
                 </motion.div>
@@ -956,7 +957,7 @@ const NoEncontrada = () => (
   <motion.div {...pageTransition} className="min-h-[70vh] flex items-center justify-center px-5 pt-24 pb-16">
     <div className="text-center max-w-md">
       <p className="font-display leading-none mb-3"
-        style={{ fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"clamp(4rem,14vw,7rem)", color:"#c0392b" }}
+        style={{ fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"clamp(4rem,14vw,7rem)", color:"var(--blood-txt)" }}
       >404</p>
       <h1 className="font-display text-2xl mb-3" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif", color:"#f5f5f5" }}>
         Esta pagina no existe

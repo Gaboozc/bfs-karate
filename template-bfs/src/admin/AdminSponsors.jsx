@@ -23,7 +23,7 @@ import {
 const TIERS = {
   oro:    { nombre:"Oro",    color:"#f5c518" },
   plata:  { nombre:"Plata",  color:"#c0c0c0" },
-  bronce: { nombre:"Bronce", color:"#6b4c36" },
+  bronce: { nombre:"Bronce", color:"var(--cafe-txt)" },
 }
 
 const hoy = () => new Date().toISOString().slice(0, 10)
@@ -102,7 +102,7 @@ const Formulario = ({ sponsor, onGuardar, onCancelar, guardando }) => {
         </div>
 
         <form onSubmit={enviar} className="p-6 space-y-5">
-          <p className={seccion} style={{ color:"#c0392b" }}>Marca</p>
+          <p className={seccion} style={{ color:"var(--blood-txt)" }}>Marca</p>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -140,7 +140,7 @@ const Formulario = ({ sponsor, onGuardar, onCancelar, guardando }) => {
             </div>
           </div>
 
-          <p className={seccion} style={{ color:"#c0392b" }}>Contacto</p>
+          <p className={seccion} style={{ color:"var(--blood-txt)" }}>Contacto</p>
           <p className="text-[11px] -mt-3" style={{ color:"#64748b" }}>
             Nunca se muestra en el sitio. Solo se ve aqui.
           </p>
@@ -166,7 +166,7 @@ const Formulario = ({ sponsor, onGuardar, onCancelar, guardando }) => {
             </div>
           </div>
 
-          <p className={seccion} style={{ color:"#c0392b" }}>Acuerdo</p>
+          <p className={seccion} style={{ color:"var(--blood-txt)" }}>Acuerdo</p>
 
           <div className="grid grid-cols-2 gap-4">
             <div>

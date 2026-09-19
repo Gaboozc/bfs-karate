@@ -23,6 +23,7 @@ import AdminAlumnos from "./AdminAlumnos"
 import AdminSolicitudes from "./AdminSolicitudes"
 import AdminMultimedia from "./AdminMultimedia"
 import AdminSponsors from "./AdminSponsors"
+import { textoDe } from "../data/colores"
 
 const CHART_COLORS = ["#c0392b","#f5c518","#1a5276","#6b4c36","#2d6a4f","#888888","#f5f5f5"]
 const beltColors   = { "Blanco":"#f5f5f5", "Blanco raya Morada":"#f5f5f5", "Morada":"#8b3fa8", "Morada raya Amarilla":"#8b3fa8", "Amarilla":"#f5c518", "Naranja":"#e07b39", "Azul":"#2e75b6", "Azul raya Marron":"#2e75b6", "Marron":"#6b4c36", "Negro":"#1a1a1a" }
@@ -263,14 +264,14 @@ const AdminDashboard = () => {
     { value:cintasNegras,   label:"Cintas negras",       color:"#e2e8f0", Icon:Award     },
     { value:diasAlProximo != null ? (diasAlProximo === 0 ? "Hoy" : diasAlProximo) : "—",
       label: proximo ? "Dias al proximo evento" : "Sin eventos programados",
-      color:"#c0392b", Icon:Calendar,
+      color:"var(--blood-txt)", Icon:Calendar,
       nota: proximo?.titulo },
   ]
   const Tip = ({ active, payload, label }) => {
     if (!active||!payload?.length) return null
     return <div className="px-3 py-2 rounded-lg text-xs" style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", color:"#e2e8f0" }}>
       <p className="font-semibold mb-1">{label}</p>
-      {payload.map((p,i)=><p key={i} style={{ color:p.color }}>{p.name}: {p.value}</p>)}
+      {payload.map((p,i)=><p key={i} style={{ color:textoDe(p.color) }}>{p.name}: {p.value}</p>)}
     </div>
   }
   return (
@@ -288,7 +289,7 @@ const AdminDashboard = () => {
           >
             <div className="flex items-start justify-between mb-3">
               <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background:`${k.color}18` }}>
-                <k.Icon size={18} style={{ color:k.color }}/>
+                <k.Icon size={18} style={{ color:textoDe(k.color) }}/>
               </div>
             </div>
             <div className="font-display text-2xl text-white mb-1" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{k.value}</div>
@@ -320,7 +321,7 @@ const AdminDashboard = () => {
             <div key={c.nombre} className="flex flex-col items-center gap-1.5">
               <div className="font-display text-xl text-white" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{c.valor}</div>
               <div className="w-12 h-2 rounded-sm" style={{ background:beltColors[c.nombre]||"#888888", boxShadow:`0 0 6px ${beltColors[c.nombre]||"#888888"}60` }}/>
-              <div className="text-[9px] tracking-wider uppercase" style={{ color:"rgba(245,245,245,0.35)" }}>{c.nombre}</div>
+              <div className="text-[9px] tracking-wider uppercase" style={{ color:"rgba(245,245,245,0.55)" }}>{c.nombre}</div>
             </div>
           ))}
         </div>

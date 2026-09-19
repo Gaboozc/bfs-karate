@@ -31,7 +31,7 @@ export const BFSLogo = ({ className="", size="md", light=false }) => {
             <span className="font-display tracking-[0.12em]"
               style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize: s.h < 40 ? "16px":"20px" }}
             >{content.business.name}</span>
-            <span className="text-[9px] tracking-[0.2em] uppercase font-semibold" style={{ color:"#c0392b" }}>
+            <span className="text-[9px] tracking-[0.2em] uppercase font-semibold" style={{ color:"var(--blood-txt)" }}>
               {content.business.tagline}
             </span>
           </div>
@@ -60,7 +60,7 @@ export const SectionHeader = ({ eyebrow, title, subtitle, align="center", light=
       {eyebrow && (
         <div className={`flex items-center gap-3 mb-3 ${align==="center"?"justify-center":""}`}>
           <div className="w-8 h-0.5" style={{ background:"#c0392b" }}/>
-          <span className="text-[11px] tracking-[0.25em] uppercase font-semibold" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{eyebrow}</span>
+          <span className="text-[11px] tracking-[0.25em] uppercase font-semibold" style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{eyebrow}</span>
         </div>
       )}
       <h2 className="font-display leading-none mb-3"
@@ -220,21 +220,21 @@ export const Footer = () => (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
         <div>
           <BFSLogo size="sm" className="mb-4"/>
-          <p className="text-sm leading-relaxed mb-4" style={{ color:"rgba(245,245,245,0.35)", fontFamily:"'Barlow Condensed',sans-serif" }}>
+          <p className="text-sm leading-relaxed mb-4" style={{ color:"rgba(245,245,245,0.55)", fontFamily:"'Barlow Condensed',sans-serif" }}>
             {content.business.description}
           </p>
           <div className="flex flex-wrap gap-2">
             {content.business.certifications.slice(0,2).map((c,i)=>(
-              <span key={i} className="text-[9px] px-2 py-1 rounded font-semibold" style={{ background:"rgba(192,57,43,0.15)", color:"#c0392b" }}>{c}</span>
+              <span key={i} className="text-[9px] px-2 py-1 rounded font-semibold" style={{ background:"rgba(192,57,43,0.15)", color:"var(--blood-txt)" }}>{c}</span>
             ))}
           </div>
         </div>
 
         <div>
-          <h4 className="font-display text-sm tracking-widest mb-5" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Programas</h4>
+          <h4 className="font-display text-sm tracking-widest mb-5" style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Programas</h4>
           <ul className="space-y-2.5">
             {content.nav.links.map(l=>(
-              <li key={l.href}><Link to={l.href} className="text-sm transition-colors duration-200" style={{ color:"rgba(245,245,245,0.35)" }}
+              <li key={l.href}><Link to={l.href} className="text-sm transition-colors duration-200" style={{ color:"rgba(245,245,245,0.55)" }}
                 onMouseEnter={e=>e.currentTarget.style.color="#c0392b"} onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.35)"}
               >{l.label}</Link></li>
             ))}
@@ -242,26 +242,26 @@ export const Footer = () => (
         </div>
 
         <div>
-          <h4 className="font-display text-sm tracking-widest mb-5" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Horarios</h4>
+          <h4 className="font-display text-sm tracking-widest mb-5" style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Horarios</h4>
           <ul className="space-y-2.5">
             {Object.values(content.business.hours).map((h,i)=>(
-              <li key={i} className="flex items-start gap-2"><Clock size={12} className="mt-0.5 shrink-0" style={{ color:"#c0392b" }}/><span className="text-sm" style={{ color:"rgba(245,245,245,0.35)" }}>{h}</span></li>
+              <li key={i} className="flex items-start gap-2"><Clock size={12} className="mt-0.5 shrink-0" style={{ color:"var(--blood-txt)" }}/><span className="text-sm" style={{ color:"rgba(245,245,245,0.55)" }}>{h}</span></li>
             ))}
           </ul>
         </div>
 
         <div>
-          <h4 className="font-display text-sm tracking-widest mb-5" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Contacto</h4>
+          <h4 className="font-display text-sm tracking-widest mb-5" style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Contacto</h4>
           <ul className="space-y-3">
             {[{Icon:MapPin,val:`${content.business.address}, ${content.business.city}`},{Icon:Phone,val:content.business.phone},{Icon:Mail,val:real(content.business.email)}].filter(({val})=>val).map(({Icon,val},i)=>(
-              <li key={i} className="flex items-start gap-2"><Icon size={13} className="mt-0.5 shrink-0" style={{ color:"#c0392b" }}/><span className="text-sm" style={{ color:"rgba(245,245,245,0.35)" }}>{val}</span></li>
+              <li key={i} className="flex items-start gap-2"><Icon size={13} className="mt-0.5 shrink-0" style={{ color:"var(--blood-txt)" }}/><span className="text-sm" style={{ color:"rgba(245,245,245,0.55)" }}>{val}</span></li>
             ))}
           </ul>
           <div className="flex gap-3 mt-5">
             {[{href:real(content.business.social.instagram),label:"IG"},{href:real(content.business.social.facebook),label:"FB"},{href:real(content.business.social.youtube),label:"YT"}].filter(s=>s.href).map(({href,label})=>(
               <a key={label} href={href} target="_blank" rel="noopener noreferrer"
                 className="w-8 h-8 flex items-center justify-center text-xs font-bold transition-colors duration-200 font-display"
-                style={{ border:"1px solid rgba(192,57,43,0.3)", color:"rgba(245,245,245,0.3)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                style={{ border:"1px solid rgba(192,57,43,0.3)", color:"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                 onMouseEnter={e=>{e.currentTarget.style.borderColor="#c0392b";e.currentTarget.style.color="#c0392b"}}
                 onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(192,57,43,0.3)";e.currentTarget.style.color="rgba(245,245,245,0.3)"}}
               >{label}</a>
@@ -271,9 +271,9 @@ export const Footer = () => (
       </div>
       <div className="h-px mb-5" style={{ background:"rgba(245,245,245,0.05)" }}/>
       <div className="flex flex-col md:flex-row justify-between items-center gap-2">
-        <p className="text-xs" style={{ color:"rgba(245,245,245,0.15)" }}>{content.footer.copyright}</p>
+        <p className="text-xs" style={{ color:"rgba(245,245,245,0.55)" }}>{content.footer.copyright}</p>
         <a href={content.footer.creditUrl} target="_blank" rel="noopener noreferrer"
-          className="text-xs transition-colors" style={{ color:"rgba(245,245,245,0.15)" }}
+          className="text-xs transition-colors" style={{ color:"rgba(245,245,245,0.55)" }}
           onMouseEnter={e=>e.target.style.color="#c0392b"} onMouseLeave={e=>e.target.style.color="rgba(245,245,245,0.15)"}
         >{content.footer.credit}</a>
       </div>

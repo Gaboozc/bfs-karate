@@ -255,7 +255,7 @@ const PanelCategorias = ({ categorias, productos, onCerrar, onCambio }) => {
                 <div key={c.id} className="flex items-center gap-3 px-3 py-2.5 rounded-lg"
                   style={{ background:"#0a0a0a", border:"1px solid #2a2a2a" }}
                 >
-                  <Tag size={13} style={{ color:"#c0392b" }} className="shrink-0"/>
+                  <Tag size={13} style={{ color:"var(--blood-txt)" }} className="shrink-0"/>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-white truncate">{c.nombre}</p>
                     <p className="text-[10px]" style={{ color:"#64748b" }}>
@@ -478,7 +478,7 @@ const AdminInventario = () => {
                     <tr key={p.id} style={{ borderBottom:"1px solid #111111", background: i % 2 ? "rgba(255,255,255,0.01)" : "transparent" }}>
                       <td className="px-4 py-3">
                         <p className="font-semibold text-white text-xs">{p.nombre}</p>
-                        {p.etiqueta && <p className="text-[10px]" style={{ color:"#c0392b" }}>{p.etiqueta}</p>}
+                        {p.etiqueta && <p className="text-[10px]" style={{ color:"var(--blood-txt)" }}>{p.etiqueta}</p>}
                       </td>
                       <td className="px-4 py-3 text-xs" style={{ color: p.categorias ? "#94a3b8" : "#475569" }}>
                         {p.categorias?.nombre ?? "sin categoria"}

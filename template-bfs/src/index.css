@@ -3,12 +3,32 @@
 @tailwind utilities;
 
 :root {
+  /* Colores de marca — para FONDOS y bordes. Sobre ellos el texto va claro. */
   --blood:   #c0392b;
   --void:    #0a0a0a;
   --steel:   #1c1c1c;
   --iron:    #2a2a2a;
   --smoke:   #f5f5f5;
   --ash:     #888888;
+
+  /* Variantes para TEXTO sobre fondo oscuro.
+     Los colores de marca no alcanzan el contraste minimo de 4.5:1 que exige
+     WCAG AA cuando se usan como letra: el rojo da 3.64 y el azul 2.37, o sea
+     que en pantallas con brillo bajo o a plena luz del dia no se leen.
+     Estas versiones conservan el tono y solo suben luminosidad hasta pasar.
+     Medidas contra el fondo MAS CLARO del sitio (#1c1c1c), no contra el negro:
+     sobre un panel gris el contraste baja y varias se quedaban en 3.9. */
+  --blood-txt:  #ce6459;  /* 4.53:1 sobre el fondo mas claro */
+  --azul-txt:   #6288a1;  /* 4.51:1 */
+  --verde-txt:  #5f8d79;  /* 4.52:1 */
+  --cafe-txt:   #968070;  /* 4.56:1 */
+  --morado-txt: #a86ebd;  /* 4.58:1 */
+  --azulc-txt:  #4d89c0;  /* 4.57:1 */
+
+  /* Texto tenue: por debajo de 0.5 de opacidad el blanco deja de ser legible
+     sobre negro (0.3 da 2.49:1, menos de la mitad del minimo). */
+  --txt-debil:  rgba(245,245,245,0.55);  /* 5.81:1 */
+  --txt-suave:  rgba(245,245,245,0.70);  /* 9.03:1 */
 }
 
 body {

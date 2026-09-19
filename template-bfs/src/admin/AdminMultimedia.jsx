@@ -278,7 +278,7 @@ const AdminMultimedia = () => {
       {/* Redes */}
       <section className="admin-card p-6 space-y-4">
         <div className="flex items-center gap-2.5">
-          <Link2 size={17} style={{ color:"#c0392b" }}/>
+          <Link2 size={17} style={{ color:"var(--blood-txt)" }}/>
           <h2 className="text-sm font-bold text-white">Perfiles de redes</h2>
         </div>
         <p className="text-xs" style={{ color:"#64748b" }}>
@@ -314,7 +314,7 @@ const AdminMultimedia = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2.5 mb-1">
-              <ImagenIcono size={17} style={{ color:"#c0392b" }}/>
+              <ImagenIcono size={17} style={{ color:"var(--blood-txt)" }}/>
               <h2 className="text-sm font-bold text-white">Publicaciones destacadas</h2>
             </div>
             <p className="text-xs" style={{ color:"#64748b" }}>

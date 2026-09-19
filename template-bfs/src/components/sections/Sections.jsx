@@ -9,6 +9,7 @@ import { soloReales, sinPendientes } from "../../data/pendientes"
 import { ajustesPublicos, publicacionesPublicas, sponsorsPublicos } from "../../data/contenidoPublico"
 import { urlIncrustada } from "../../data/redes"
 import { heroTitle, heroSub, heroCTA, fadeIn, fadeInUp, fadeInLeft, fadeInRight, scaleIn, stagger, staggerSlow, viewportOnce } from "../../styles/animations"
+import { textoDe } from "../../data/colores"
 
 const progIcons = { trophy:Trophy, star:Star, shield:Shield, zap:Zap, "user-shield":Shield, "user-check":UserCheck }
 const beltColors = {
@@ -57,7 +58,7 @@ export const Hero = () => {
       <div className="absolute inset-0 z-0 tatami-pattern"/>
 
       {/* Numero decorativo */}
-      <div className="absolute bottom-0 right-0 num-deco select-none pr-6 pb-0">BFS</div>
+      <div aria-hidden="true" className="absolute bottom-0 right-0 num-deco select-none pr-6 pb-0">BFS</div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-10 w-full pt-24 pb-16">
         <motion.div initial="hidden" animate="visible"
@@ -66,7 +67,7 @@ export const Hero = () => {
           {/* Eyebrow */}
           <motion.div variants={fadeIn} className="flex items-center gap-3 mb-5">
             <div className="h-0.5 w-10" style={{ background:"#c0392b" }}/>
-            <span className="text-[11px] tracking-[0.28em] uppercase font-semibold" style={{ color:"#c0392b", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
+            <span className="text-[11px] tracking-[0.28em] uppercase font-semibold" style={{ color:"var(--blood-txt)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
               {sinPendientes(content.hero.eyebrow)}
             </span>
           </motion.div>
@@ -89,8 +90,8 @@ export const Hero = () => {
           <motion.div variants={heroSub} className="inline-flex items-center gap-2 px-4 py-2 mb-8"
             style={{ background:"rgba(192,57,43,0.15)", border:"1px solid rgba(192,57,43,0.35)" }}
           >
-            <CheckCircle size={13} style={{ color:"#c0392b" }}/>
-            <span className="text-xs font-bold" style={{ color:"#c0392b" }}>{content.hero.badge}</span>
+            <CheckCircle size={13} style={{ color:"var(--blood-txt)" }}/>
+            <span className="text-xs font-bold" style={{ color:"var(--blood-txt)" }}>{content.hero.badge}</span>
           </motion.div>
 
           {/* CTAs */}
@@ -140,7 +141,7 @@ export const Hero = () => {
               {content.business.googleMapsUrl && !content.business.googleMapsUrl.includes("{{") && (
                 <a href={content.business.googleMapsUrl} target="_blank" rel="noopener noreferrer"
                   className="ml-auto text-[10px] tracking-widest uppercase transition-colors"
-                  style={{ color:"rgba(245,245,245,0.25)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                  style={{ color:"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                   onMouseEnter={e=>e.currentTarget.style.color="#c0392b"}
                   onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.25)"}
                 >Ver todas →</a>
@@ -169,7 +170,7 @@ export const Hero = () => {
                         >{initial}</div>
                         <div className="min-w-0">
                           <div className="text-xs font-semibold truncate" style={{ color:"#f5f5f5" }}>{cleanName}</div>
-                          <div className="text-[10px]" style={{ color:"rgba(245,245,245,0.3)" }}>{dateLabel}</div>
+                          <div className="text-[10px]" style={{ color:"rgba(245,245,245,0.55)" }}>{dateLabel}</div>
                         </div>
                       </div>
                       <div className="flex gap-0.5 mb-2">
@@ -212,11 +213,11 @@ export const BeltProgress = () => (
               )}
             </div>
             <span className="text-[9px] tracking-wider uppercase text-center max-w-[52px] leading-tight"
-              style={{ color:"rgba(245,245,245,0.4)" }}
+              style={{ color:"rgba(245,245,245,0.55)" }}
             >{belt.name}</span>
           </motion.div>
         ))}
-        <motion.div variants={scaleIn} className="text-xs tracking-widest uppercase ml-2" style={{ color:"rgba(245,245,245,0.2)" }}>
+        <motion.div variants={scaleIn} className="text-xs tracking-widest uppercase ml-2" style={{ color:"rgba(245,245,245,0.55)" }}>
           → Tu trayectoria
         </motion.div>
       </motion.div>
@@ -245,7 +246,7 @@ export const Testimonials = () => {
             {/* Cinta decorativa del alumno */}
             <div className="flex items-center gap-2 mb-4">
               <div className="w-12 h-2 rounded-sm" style={{ background:beltColors[item.belt] || "#888888" }}/>
-              <span className="text-[10px] tracking-widest uppercase font-bold" style={{ color:"rgba(245,245,245,0.35)" }}>Cinta {item.belt}</span>
+              <span className="text-[10px] tracking-widest uppercase font-bold" style={{ color:"rgba(245,245,245,0.55)" }}>Cinta {item.belt}</span>
             </div>
             <p className="text-sm leading-relaxed mb-5 italic" style={{ color:"rgba(245,245,245,0.65)" }}>"{item.text}"</p>
             <div className="h-px mb-4" style={{ background:"rgba(245,245,245,0.06)" }}/>
@@ -287,7 +288,7 @@ export const EnrollCTA = ({ variant }) => {
             {copy.headline}
           </h2>
           <div className="w-14 h-0.5 mx-auto mb-5" style={{ background:"rgba(245,245,245,0.3)" }}/>
-          <p className="text-base mb-8 leading-relaxed" style={{ color:"rgba(245,245,245,0.7)" }}>{copy.subheadline}</p>
+          <p className="text-base mb-8 leading-relaxed" style={{ color:"rgba(255,255,255,0.92)" }}>{copy.subheadline}</p>
           <motion.a href={waUrl} target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center gap-3 px-9 py-4 text-base font-bold"
             style={{ background:"#0a0a0a", color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"16px" }}
@@ -321,12 +322,12 @@ export const MetodologiaBFS = () => {
             >
               {/* Letra gigante de fondo */}
               <div className="absolute -bottom-6 right-2 font-display leading-none select-none pointer-events-none"
-                style={{ fontSize:"9rem", color:p.color, opacity:0.07, fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                style={{ fontSize:"9rem", color:textoDe(p.color), opacity:0.07, fontFamily:"'Bebas Neue',Impact,sans-serif" }}
               >{p.letter}</div>
 
               <div className="relative z-10">
                 <div className="font-display text-sm tracking-[0.25em] mb-4"
-                  style={{ color:p.color, fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+                  style={{ color:textoDe(p.color), fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                 >{p.word}</div>
                 <h3 className="font-display text-3xl mb-3" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{p.title}</h3>
                 <p className="text-sm leading-relaxed" style={{ color:"#888888" }}>{p.desc}</p>
@@ -473,7 +474,7 @@ export const MultimediaSection = () => {
                   {p.titulo && (
                     <div className="px-3 py-2.5 flex items-center gap-2">
                       <span className="text-xs truncate" style={{ color:"rgba(245,245,245,0.7)" }}>{p.titulo}</span>
-                      <ArrowRight size={12} className="ml-auto shrink-0" style={{ color:"rgba(245,245,245,0.25)" }}/>
+                      <ArrowRight size={12} className="ml-auto shrink-0" style={{ color:"rgba(245,245,245,0.55)" }}/>
                     </div>
                   )}
                 </motion.a>
@@ -537,7 +538,7 @@ export const MultimediaSection = () => {
                       <div className="font-display text-lg leading-none mb-0.5" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{label}</div>
                       <div className="text-xs truncate" style={{ color:"#888888" }}>{desc}</div>
                     </div>
-                    <ArrowRight size={14} className="ml-auto shrink-0" style={{ color:"rgba(245,245,245,0.25)" }}/>
+                    <ArrowRight size={14} className="ml-auto shrink-0" style={{ color:"rgba(245,245,245,0.55)" }}/>
                   </a>
 
                   {incrustada && (
@@ -604,7 +605,7 @@ const SponsorLogo = ({ marca }) => {
         onMouseLeave={e=>{ e.currentTarget.style.filter="grayscale(100%) brightness(1.7)"; e.currentTarget.style.opacity="0.65" }}
       />
     : <span className="font-display text-2xl whitespace-nowrap transition-colors duration-200"
-        style={{ color:"rgba(245,245,245,0.45)", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.06em" }}
+        style={{ color:"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.06em" }}
         onMouseEnter={e=>e.currentTarget.style.color="#f5c518"}
         onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.45)"}
       >{marca.name}</span>
@@ -676,7 +677,7 @@ export const SponsorsBanner = () => {
         <div className="text-center mt-9">
           <Link to="/sponsors"
             className="inline-flex items-center gap-2 text-xs tracking-widest uppercase font-semibold transition-colors duration-200"
-            style={{ color:"rgba(245,245,245,0.35)", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
+            style={{ color:"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"13px" }}
             onMouseEnter={e=>e.currentTarget.style.color="#f5c518"}
             onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.35)"}
           >Vuelvete sponsor <ArrowRight size={12}/></Link>
@@ -732,18 +733,18 @@ export const SponsorSection = ({ hideHeader = false }) => {
               <motion.div key={p.name} variants={fadeInUp} className="p-7 flex flex-col"
                 style={{ background:"#0a0a0a", border:`1px solid ${p.color}30`, borderTop:`3px solid ${p.color}` }}
               >
-                <h3 className="font-display text-3xl leading-none mb-1" style={{ color:p.color, fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{p.name}</h3>
-                <p className="text-[11px] font-bold tracking-widest uppercase mb-5" style={{ color:"rgba(245,245,245,0.35)" }}>{p.tagline}</p>
+                <h3 className="font-display text-3xl leading-none mb-1" style={{ color:textoDe(p.color), fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{p.name}</h3>
+                <p className="text-[11px] font-bold tracking-widest uppercase mb-5" style={{ color:"rgba(245,245,245,0.55)" }}>{p.tagline}</p>
                 <ul className="space-y-2.5 mb-6 flex-1">
                   {p.items.map((it,i) => (
                     <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color:"rgba(245,245,245,0.55)" }}>
-                      <CheckCircle size={13} style={{ color:p.color }} className="mt-0.5 shrink-0"/>{it}
+                      <CheckCircle size={13} style={{ color:textoDe(p.color) }} className="mt-0.5 shrink-0"/>{it}
                     </li>
                   ))}
                 </ul>
                 <a href={pkgWaUrl} target="_blank" rel="noopener noreferrer"
                   className="text-center py-3 text-sm font-bold transition-opacity"
-                  style={{ border:`1px solid ${p.color}`, color:p.color, fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"15px" }}
+                  style={{ border:`1px solid ${p.color}`, color:textoDe(p.color), fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"15px" }}
                   onMouseEnter={e=>e.currentTarget.style.opacity="0.75"} onMouseLeave={e=>e.currentTarget.style.opacity="1"}
                 >Solicitar informacion</a>
               </motion.div>
@@ -751,7 +752,7 @@ export const SponsorSection = ({ hideHeader = false }) => {
           })}
         </motion.div>
 
-        <p className="text-xs mt-6 text-center" style={{ color:"rgba(245,245,245,0.3)" }}>{s.priceNote}</p>
+        <p className="text-xs mt-6 text-center" style={{ color:"rgba(245,245,245,0.55)" }}>{s.priceNote}</p>
       </div>
     </section>
   )

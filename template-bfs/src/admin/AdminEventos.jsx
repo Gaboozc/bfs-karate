@@ -10,6 +10,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Plus, Pencil, Trash2, Eye, EyeOff, X, Calendar, List, ChevronLeft, ChevronRight } from "lucide-react"
 import { eventosTodos, guardarEvento, borrarEvento } from "../data/supabase"
+import { textoDe } from "../data/colores"
 
 const TIPOS = ["Torneo", "Seminario", "Competencia", "Exhibicion", "Formacion"]
 
@@ -201,7 +202,7 @@ const Calendario = ({ eventos, onNuevo, onEditar }) => {
 
       <div className="grid grid-cols-7 gap-1 mb-1">
         {DIAS_SEMANA.map(d => (
-          <div key={d} className="text-center py-1 text-[10px] font-bold tracking-wider" style={{ color:"#c0392b" }}>{d}</div>
+          <div key={d} className="text-center py-1 text-[10px] font-bold tracking-wider" style={{ color:"var(--blood-txt)" }}>{d}</div>
         ))}
       </div>
 
@@ -232,7 +233,7 @@ const Calendario = ({ eventos, onNuevo, onEditar }) => {
                 <span key={ev.id} className="w-full text-[8px] px-1 py-0.5 rounded truncate text-left"
                   style={{
                     background: `${ev.color || "#c0392b"}25`,
-                    color: ev.color || "#c0392b",
+                    color: textoDe(ev.color || "#c0392b"),
                     opacity: ev.publicado ? 1 : 0.5,
                   }}
                 >{ev.titulo}</span>
@@ -361,7 +362,7 @@ const AdminEventos = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider"
-                    style={{ background: `${ev.color || "#c0392b"}20`, color: ev.color || "#c0392b" }}
+                    style={{ background: `${ev.color || "#c0392b"}20`, color: textoDe(ev.color || "#c0392b") }}
                   >{ev.tipo}</span>
                   {!ev.publicado && (
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider"

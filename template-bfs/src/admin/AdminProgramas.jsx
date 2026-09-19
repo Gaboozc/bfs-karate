@@ -242,7 +242,7 @@ const AdminProgramas = () => {
                   <p className="font-semibold text-white text-sm">{p.nombre}</p>
                   {p.destacado && (
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider"
-                      style={{ background:"rgba(192,57,43,0.15)", color:"#c0392b" }}
+                      style={{ background:"rgba(192,57,43,0.15)", color:"var(--blood-txt)" }}
                     >Popular</span>
                   )}
                   {!p.activo && (

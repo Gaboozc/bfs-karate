@@ -11,6 +11,7 @@ import {
   franjasTodas, guardarFranja, borrarFranja,
 } from "../data/supabase"
 import { enAmPm } from "../data/horas"
+import { textoDe } from "../data/colores"
 
 const DIAS = [
   { n:1, corto:"Lun", largo:"Lunes"     },
@@ -130,7 +131,7 @@ const AdminHorarios = () => {
               <tr style={{ borderBottom:"1px solid #2a2a2a" }}>
                 <th className="px-3 py-3 text-left text-[10px] font-semibold uppercase tracking-wider w-16" style={{ color:"#64748b" }}>Hora</th>
                 {DIAS.map(d => (
-                  <th key={d.n} className="px-2 py-3 text-center text-[10px] font-semibold uppercase tracking-wider" style={{ color:"#c0392b" }}>
+                  <th key={d.n} className="px-2 py-3 text-center text-[10px] font-semibold uppercase tracking-wider" style={{ color:"var(--blood-txt)" }}>
                     {d.corto}
                   </th>
                 ))}
@@ -229,7 +230,7 @@ const AdminHorarios = () => {
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors"
                     style={{
                       background: celda.actual === p.id ? `${p.color}20` : "#0a0a0a",
-                      color: p.color,
+                      color: textoDe(p.color),
                       border: `1px solid ${celda.actual === p.id ? p.color : "#2a2a2a"}`,
                     }}
                   >

@@ -186,7 +186,7 @@ const Inscripcion = () => {
   if (!programa) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-5 text-center" style={{ background:"#0a0a0a" }}>
-        <AlertCircle size={36} style={{ color:"#c0392b" }} className="mb-4"/>
+        <AlertCircle size={36} style={{ color:"var(--blood-txt)" }} className="mb-4"/>
         <h1 className="font-display text-3xl mb-2" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
           Enlace no disponible
         </h1>
@@ -210,7 +210,7 @@ const Inscripcion = () => {
           <h1 className="font-display text-4xl mb-3" style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif" }}>
             Registro enviado
           </h1>
-          <p className="text-base mb-2 max-w-md" style={{ color:"rgba(245,245,245,0.7)" }}>
+          <p className="text-base mb-2 max-w-md" style={{ color:"rgba(255,255,255,0.92)" }}>
             Gracias, {campos.nombre.split(" ")[0]}. Ya tenemos tus datos.
           </p>
           <p className="text-sm mb-8 max-w-md" style={{ color:"#888888" }}>
@@ -218,7 +218,7 @@ const Inscripcion = () => {
             para confirmarte tu primera clase.
           </p>
           <Link to="/" className="text-xs tracking-widest uppercase"
-            style={{ color:"rgba(245,245,245,0.4)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+            style={{ color:"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
           >Volver al sitio</Link>
         </motion.div>
       </div>
@@ -230,7 +230,7 @@ const Inscripcion = () => {
       <div className="max-w-xl mx-auto">
 
         <Link to="/" className="inline-flex items-center gap-2 text-xs tracking-widest uppercase mb-8"
-          style={{ color:"rgba(245,245,245,0.35)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+          style={{ color:"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
         ><ArrowLeft size={13}/> Volver</Link>
 
         <div className="mb-8">

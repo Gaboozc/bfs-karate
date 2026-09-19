@@ -102,7 +102,7 @@ const FirmaDigital = ({ valor, onCambio, color = "#c0392b", etiqueta }) => {
         {tieneTrazo && (
           <button type="button" onClick={borrar}
             className="inline-flex items-center gap-1.5 text-xs"
-            style={{ color:"rgba(245,245,245,0.45)" }}
+            style={{ color:"rgba(245,245,245,0.55)" }}
           ><RotateCcw size={12}/> Borrar y repetir</button>
         )}
       </div>
@@ -124,8 +124,8 @@ const FirmaDigital = ({ valor, onCambio, color = "#c0392b", etiqueta }) => {
         />
         {!tieneTrazo && (
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none gap-2">
-            <PenLine size={20} style={{ color:"rgba(245,245,245,0.2)" }}/>
-            <span className="text-xs" style={{ color:"rgba(245,245,245,0.3)" }}>
+            <PenLine size={20} style={{ color:"rgba(245,245,245,0.55)" }}/>
+            <span className="text-xs" style={{ color:"rgba(245,245,245,0.55)" }}>
               Firma aqui con el dedo
             </span>
           </div>

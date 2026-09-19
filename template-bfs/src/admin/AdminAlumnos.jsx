@@ -21,6 +21,7 @@ import {
   alumnosTodos, guardarAlumno, borrarAlumno, fijarInscripciones,
   programasTodos, gradosDeAlumno, registrarGrado,
 } from "../data/supabase"
+import { textoDe } from "../data/colores"
 
 // Progresion de cintas del sistema BFS
 const CINTAS = [
@@ -100,7 +101,7 @@ const Formulario = ({ alumno, programas, onGuardar, onCancelar, guardando }) => 
         <form onSubmit={e => { e.preventDefault(); onGuardar(campos) }} className="p-6 space-y-5">
 
           {/* Datos del alumno */}
-          <p className={seccion} style={{ color:"#c0392b" }}>Datos del alumno</p>
+          <p className={seccion} style={{ color:"var(--blood-txt)" }}>Datos del alumno</p>
 
           <div>
             <label htmlFor="al-nombre" className={etiq} style={{ color:"#94a3b8" }}>Nombre completo</label>
@@ -149,7 +150,7 @@ const Formulario = ({ alumno, programas, onGuardar, onCancelar, guardando }) => 
           </div>
 
           {/* Programas */}
-          <p className={seccion} style={{ color:"#c0392b" }}>Programas que cursa</p>
+          <p className={seccion} style={{ color:"var(--blood-txt)" }}>Programas que cursa</p>
           {programas.length === 0 ? (
             <p className="text-xs" style={{ color:"#64748b" }}>
               Todavia no hay programas. Crealos en la seccion Programas.
@@ -176,7 +177,7 @@ const Formulario = ({ alumno, programas, onGuardar, onCancelar, guardando }) => 
           )}
 
           {/* Contacto */}
-          <p className={seccion} style={{ color:"#c0392b" }}>
+          <p className={seccion} style={{ color:"var(--blood-txt)" }}>
             {esMenor ? "Padre, madre o tutor" : "Contacto"}
           </p>
 
@@ -223,7 +224,7 @@ const Formulario = ({ alumno, programas, onGuardar, onCancelar, guardando }) => 
 
           {/* Salud */}
           <div className="pt-2">
-            <p className={seccion} style={{ color:"#c0392b" }}>Salud</p>
+            <p className={seccion} style={{ color:"var(--blood-txt)" }}>Salud</p>
             <p className="text-[11px] mt-1.5 mb-3" style={{ color:"#64748b" }}>
               Solo lo indispensable para atender una urgencia o adaptar el entrenamiento.
               Requiere el consentimiento de salud firmado.
@@ -264,7 +265,7 @@ const Formulario = ({ alumno, programas, onGuardar, onCancelar, guardando }) => 
           </div>
 
           {/* Permisos */}
-          <p className={seccion} style={{ color:"#c0392b" }}>Permisos firmados</p>
+          <p className={seccion} style={{ color:"var(--blood-txt)" }}>Permisos firmados</p>
 
           <div className="space-y-2">
             <label className="flex items-start gap-3 px-3 py-2.5 rounded-lg cursor-pointer"
@@ -407,7 +408,7 @@ const Ficha = ({ alumno, onCerrar, onCambio }) => {
 
           {(alumno.tutor_nombre || alumno.tutor_telefono || alumno.contacto_emergencia) && (
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color:"#c0392b" }}>Contacto</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color:"var(--blood-txt)" }}>Contacto</p>
               {alumno.tutor_nombre  && <p className="text-xs" style={{ color:"#94a3b8" }}>{alumno.tutor_nombre}</p>}
               {alumno.tutor2_nombre && <p className="text-xs" style={{ color:"#94a3b8" }}>{alumno.tutor2_nombre}</p>}
               {alumno.tutor_telefono && <p className="text-xs" style={{ color:"#94a3b8" }}>{alumno.tutor_telefono}</p>}
@@ -417,7 +418,7 @@ const Ficha = ({ alumno, onCerrar, onCambio }) => {
 
           {/* Historial de cintas */}
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-wider mb-3" style={{ color:"#c0392b" }}>
+            <p className="text-[11px] font-bold uppercase tracking-wider mb-3" style={{ color:"var(--blood-txt)" }}>
               Historial de grados
             </p>
 
@@ -626,7 +627,7 @@ const AdminAlumnos = () => {
                     {progs.length === 0 && <span className="text-[11px]" style={{ color:"#475569" }}>sin programa</span>}
                     {progs.map(p => (
                       <span key={p.id} className="text-[10px] px-1.5 py-0.5 rounded"
-                        style={{ background:`${p.color}20`, color:p.color }}
+                        style={{ background:`${p.color}20`, color:textoDe(p.color) }}
                       >{p.nombre}</span>
                     ))}
                   </div>
