@@ -473,7 +473,7 @@ export const content = {
     title:   "Nuestros Sponsors",
     desc:    "Marcas que hacen posible que nuestros atletas compitan.",
     marcas: [
-      { name:"AlphaDev Studios", url:"https://alphadevstudios.com", logo:null, tier:"Oro" },
+      { name:"AlphaDev Studios", url:"https://alphadevstudios.com", logo:"/sponsors/alphadev-studios.png", tier:"Oro" },
     ],
   },
 

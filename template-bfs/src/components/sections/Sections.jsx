@@ -382,7 +382,6 @@ const NOMBRE_RED = { instagram:"Instagram", tiktok:"TikTok", youtube:"YouTube", 
 
 export const MultimediaSection = () => {
   const m = content.multimedia
-  const [lightbox, setLightbox] = useState(null)
   const [ajustes, setAjustes]   = useState(null)
   const [publis, setPublis]     = useState([])
 
@@ -396,13 +395,7 @@ export const MultimediaSection = () => {
     return () => { vigente = false }
   }, [])
 
-  // Cerrar el visor con Escape
-  useEffect(() => {
-    if (lightbox === null) return
-    const onKey = e => { if (e.key === "Escape") setLightbox(null) }
-    window.addEventListener("keydown", onKey)
-    return () => window.removeEventListener("keydown", onKey)
-  }, [lightbox])
+
 
   // Las redes salen de la base; content.js solo sirve de respaldo mientras la
   // consulta viaja. Las pendientes van entre llaves y no se muestran, para no
@@ -410,15 +403,16 @@ export const MultimediaSection = () => {
   const redes = REDES
     .map(r => ({
       ...r,
-      url: ajustes?.[`red_${r.key}`] || (ajustes ? "" : content.business.social?.[r.key]),
+      // Manda lo que el Sensei configure en el panel; si esa red no esta en la
+      // base, se usa la cuenta confirmada de content.js en vez de ocultarla.
+      url: ajustes?.[`red_${r.key}`] || content.business.social?.[r.key] || "",
     }))
     .filter(r => r.url && !r.url.includes("{{"))
 
-  const galeria  = m?.galeria || []
   const playlist = ajustes?.youtube_playlist || m?.youtubePlaylistId
 
   // Si no hay nada que mostrar, la seccion no se renderiza
-  if (!playlist && !galeria.length && !redes.length && !publis.length) return null
+  if (!playlist && !redes.length && !publis.length) return null
 
   return (
     <section className="py-24 md:py-28" style={{ background:"#111111" }}>
@@ -485,30 +479,6 @@ export const MultimediaSection = () => {
           </motion.div>
         )}
 
-        {/* Galeria */}
-        {galeria.length > 0 && (
-          <motion.div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-14"
-            initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
-          >
-            {galeria.map((foto, i) => (
-              <motion.button key={foto.src} variants={scaleIn}
-                onClick={() => setLightbox(i)}
-                className="relative overflow-hidden group"
-                style={{ aspectRatio:"1/1", background:"#0a0a0a", border:"1px solid rgba(245,245,245,0.06)", cursor:"zoom-in" }}
-                aria-label={`Ver foto: ${foto.alt}`}
-              >
-                <img src={foto.src} alt={foto.alt} loading="lazy" width="400" height="400"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  style={{ filter:"grayscale(45%)" }}
-                />
-                <div className="absolute inset-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
-                  style={{ background:"linear-gradient(to top, rgba(192,57,43,0.35), transparent 60%)" }}
-                />
-              </motion.button>
-            ))}
-          </motion.div>
-        )}
-
         {/* Redes sociales.
             Cada red publica un widget que muestra el perfil y sus
             publicaciones recientes en un iframe, sin llave de API. Eso es
@@ -562,34 +532,6 @@ export const MultimediaSection = () => {
         )}
       </div>
 
-      {/* Visor de fotos */}
-      <AnimatePresence>
-        {lightbox !== null && galeria[lightbox] && (
-          <motion.div
-            initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
-            onClick={() => setLightbox(null)}
-            className="fixed inset-0 z-[60] flex items-center justify-center p-5"
-            style={{ background:"rgba(10,10,10,0.94)", cursor:"zoom-out" }}
-            role="dialog" aria-modal="true" aria-label="Visor de fotos"
-          >
-            <button onClick={() => setLightbox(null)}
-              className="absolute top-5 right-6 text-3xl leading-none"
-              style={{ color:"rgba(245,245,245,0.6)" }}
-              aria-label="Cerrar"
-            >×</button>
-            <motion.img
-              key={lightbox}
-              initial={{ scale:0.94, opacity:0 }} animate={{ scale:1, opacity:1 }} exit={{ scale:0.94, opacity:0 }}
-              src={galeria[lightbox].src} alt={galeria[lightbox].alt}
-              className="max-w-full max-h-full object-contain"
-              onClick={e => e.stopPropagation()}
-            />
-            <p className="absolute bottom-5 left-0 right-0 text-center text-sm px-5" style={{ color:"rgba(245,245,245,0.5)" }}>
-              {galeria[lightbox].alt}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   )
 }
@@ -756,6 +698,82 @@ export const SponsorSection = ({ hideHeader = false }) => {
 
         <p className="text-xs mt-6 text-center" style={{ color:"rgba(245,245,245,0.55)" }}>{s.priceNote}</p>
       </div>
+    </section>
+  )
+}
+
+// ── Galeria de fotos ──────────────────────────────────────────────────────
+// Vive aparte de la seccion de redes: alli van los perfiles y sus
+// publicaciones, aqui las fotos propias de la academia y del Sensei.
+export const GaleriaSection = ({ titulo = "La Academia en Fotos", eyebrow = "Galeria", fondo = "#0a0a0a" }) => {
+  const fotos = content.multimedia?.galeria || []
+  const [abierta, setAbierta] = useState(null)
+
+  // Cerrar el visor con Escape
+  useEffect(() => {
+    if (abierta === null) return
+    const onKey = e => { if (e.key === "Escape") setAbierta(null) }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [abierta])
+
+  if (!fotos.length) return null
+
+  return (
+    <section className="py-24 md:py-28" style={{ background: fondo }}>
+      <div className="max-w-7xl mx-auto px-5 md:px-10">
+        <SectionHeader eyebrow={eyebrow} title={titulo} align="left" className="mb-10"/>
+
+        <motion.div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
+          initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}
+        >
+          {fotos.map((foto, i) => (
+            <motion.button key={foto.src} variants={scaleIn}
+              onClick={() => setAbierta(i)}
+              className="relative overflow-hidden group"
+              style={{ aspectRatio:"1/1", background:"#111111", border:"1px solid rgba(245,245,245,0.06)", cursor:"zoom-in" }}
+              aria-label={`Ver foto: ${foto.alt}`}
+            >
+              <img src={foto.src} alt={foto.alt} loading="lazy" width="400" height="400"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                style={{ filter:"grayscale(45%)" }}
+              />
+              <div className="absolute inset-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+                style={{ background:"linear-gradient(to top, rgba(192,57,43,0.35), transparent 60%)" }}
+              />
+            </motion.button>
+          ))}
+        </motion.div>
+      </div>
+
+      {/* Visor a pantalla completa */}
+      <AnimatePresence>
+        {abierta !== null && fotos[abierta] && (
+          <motion.div
+            initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
+            onClick={() => setAbierta(null)}
+            className="fixed inset-0 z-[60] flex items-center justify-center p-5"
+            style={{ background:"rgba(10,10,10,0.94)", cursor:"zoom-out" }}
+            role="dialog" aria-modal="true" aria-label="Visor de fotos"
+          >
+            <button onClick={() => setAbierta(null)}
+              className="absolute top-5 right-6 text-3xl leading-none"
+              style={{ color:"rgba(245,245,245,0.6)" }}
+              aria-label="Cerrar"
+            >×</button>
+            <motion.img
+              key={abierta}
+              initial={{ scale:0.94, opacity:0 }} animate={{ scale:1, opacity:1 }} exit={{ scale:0.94, opacity:0 }}
+              src={fotos[abierta].src} alt={fotos[abierta].alt}
+              className="max-w-full max-h-full object-contain"
+              onClick={e => e.stopPropagation()}
+            />
+            <p className="absolute bottom-5 left-0 right-0 text-center text-sm px-5" style={{ color:"rgba(245,245,245,0.55)" }}>
+              {fotos[abierta].alt}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   )
 }

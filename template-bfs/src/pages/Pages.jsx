@@ -14,7 +14,7 @@ import { eventosPublicos, horariosPublicos, productosPublicos, programasPublicos
 import { Navbar, Footer, WhatsAppButton, SectionHeader } from "../components/layout/Layout"
 import {
   Hero, BeltProgress, Testimonials, EnrollCTA, MetodologiaBFS, SponsorSection,
-  SponsorsBanner, MultimediaSection,
+  SponsorsBanner, MultimediaSection, GaleriaSection,
 } from "../components/sections/Sections"
 import { fadeInUp, fadeIn, scaleIn, stagger, staggerSlow, viewportOnce, pageTransition } from "../styles/animations"
 import { textoDe, textoSobre } from "../data/colores"
@@ -361,6 +361,8 @@ export const InstructoresPage = () => {
         </div>
       </section>
       )}
+
+      <GaleriaSection titulo="Trayectoria en Fotos" eyebrow="Galeria" fondo="#0a0a0a" />
 
       <EnrollCTA variant="instructor" />
     </motion.div>

@@ -7,8 +7,8 @@ import { content } from "../../data/content"
 import { real } from "../../data/pendientes"
 
 // Logo — carga /logo.png desde public/; fallback al SVG de karateka si no existe
-export const BFSLogo = ({ className="", size="md", light=false }) => {
-  const s = { sm:{h:36}, md:{h:44}, lg:{h:56} }[size] || {h:44}
+export const BFSLogo = ({ className="", size="md", light=false, soloImagen=false }) => {
+  const s = { sm:{h:36}, md:{h:44}, lg:{h:56}, xl:{h:82} }[size] || {h:44}
   const [imgErr, setImgErr] = useState(false)
   return (
     <motion.div className={`inline-flex items-center gap-2.5 cursor-default select-none ${className}`}
@@ -27,14 +27,14 @@ export const BFSLogo = ({ className="", size="md", light=false }) => {
             <text x="18" y="44" fontFamily="'Bebas Neue', Impact, sans-serif" fontSize="22" fill="#c0392b" fontWeight="bold" letterSpacing="2" opacity="0.95">BFS</text>
             <line x1="14" y1="54" x2="66" y2="54" stroke="#c0392b" strokeWidth="1" opacity="0.3"/>
           </svg>
-          <div className="flex flex-col leading-none gap-0.5">
+          {!soloImagen && <div className="flex flex-col leading-none gap-0.5">
             <span className="font-display tracking-[0.12em]"
               style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize: s.h < 40 ? "16px":"20px" }}
             >{content.business.name}</span>
             <span className="text-[9px] tracking-[0.2em] uppercase font-semibold" style={{ color:"var(--blood-txt)" }}>
               {content.business.tagline}
             </span>
-          </div>
+          </div>}
         </>
       ) : (
         <img
@@ -127,7 +127,15 @@ export const Navbar = () => {
           borderBottom:scrolled?"1px solid rgba(192,57,43,0.2)":"none" }}
       >
         <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-16 md:h-18">
-          <Link to="/"><BFSLogo size="sm"/></Link>
+          {/* Sin logo: a 36px de alto no se distinguia nada. Queda el nombre. */}
+          <Link to="/" className="flex flex-col leading-none gap-0.5 shrink-0">
+            <span className="font-display tracking-[0.12em]"
+              style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", fontSize:"19px" }}
+            >{content.business.name}</span>
+            <span className="text-[9px] tracking-[0.2em] uppercase font-semibold" style={{ color:"var(--blood-txt)" }}>
+              {content.business.tagline}
+            </span>
+          </Link>
 
           {/* Con 8 enlaces el menu no cabe en tablet — pasa a hamburguesa hasta lg */}
           <div className="hidden lg:flex items-center gap-6">
@@ -219,7 +227,7 @@ export const Footer = () => (
     <div className="max-w-7xl mx-auto px-5 md:px-10 py-14">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
         <div>
-          <BFSLogo size="sm" className="mb-4"/>
+          <BFSLogo size="xl" className="mb-4"/>
           <p className="text-sm leading-relaxed mb-4" style={{ color:"rgba(245,245,245,0.55)", fontFamily:"'Barlow Condensed',sans-serif" }}>
             {content.business.description}
           </p>
