@@ -473,7 +473,7 @@ export const content = {
     title:   "Nuestros Sponsors",
     desc:    "Marcas que hacen posible que nuestros atletas compitan.",
     marcas: [
-      { name:"AlphaDev Studios", url:"https://alphadevstudios.com", logo:"/sponsors/alphadev-studios.png", tier:"Oro" },
+      { name:"AlphaDev Studios", url:"https://www.alphadev.studio", logo:"/sponsors/alphadev-studios.png", tier:"Oro" },
     ],
   },
 
@@ -508,7 +508,7 @@ export const content = {
   footer: {
     copyright: `\u00a9 ${new Date().getFullYear()} BFS Martial Arts & High Performance. Todos los derechos reservados.`,
     credit:    "Desarrollado por AlphaDev Studios",
-    creditUrl: "https://alphadevstudios.com",
+    creditUrl: "https://www.alphadev.studio",
   },
 }
 
