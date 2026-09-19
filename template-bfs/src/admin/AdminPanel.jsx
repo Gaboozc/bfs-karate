@@ -26,7 +26,7 @@ import AdminSponsors from "./AdminSponsors"
 import { textoDe } from "../data/colores"
 
 const CHART_COLORS = ["#c0392b","#f5c518","#1a5276","#6b4c36","#2d6a4f","#888888","#f5f5f5"]
-const beltColors   = { "Blanco":"#f5f5f5", "Blanco raya Morada":"#f5f5f5", "Morada":"#8b3fa8", "Morada raya Amarilla":"#8b3fa8", "Amarilla":"#f5c518", "Naranja":"#e07b39", "Azul":"#2e75b6", "Azul raya Marron":"#2e75b6", "Marron":"#6b4c36", "Negro":"#1a1a1a" }
+const beltColors   = { "Blanco":"#f5f5f5", "Blanco raya Morada":"#f5f5f5", "Morada":"#8b3fa8", "Morada raya Amarilla":"#8b3fa8", "Amarilla":"#f5c518", "Naranja":"#e07b39", "Azul":"#2e75b6", "Azul raya Marron":"#2e75b6", "Verde":"#3a9b5c", "Marron":"#6b4c36", "Marron raya Negro":"#6b4c36", "Negro":"#1a1a1a" }
 
 
 // Acceso con las cuentas creadas en Supabase. Ya no hay contrasena escrita

@@ -26,15 +26,16 @@ import { textoDe } from "../data/colores"
 // Progresion de cintas del sistema BFS
 const CINTAS = [
   "Blanco", "Blanco raya Morada", "Morada", "Morada raya Amarilla",
-  "Amarilla", "Naranja", "Azul", "Azul raya Marron", "Marron", "Negro",
+  "Amarilla", "Naranja", "Verde", "Azul", "Azul raya Marron",
+  "Marron", "Marron raya Negro", "Negro",
 ]
 
 const COLOR_CINTA = {
   "Blanco":"#f5f5f5", "Blanco raya Morada":"#f5f5f5",
   "Morada":"#8b3fa8", "Morada raya Amarilla":"#8b3fa8",
-  "Amarilla":"#f5c518", "Naranja":"#e07b39",
+  "Amarilla":"#f5c518", "Naranja":"#e07b39", "Verde":"#3a9b5c",
   "Azul":"#2e75b6", "Azul raya Marron":"#2e75b6",
-  "Marron":"#6b4c36", "Negro":"#1a1a1a",
+  "Marron":"#6b4c36", "Marron raya Negro":"#6b4c36", "Negro":"#1a1a1a",
 }
 
 const alumnoVacio = () => ({

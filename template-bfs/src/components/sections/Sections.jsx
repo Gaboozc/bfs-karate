@@ -17,7 +17,7 @@ const beltColors = {
   "Morada":"#8b3fa8", "Morada raya Amarilla":"#8b3fa8",
   "Amarilla":"#f5c518", "Naranja":"#e07b39",
   "Azul":"#2e75b6", "Azul raya Marron":"#2e75b6",
-  "Marron":"#6b4c36", "Negro":"#0a0a0a",
+  "Verde":"#3a9b5c", "Marron":"#6b4c36", "Marron raya Negro":"#6b4c36", "Negro":"#0a0a0a",
 }
 const BELTS = [
   { name:"Blanco",              primary:"#f5f5f5", stripe:null        },
@@ -26,9 +26,11 @@ const BELTS = [
   { name:"Morada raya Amarilla",primary:"#8b3fa8", stripe:"#f5c518"  },
   { name:"Amarilla",            primary:"#f5c518", stripe:null        },
   { name:"Naranja",             primary:"#e07b39", stripe:null        },
+  { name:"Verde",               primary:"#3a9b5c", stripe:null        },
   { name:"Azul",                primary:"#2e75b6", stripe:null        },
   { name:"Azul raya Marron",    primary:"#2e75b6", stripe:"#6b4c36"  },
   { name:"Marron",              primary:"#6b4c36", stripe:null        },
+  { name:"Marron raya Negro",   primary:"#6b4c36", stripe:"#0a0a0a"  },
   { name:"Negro",               primary:"#0a0a0a", stripe:null        },
 ]
 const scheduleColors = {
