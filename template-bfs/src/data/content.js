@@ -435,7 +435,15 @@ export const content = {
     // Galeria. Cada foto: { src, alt }. src apunta a /public.
     // Mientras el arreglo este vacio, la galeria no se muestra.
     // OJO: si aparecen menores de edad hace falta autorizacion de los padres.
-    galeria: [],
+    // Estas salieron del CV del Sensei y son todas de el en competencia o en
+    // actos publicos, asi que no hay terceros que requieran permiso.
+    galeria: [
+      { src:"/galeria/zain-campeon-kobushi.jpg",   alt:"El Sensei Zain Pedraza tras ganar el torneo Kobushi, con uniforme TopTen" },
+      { src:"/galeria/zain-trofeos-toronto.jpg",   alt:"Tres trofeos de Overall Grand Champion obtenidos en Toronto, 2023" },
+      { src:"/galeria/zain-trofeo-topten.jpg",     alt:"Premiacion con trofeo y equipo TopTen tras un torneo internacional" },
+      { src:"/galeria/zain-antorcha-coacalco.jpg", alt:"Zain Pedraza portando la antorcha del municipio de Coacalco en 2023" },
+      { src:"/galeria/zain-coacalco-2023.jpg",     alt:"Reconocimiento en el Encendido del Fuego de la Libertad, Coacalco 2023" },
+    ],
 
     // Feed automatico de Instagram: pendiente para la etapa con backend.
     // No se puede hacer en un sitio estatico porque el token de la API de Meta
