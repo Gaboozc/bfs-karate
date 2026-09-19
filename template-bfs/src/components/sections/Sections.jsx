@@ -546,21 +546,34 @@ const MIN_LOOP = 4
 
 const SponsorLogo = ({ marca }) => {
   const inner = marca.logo
-    ? <img src={marca.logo} alt={marca.name} className="max-h-11 w-auto object-contain"
-        width="785" height="130"
+    ? <img src={marca.logo} alt={`${marca.name} — patrocinador de BFS`} loading="lazy"
+        className="max-h-20 w-auto object-contain"
       />
-    : <span className="font-display text-2xl whitespace-nowrap transition-colors duration-200"
-        style={{ color:"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.06em" }}
-        onMouseEnter={e=>e.currentTarget.style.color="#f5c518"}
-        onMouseLeave={e=>e.currentTarget.style.color="rgba(245,245,245,0.45)"}
+    : <span className="font-display text-3xl whitespace-nowrap"
+        style={{ color:"#f5f5f5", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.06em" }}
       >{marca.name}</span>
 
+  // El logo va sobre una placa con borde propio. Suelto sobre el fondo negro
+  // parecia flotar y se leia como adorno, no como una marca que respalda a la
+  // academia. La placa tambien le da aire: antes iba a 44px de alto en una
+  // franja de 1500, y a esa escala no se distinguia.
   const content = (
-    <div className="flex items-center justify-center h-16 px-9 shrink-0">{inner}</div>
+    <div className="flex flex-col items-center justify-center gap-3 shrink-0 px-10 py-7 transition-colors duration-200"
+      style={{ background:"#111111", border:"1px solid rgba(245,245,245,0.09)", minWidth:"230px" }}
+      onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(245,193,24,0.45)"}
+      onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(245,245,245,0.09)"}
+    >
+      {inner}
+      {marca.tier && (
+        <span className="text-[10px] font-bold tracking-[0.22em] uppercase"
+          style={{ color:"#f5c518", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
+        >Patrocinador {marca.tier}</span>
+      )}
+    </div>
   )
 
   return marca.url
-    ? <a href={marca.url} target="_blank" rel="noopener noreferrer" title={marca.name}>{content}</a>
+    ? <a href={marca.url} target="_blank" rel="noopener noreferrer" title={`${marca.name} (abre en otra pestana)`}>{content}</a>
     : content
 }
 
