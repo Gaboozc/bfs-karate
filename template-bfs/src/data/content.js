@@ -59,7 +59,7 @@ export const content = {
     headline:   "BETTER.\nFASTER.\nSTRONGER.",
     subheadline:"Formamos atletas completos. No solo luchadores — personas con disciplina, enfoque y caracter. Clases para todas las edades y niveles.",
     cta:        { primary:"Inscribete Ahora", secondary:"Ver Programas", sponsor:"Vuelvete Sponsor" },
-    image:      "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=1600&q=85",
+    image:      "/hero-bfs.jpg",
     badge:      "Primera semana GRATIS",
   },
 
@@ -438,9 +438,21 @@ export const content = {
     // Estas salieron del CV del Sensei y son todas de el en competencia o en
     // actos publicos, asi que no hay terceros que requieran permiso.
     galeria: [
+      // Competencia
       { src:"/galeria/zain-campeon-kobushi.jpg",   alt:"El Sensei Zain Pedraza tras ganar el torneo Kobushi, con uniforme TopTen" },
+      { src:"/galeria/combate-kumite.jpg",         alt:"Combate de kumite en torneo, el Sensei Zain en pleno intercambio" },
+      { src:"/galeria/battle-of-atlanta.jpg",      alt:"Premiacion en el Battle of Atlanta, uno de los torneos mas grandes del sport karate" },
       { src:"/galeria/zain-trofeos-toronto.jpg",   alt:"Tres trofeos de Overall Grand Champion obtenidos en Toronto, 2023" },
+      { src:"/galeria/campeon-kaizen-2024.jpg",    alt:"Campeon del torneo Kaizen 2024, en lo alto del podio" },
+      { src:"/galeria/podio-primer-lugar.jpg",     alt:"Primer lugar en el podio, con trofeo de campeon" },
       { src:"/galeria/zain-trofeo-topten.jpg",     alt:"Premiacion con trofeo y equipo TopTen tras un torneo internacional" },
+      // La academia por dentro
+      { src:"/galeria/ensenando-ninos.jpg",        alt:"El Sensei explicando una tecnica a un grupo de ninos pequenos" },
+      { src:"/galeria/clase-karate-kids.jpg",      alt:"Clase de Karate Kids reunida en el tatami" },
+      { src:"/galeria/entrega-diplomas.jpg",       alt:"Entrega de diplomas a un grupo de alumnos en el tatami" },
+      { src:"/galeria/seminario-grupo.jpg",        alt:"Seminario impartido por el Sensei con asistentes de varias academias" },
+      { src:"/galeria/equipo-competencia.jpg",     alt:"El equipo competitivo de BFS listo para torneo" },
+      // Reconocimientos
       { src:"/galeria/zain-antorcha-coacalco.jpg", alt:"Zain Pedraza portando la antorcha del municipio de Coacalco en 2023" },
       { src:"/galeria/zain-coacalco-2023.jpg",     alt:"Reconocimiento en el Encendido del Fuego de la Libertad, Coacalco 2023" },
     ],
