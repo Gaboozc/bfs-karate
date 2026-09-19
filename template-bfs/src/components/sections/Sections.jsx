@@ -400,6 +400,7 @@ export const MultimediaSection = () => {
   // Las redes salen de la base; content.js solo sirve de respaldo mientras la
   // consulta viaja. Las pendientes van entre llaves y no se muestran, para no
   // mandar a nadie a un perfil que no existe.
+  const playlist = ajustes?.youtube_playlist || m?.youtubePlaylistId
   const redes = REDES
     .map(r => ({
       ...r,
@@ -408,8 +409,10 @@ export const MultimediaSection = () => {
       url: ajustes?.[`red_${r.key}`] || content.business.social?.[r.key] || "",
     }))
     .filter(r => r.url && !r.url.includes("{{"))
+    // Si arriba ya se muestra la playlist, la tarjeta de YouTube sobra:
+    // serian dos veces el mismo canal en la misma seccion.
+    .filter(r => !(r.key === "youtube" && playlist))
 
-  const playlist = ajustes?.youtube_playlist || m?.youtubePlaylistId
 
   // Si no hay nada que mostrar, la seccion no se renderiza
   if (!playlist && !redes.length && !publis.length) return null
@@ -544,9 +547,7 @@ const MIN_LOOP = 4
 const SponsorLogo = ({ marca }) => {
   const inner = marca.logo
     ? <img src={marca.logo} alt={marca.name} className="max-h-11 w-auto object-contain"
-        style={{ filter:"grayscale(100%) brightness(1.7)", opacity:0.65 }}
-        onMouseEnter={e=>{ e.currentTarget.style.filter="grayscale(0%)"; e.currentTarget.style.opacity="1" }}
-        onMouseLeave={e=>{ e.currentTarget.style.filter="grayscale(100%) brightness(1.7)"; e.currentTarget.style.opacity="0.65" }}
+        width="785" height="130"
       />
     : <span className="font-display text-2xl whitespace-nowrap transition-colors duration-200"
         style={{ color:"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif", letterSpacing:"0.06em" }}

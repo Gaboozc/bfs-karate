@@ -8,7 +8,7 @@ import { real } from "../../data/pendientes"
 
 // Logo — carga /logo.png desde public/; fallback al SVG de karateka si no existe
 export const BFSLogo = ({ className="", size="md", light=false, soloImagen=false }) => {
-  const s = { sm:{h:36}, md:{h:44}, lg:{h:56}, xl:{h:82} }[size] || {h:44}
+  const s = { sm:{h:36}, md:{h:44}, lg:{h:56}, xl:{h:120} }[size] || {h:44}
   const [imgErr, setImgErr] = useState(false)
   return (
     <motion.div className={`inline-flex items-center gap-2.5 cursor-default select-none ${className}`}
