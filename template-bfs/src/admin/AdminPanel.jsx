@@ -11,7 +11,6 @@ import {
   Calendar, Clock, Package, Dumbbell, Inbox, Clapperboard, Handshake,
 } from "lucide-react"
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts"
-import { adminData } from "../data/adminData"
 import { BFSLogo } from "../components/layout/Layout"
 import { fadeInUp, stagger } from "../styles/animations"
 import { iniciarSesion, cerrarSesion, sesionActual, alCambiarSesion, hayConexion, eventosTodos, alumnosTodos } from "../data/supabase"
@@ -26,6 +25,7 @@ import AdminSponsors from "./AdminSponsors"
 import { textoDe } from "../data/colores"
 
 const CHART_COLORS = ["#c0392b","#f5c518","#1a5276","#6b4c36","#2d6a4f","#888888","#f5f5f5"]
+const CINTAS_ORDEN = ["Blanco","Blanco raya Morada","Morada","Morada raya Amarilla","Amarilla","Naranja","Verde","Azul","Azul raya Marron","Marron","Marron raya Negro","Negro"]
 const beltColors   = { "Blanco":"#f5f5f5", "Blanco raya Morada":"#f5f5f5", "Morada":"#8b3fa8", "Morada raya Amarilla":"#8b3fa8", "Amarilla":"#f5c518", "Naranja":"#e07b39", "Azul":"#2e75b6", "Azul raya Marron":"#2e75b6", "Verde":"#3a9b5c", "Marron":"#6b4c36", "Marron raya Negro":"#6b4c36", "Negro":"#1a1a1a" }
 
 
@@ -224,7 +224,6 @@ const AdminLayout = ({ children, onLogout }) => {
 
 // ── Dashboard ─────────────────────────────────────────────────────────────
 const AdminDashboard = () => {
-  const { charts } = adminData
   const [eventos, setEventos] = useState([])
   const [alumnos, setAlumnos] = useState([])
 
@@ -248,6 +247,23 @@ const AdminDashboard = () => {
   const activos    = alumnos.filter(a => a.estado === "activo").length
   const nuevosMes  = alumnos.filter(a => a.fecha_inscripcion?.startsWith(mesActual)).length
   const cintasNegras = alumnos.filter(a => a.belt === "Negro").length
+
+  // Las dos graficas salen del mismo padron que los indicadores de arriba.
+  // Antes venian de una lista de demostracion con cifras inventadas, que no
+  // cambiaban aunque se dieran de alta alumnos nuevos.
+  const cuentaPor = (campo, orden) => {
+    const mapa = new Map()
+    alumnos.filter(a => a.estado === "activo").forEach(a => {
+      const k = a[campo]
+      if (k) mapa.set(k, (mapa.get(k) || 0) + 1)
+    })
+    const lista = [...mapa].map(([nombre, valor]) => ({ nombre, valor }))
+    return orden
+      ? lista.sort((x, y) => orden.indexOf(x.nombre) - orden.indexOf(y.nombre))
+      : lista.sort((x, y) => y.valor - x.valor)
+  }
+  const porPrograma  = cuentaPor("programa")
+  const porCinturon  = cuentaPor("belt", CINTAS_ORDEN)
 
   const proximo = eventos
     .filter(e => e.publicado && new Date(e.fecha + "T12:00:00") >= hoy)
@@ -304,8 +320,8 @@ const AdminDashboard = () => {
         <h3 className="font-display text-base text-white mb-4" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Alumnos por Programa</h3>
         <ResponsiveContainer width="100%" height={240}>
           <PieChart>
-            <Pie data={charts.alumnosPorPrograma} cx="50%" cy="50%" innerRadius={58} outerRadius={90} paddingAngle={3} dataKey="valor">
-              {charts.alumnosPorPrograma.map((_,i)=><Cell key={i} fill={CHART_COLORS[i%CHART_COLORS.length]}/>)}
+            <Pie data={porPrograma} cx="50%" cy="50%" innerRadius={58} outerRadius={90} paddingAngle={3} dataKey="valor">
+              {porPrograma.map((_,i)=><Cell key={i} fill={CHART_COLORS[i%CHART_COLORS.length]}/>)}
             </Pie>
             <Tooltip content={<Tip/>}/>
             <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize:"11px",color:"#64748b" }}/>
@@ -317,7 +333,7 @@ const AdminDashboard = () => {
       <div className="admin-card p-5">
         <h3 className="font-display text-base text-white mb-5" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif" }}>Distribucion de Cinturones</h3>
         <div className="flex flex-wrap gap-4">
-          {charts.cinturones.map(c=>(
+          {porCinturon.map(c=>(
             <div key={c.nombre} className="flex flex-col items-center gap-1.5">
               <div className="font-display text-xl text-white" style={{ fontFamily:"'Bebas Neue',Impact,sans-serif" }}>{c.valor}</div>
               <div className="w-12 h-2 rounded-sm" style={{ background:beltColors[c.nombre]||"#888888", boxShadow:`0 0 6px ${beltColors[c.nombre]||"#888888"}60` }}/>

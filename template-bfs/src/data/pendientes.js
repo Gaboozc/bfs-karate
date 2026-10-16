@@ -12,9 +12,15 @@
 
 const MARCA = /\{\{|\}\}/
 
-/** ¿Este valor sigue siendo material de relleno? */
+/**
+ * ¿Este valor sigue sin confirmarse?
+ * Lo esta si lleva las dobles llaves del template, y tambien si viene vacio:
+ * al retirar el contenido de relleno los campos quedaron en blanco, y un
+ * precio vacio es tan "pendiente" como uno inventado.
+ */
 export const esPendiente = valor =>
-  typeof valor === "string" && MARCA.test(valor)
+  valor == null ||
+  (typeof valor === "string" && (valor.trim() === "" || MARCA.test(valor)))
 
 /** Quita las llaves. Solo para datos ya confirmados que las conservan. */
 export const limpiar = valor =>

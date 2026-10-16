@@ -99,7 +99,7 @@ const programaDelSitio = fila => ({
   ageRange: fila.edades,
   level:    fila.nivel,
   desc:     fila.descripcion,
-  price:    fila.precio != null ? `$${Number(fila.precio).toLocaleString("es-MX")}/mes` : "{{pendiente}}",
+  price:    fila.precio != null ? `$${Number(fila.precio).toLocaleString("es-MX")}/mes` : "",
   duration: fila.duracion,
   schedule: "",                 // el horario real vive en su propia seccion
   color:    fila.color,
@@ -125,7 +125,7 @@ const productoDelSitio = fila => {
     // La categoria viene de su propia tabla; el texto suelto es el respaldo
     category:  fila.categorias?.nombre ?? fila.categoria ?? "Sin categoria",
     // Sin precio definido, la tienda muestra "Consultar" por si sola
-    price:     fila.precio != null ? `$${Number(fila.precio).toLocaleString("es-MX")}` : "{{pendiente}}",
+    price:     fila.precio != null ? `$${Number(fila.precio).toLocaleString("es-MX")}` : "",
     desc:      fila.descripcion,
     image:     subidas[0]?.url ?? fila.imagen,
     images:    subidas.map(i => i.url),
