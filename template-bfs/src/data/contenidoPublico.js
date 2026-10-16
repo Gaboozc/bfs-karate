@@ -180,6 +180,35 @@ export const programaPorSlug = async slug => {
   return filas?.[0] ?? null
 }
 
+// ── Resenas ─────────────────────────────────────────────────────────────────
+
+/**
+ * Opiniones reales que el Sensei eligio lucir, con su nombre y su texto tal
+ * cual los escribio cada persona en la ficha de Google.
+ *
+ * No es un feed en vivo y no conviene que lo sea: la API de Places devuelve
+ * cinco resenas como maximo y pide una llave con facturacion que en un sitio
+ * sin backend quedaria a la vista en el navegador. Se cambia una dependencia
+ * de pago por un dato que igual habria que curar a mano.
+ *
+ * Devuelve [] si la base no responde. Aqui NO hay respaldo a content.js: una
+ * opinion inventada se leeria como el testimonio de una persona real.
+ */
+export const resenasPublicas = async () => {
+  const filas = await leer("resenas?select=*&publicado=eq.true&order=orden.asc,fecha.desc")
+  if (!filas?.length) return []
+  return filas.map(r => ({
+    id:     r.id,
+    name:   r.autor,
+    rating: r.calificacion,
+    text:   r.texto,
+    date:   r.fecha,
+    // Google publica "Hace un mes", no una fecha exacta; se respeta su forma
+    cuando: r.cuando,
+    url:    r.url,
+  }))
+}
+
 // ── Multimedia y redes ──────────────────────────────────────────────────────
 
 /**
@@ -264,5 +293,5 @@ export const enviarSolicitud = async datos => {
 export default {
   eventosPublicos, horariosPublicos, productosPublicos, programasPublicos,
   programaPorSlug, documentosDePrograma, enviarSolicitud,
-  ajustesPublicos, publicacionesPublicas,
+  ajustesPublicos, publicacionesPublicas, resenasPublicas,
 }

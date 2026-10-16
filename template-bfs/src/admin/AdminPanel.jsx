@@ -8,7 +8,7 @@ import { Routes, Route, Link, useNavigate, useLocation, Navigate } from "react-r
 import { motion, AnimatePresence } from "framer-motion"
 import {
   LayoutDashboard, Users, UserCheck, Award, LogOut, Eye, Search, Menu, X,
-  Calendar, Clock, Package, Dumbbell, Inbox, Clapperboard, Handshake,
+  Calendar, Clock, Package, Dumbbell, Inbox, Clapperboard, Handshake, Star,
 } from "lucide-react"
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts"
 import { BFSLogo } from "../components/layout/Layout"
@@ -22,6 +22,7 @@ import AdminAlumnos from "./AdminAlumnos"
 import AdminSolicitudes from "./AdminSolicitudes"
 import AdminMultimedia from "./AdminMultimedia"
 import AdminSponsors from "./AdminSponsors"
+import AdminResenas from "./AdminResenas"
 import { textoDe } from "../data/colores"
 
 const CHART_COLORS = ["#c0392b","#f5c518","#1a5276","#6b4c36","#2d6a4f","#888888","#f5f5f5"]
@@ -123,6 +124,7 @@ const AdminSidebar = ({ onLogout, onClose }) => {
     { href:"/admin/inscripciones", Icon:Inbox,        label:"Inscripciones" },
     { href:"/admin/multimedia", Icon:Clapperboard,   label:"Multimedia" },
     { href:"/admin/sponsors",   Icon:Handshake,      label:"Sponsors"   },
+    { href:"/admin/resenas",    Icon:Star,           label:"Resenas"    },
   ]
   return (
     <div className="admin-sidebar flex flex-col" style={{ width:"210px", minWidth:"210px", height:"100vh" }}>
@@ -169,7 +171,7 @@ const AdminLayout = ({ children, onLogout }) => {
   const pageTitles = {
     "/admin/dashboard":"Dashboard", "/admin/programas":"Programas", "/admin/eventos":"Eventos",
     "/admin/horarios":"Horarios", "/admin/inventario":"Inventario",
-    "/admin/alumnos":"Alumnos", "/admin/inscripciones":"Inscripciones", "/admin/multimedia":"Multimedia", "/admin/sponsors":"Sponsors",
+    "/admin/alumnos":"Alumnos", "/admin/inscripciones":"Inscripciones", "/admin/multimedia":"Multimedia", "/admin/sponsors":"Sponsors", "/admin/resenas":"Resenas",
   }
 
   return (
@@ -388,6 +390,7 @@ const AdminPanel = () => {
         <Route path="/admin/alumnos"    element={<AdminAlumnos/>}/>
         <Route path="/admin/inscripciones" element={<AdminSolicitudes/>}/>
         <Route path="/admin/multimedia" element={<AdminMultimedia/>}/>
+        <Route path="/admin/resenas" element={<AdminResenas/>}/>
         <Route path="/admin/sponsors"   element={<AdminSponsors/>}/>
         {/* Cualquier ruta vieja (clases, pagos) regresa al dashboard */}
         <Route path="*"                element={<Navigate to="/admin/dashboard" replace/>}/>

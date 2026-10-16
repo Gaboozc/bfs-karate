@@ -6,7 +6,7 @@ import { ArrowRight, Trophy, Star, Shield, Zap, UserCheck, Users, CheckCircle, C
 import { SectionHeader } from "../layout/Layout"
 import { content } from "../../data/content"
 import { soloReales, sinPendientes } from "../../data/pendientes"
-import { ajustesPublicos, publicacionesPublicas, sponsorsPublicos } from "../../data/contenidoPublico"
+import { ajustesPublicos, publicacionesPublicas, sponsorsPublicos, resenasPublicas } from "../../data/contenidoPublico"
 import { urlIncrustada } from "../../data/redes"
 import { heroTitle, heroSub, heroCTA, fadeIn, fadeInUp, fadeInLeft, fadeInRight, scaleIn, stagger, staggerSlow, viewportOnce } from "../../styles/animations"
 import { textoDe } from "../../data/colores"
@@ -42,10 +42,31 @@ const scheduleColors = {
 // ── Hero ──────────────────────────────────────────────────────────────────
 export const Hero = () => {
   const waUrl = `https://wa.me/${content.business.whatsapp}?text=${encodeURIComponent(content.enroll.whatsappMessage)}`
-  // Solo resenas confirmadas, de 5 estrellas, mas recientes primero
-  const resenasReales = soloReales(content.reviews, "name", "text", "date")
-    .filter(r => r.rating === 5)
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
+  // Las opiniones reales de la ficha de Google, que el Sensei administra desde
+  // el panel. Si la base no responde se queda la lista vacia y el bloque no se
+  // dibuja: antes que una resena inventada, ninguna.
+  const [resenas, setResenas] = useState([])
+  const [google,  setGoogle]  = useState(null)
+
+  useEffect(() => {
+    let vigente = true
+    Promise.all([resenasPublicas(), ajustesPublicos()]).then(([r, a]) => {
+      if (!vigente) return
+      setResenas(r)
+      // El resumen solo se publica si viene de la base. Una calificacion
+      // escrita a mano en el codigo envejece sin que nadie lo note.
+      if (a?.google_calificacion && a?.google_total) {
+        setGoogle({
+          calificacion: a.google_calificacion,
+          total:        a.google_total,
+          url:          a.google_url || content.business.googleMapsUrl,
+        })
+      }
+    })
+    return () => { vigente = false }
+  }, [])
+
+  const resenasReales = soloReales(resenas, "name", "text").filter(r => r.rating === 5)
   return (
     <section className="relative min-h-screen flex items-end overflow-hidden" style={{ background:"#0a0a0a" }}>
       {/* Imagen de fondo */}
@@ -120,7 +141,7 @@ export const Hero = () => {
 
           {/* Google Reviews — solo si son resenas reales. Las de relleno no se
               publican: aparentarian opiniones de personas que no existen. */}
-          {resenasReales.length > 0 && (
+          {(resenasReales.length > 0 || google) && (
           <motion.div variants={heroCTA} className="pt-8" style={{ borderTop:"1px solid rgba(245,245,245,0.07)" }}>
             {/* Cabecera */}
             <div className="flex items-center gap-3 mb-4 flex-wrap">
@@ -137,11 +158,15 @@ export const Hero = () => {
               <div className="flex gap-0.5">
                 {[1,2,3,4,5].map(s => <span key={s} style={{ color:"#f5c518", fontSize:"13px" }}>★</span>)}
               </div>
-              <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background:"rgba(245,193,24,0.1)", color:"#f5c518", border:"1px solid rgba(245,193,24,0.2)" }}>
-                Solo 5 estrellas
-              </span>
-              {content.business.googleMapsUrl && !content.business.googleMapsUrl.includes("{{") && (
-                <a href={content.business.googleMapsUrl} target="_blank" rel="noopener noreferrer"
+              {/* La calificacion y el total salen de la ficha, no del codigo:
+                  son el dato que cualquiera puede ir a comprobar. */}
+              {google && (
+                <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background:"rgba(245,193,24,0.1)", color:"#f5c518", border:"1px solid rgba(245,193,24,0.2)" }}>
+                  {google.calificacion} de 5 · {google.total} opiniones
+                </span>
+              )}
+              {(google?.url || content.business.googleMapsUrl) && !String(google?.url || content.business.googleMapsUrl).includes("{{") && (
+                <a href={google?.url || content.business.googleMapsUrl} target="_blank" rel="noopener noreferrer"
                   className="ml-auto text-[10px] tracking-widest uppercase transition-colors"
                   style={{ color:"rgba(245,245,245,0.55)", fontFamily:"'Bebas Neue',Impact,sans-serif" }}
                   onMouseEnter={e=>e.currentTarget.style.color="#c0392b"}
@@ -156,11 +181,12 @@ export const Hero = () => {
                 .map(review => {
                   const cleanName = review.name.trim()
                   const cleanText = review.text.trim()
-                  const cleanDate = review.date.trim()
                   const initial   = cleanName[0] || "?"
-                  const dateLabel = (() => {
-                    const d = new Date(cleanDate)
-                    return isNaN(d) ? cleanDate : d.toLocaleDateString("es-MX",{ month:"short", year:"numeric" })
+                  // Google no publica la fecha exacta, muestra "Hace un mes".
+                  // Se respeta esa forma; la fecha solo se usa de respaldo.
+                  const dateLabel = review.cuando?.trim() || (() => {
+                    const d = new Date(review.date)
+                    return isNaN(d) ? "" : d.toLocaleDateString("es-MX",{ month:"short", year:"numeric" })
                   })()
                   return (
                     <div key={review.id} className="shrink-0 w-60 p-4"

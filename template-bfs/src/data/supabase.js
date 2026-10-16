@@ -541,3 +541,31 @@ export const alCambiarSesion = callback => {
 }
 
 export default supabase
+
+// ── Resenas ─────────────────────────────────────────────────────────────────
+// Las opiniones reales de la ficha de Google que el Sensei elige lucir en el
+// inicio. El texto se copia tal cual lo escribio cada persona: es su palabra,
+// no una redaccion nuestra.
+
+export const resenasTodas = async () => {
+  if (!supabase) return { datos: [], error: { message: "Sin conexion a la base de datos." } }
+  const { data, error } = await supabase
+    .from("resenas").select("*").order("orden").order("fecha", { ascending: false })
+  return { datos: data ?? [], error }
+}
+
+export const guardarResena = async resena => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { id, ...campos } = resena
+  const consulta = id
+    ? supabase.from("resenas").update(campos).eq("id", id)
+    : supabase.from("resenas").insert(campos)
+  const { error } = await consulta
+  return { error }
+}
+
+export const borrarResena = async id => {
+  if (!supabase) return { error: { message: "Sin conexion a la base de datos." } }
+  const { error } = await supabase.from("resenas").delete().eq("id", id)
+  return { error }
+}
